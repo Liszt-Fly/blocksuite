@@ -8,6 +8,10 @@ import { styleMap } from 'lit/directives/style-map.js';
 
 export class EditorIconButton extends LitElement {
   static override styles = css`
+    :host {
+      color: var(--chronnote-icon-color, ${unsafeCSSVarV2('icon/primary')});
+    }
+
     :host([disabled]),
     :host(:disabled) {
       pointer-events: none;
@@ -20,7 +24,7 @@ export class EditorIconButton extends LitElement {
       display: flex;
       align-items: center;
       padding: var(--icon-container-padding);
-      color: ${unsafeCSSVarV2('icon/primary')};
+      color: var(--chronnote-icon-color, ${unsafeCSSVarV2('icon/primary')});
       border-radius: 4px;
       cursor: pointer;
       white-space: nowrap;
@@ -145,15 +149,15 @@ export class EditorIconButton extends LitElement {
       >
         <slot></slot>
         ${cache(
-          this.showTooltip && tooltip
-            ? html`<affine-tooltip
+      this.showTooltip && tooltip
+        ? html`<affine-tooltip
                 tip-position=${this.tipPosition}
                 .arrow=${this.arrow}
                 .offset=${this.tooltipOffset}
                 >${tooltip}</affine-tooltip
               >`
-            : nothing
-        )}
+        : nothing
+    )}
       </div>
     `;
   }

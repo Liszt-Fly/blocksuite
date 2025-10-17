@@ -7,7 +7,7 @@ export class EditorToolbar extends WithDisposable(LitElement) {
   static override styles = css`
     ${panelBaseStyle(':host')}
     :host {
-      height: 36px;
+      height: 28px;
       box-sizing: content-box;
     }
 
@@ -23,7 +23,7 @@ export class EditorToolbar extends WithDisposable(LitElement) {
       justify-content: center;
       align-items: center;
       gap: 8px;
-      color: var(--affine-text-primary-color);
+      color: inherit;
       fill: currentColor;
     }
   `;
