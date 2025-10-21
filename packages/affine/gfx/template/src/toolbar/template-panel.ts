@@ -14,6 +14,7 @@ import {
 import { EdgelessDraggableElementController } from '@blocksuite/affine-widget-edgeless-toolbar';
 import type { Bound } from '@blocksuite/global/gfx';
 import { WithDisposable } from '@blocksuite/global/lit';
+import { I18nProvider } from '@blocksuite/affine-shared/services';
 import type { BlockComponent } from '@blocksuite/std';
 import { GfxControllerIdentifier } from '@blocksuite/std/gfx';
 import { baseTheme } from '@toeverything/theme';
@@ -373,6 +374,10 @@ export class EdgelessTemplatePanel extends WithDisposable(LitElement) {
   }
 
   override render() {
+    const i18n = this.edgeless?.std?.getOptional?.(I18nProvider);
+    const searchPlaceholder =
+      i18n?.t('stickers.search.placeholder') ?? 'Search file or anything...';
+    const addText = i18n?.t('stickers.action.add') ?? 'Add';
     const { _categories, _currentCategory, _templates } = this;
     const { draggingElement } = this.draggableController?.states || {};
     const appTheme = this.edgeless.std.get(ThemeProvider).app$.value;
@@ -390,7 +395,7 @@ export class EdgelessTemplatePanel extends WithDisposable(LitElement) {
           <input
             class="search-input"
             type="text"
-            placeholder="Search file or anything..."
+            placeholder="${searchPlaceholder}"
             @input=${this._updateSearchKeyword}
             @cut=${stopPropagation}
             @copy=${stopPropagation}
@@ -452,7 +457,7 @@ export class EdgelessTemplatePanel extends WithDisposable(LitElement) {
                           style=${styleMap({
                             opacity: isBeingDragged ? '0' : '1',
                           })}
-                          data-hover-text="Add"
+                          data-hover-text="${addText}"
                           @mousedown=${(e: MouseEvent) =>
                             this.draggableController.onMouseDown(e, {
                               data: template,
