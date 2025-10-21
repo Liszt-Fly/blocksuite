@@ -4,17 +4,24 @@ import {
   getTextSelectionCommand,
 } from '@blocksuite/affine-shared/commands';
 import { type SlashMenuConfig } from '@blocksuite/affine-widget-slash-menu';
+import { I18nProvider } from '@blocksuite/affine-shared/services';
 import { TeXIcon } from '@blocksuite/icons/lit';
 
 import { insertLatexBlockCommand } from '../commands';
 import { LatexTooltip } from './tooltips';
 
 export const latexSlashMenuConfig: SlashMenuConfig = {
-  items: [
+  items: ({ std }) => {
+    const i18n = std.getOptional?.(I18nProvider);
+    const t: (key: string) => string = i18n?.t ?? (k => k);
+    const tt = (key: string, fb: string) => (t(key) === key ? fb : t(key));
+    const groupBasic = tt('slash.group.basic', 'Basic');
+    const groupMedia = tt('slash.group.media', 'Content & Media');
+    return [
     {
-      name: 'Inline equation',
-      group: '0_Basic@8',
-      description: 'Create a inline equation.',
+      name: tt('slash.latex.inline', 'Inline equation'),
+      group: `0_${groupBasic}@8`,
+      description: tt('slash.latex.inline.desc', 'Create a inline equation.'),
       icon: TeXIcon(),
       tooltip: {
         figure: LatexTooltip(
@@ -34,8 +41,8 @@ export const latexSlashMenuConfig: SlashMenuConfig = {
       },
     },
     {
-      name: 'Equation',
-      description: 'Create a equation block.',
+      name: tt('slash.latex.block', 'Equation'),
+      description: tt('slash.latex.block.desc', 'Create a equation block.'),
       icon: TeXIcon(),
       tooltip: {
         figure: LatexTooltip(
@@ -46,7 +53,7 @@ export const latexSlashMenuConfig: SlashMenuConfig = {
         caption: 'Equation',
       },
       searchAlias: ['mathBlock, equationBlock', 'latexBlock'],
-      group: '4_Content & Media@10',
+      group: `4_${groupMedia}@10`,
       action: ({ std }) => {
         std.command
           .chain()
@@ -58,5 +65,6 @@ export const latexSlashMenuConfig: SlashMenuConfig = {
           .run();
       },
     },
-  ],
+  ];
+  },
 };

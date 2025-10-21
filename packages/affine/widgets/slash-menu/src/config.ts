@@ -1,4 +1,5 @@
 import { toast } from '@blocksuite/affine-components/toast';
+import { I18nProvider } from '@blocksuite/affine-shared/services';
 import type {
   ListBlockModel,
   ParagraphBlockModel,
@@ -22,7 +23,15 @@ import type { SlashMenuConfig } from './types';
 import { formatDate, formatTime } from './utils';
 
 export const defaultSlashMenuConfig: SlashMenuConfig = {
-  items: () => {
+  items: ({ std, model }) => {
+    const i18n = std.getOptional?.(I18nProvider);
+    const t: (key: string) => string = i18n?.t ?? (k => k);
+    const tt = (key: string, fb: string) => {
+      const v = t(key);
+      return v === key ? fb : v;
+    };
+    const tips = slashMenuToolTips;
+
     const now = new Date();
     const tomorrow = new Date();
     const yesterday = new Date();
@@ -31,9 +40,9 @@ export const defaultSlashMenuConfig: SlashMenuConfig = {
 
     return [
       {
-        name: 'Today',
+        name: tt('slash.today', 'Today'),
         icon: TodayIcon(),
-        tooltip: slashMenuToolTips['Today'],
+        tooltip: tips['Today'],
         description: formatDate(now),
         group: '6_Date@0',
         action: ({ std, model }) => {
@@ -41,9 +50,9 @@ export const defaultSlashMenuConfig: SlashMenuConfig = {
         },
       },
       {
-        name: 'Tomorrow',
+        name: tt('slash.tomorrow', 'Tomorrow'),
         icon: TomorrowIcon(),
-        tooltip: slashMenuToolTips['Tomorrow'],
+        tooltip: tips['Tomorrow'],
         description: formatDate(tomorrow),
         group: '6_Date@1',
         action: ({ std, model }) => {
@@ -53,9 +62,9 @@ export const defaultSlashMenuConfig: SlashMenuConfig = {
         },
       },
       {
-        name: 'Yesterday',
+        name: tt('slash.yesterday', 'Yesterday'),
         icon: YesterdayIcon(),
-        tooltip: slashMenuToolTips['Yesterday'],
+        tooltip: tips['Yesterday'],
         description: formatDate(yesterday),
         group: '6_Date@2',
         action: ({ std, model }) => {
@@ -65,9 +74,9 @@ export const defaultSlashMenuConfig: SlashMenuConfig = {
         },
       },
       {
-        name: 'Now',
+        name: tt('slash.now', 'Now'),
         icon: NowIcon(),
-        tooltip: slashMenuToolTips['Now'],
+        tooltip: tips['Now'],
         description: formatTime(now),
         group: '6_Date@3',
         action: ({ std, model }) => {
@@ -75,10 +84,10 @@ export const defaultSlashMenuConfig: SlashMenuConfig = {
         },
       },
       {
-        name: 'Move Up',
-        description: 'Shift this line up.',
+        name: tt('slash.moveUp', 'Move Up'),
+        description: tt('slash.moveUp.desc', 'Shift this line up.'),
         icon: ArrowUpBigIcon(),
-        tooltip: slashMenuToolTips['Move Up'],
+        tooltip: tips['Move Up'],
         group: '8_Actions@0',
         action: ({ std, model }) => {
           const { host } = std;
@@ -97,10 +106,10 @@ export const defaultSlashMenuConfig: SlashMenuConfig = {
         },
       },
       {
-        name: 'Move Down',
-        description: 'Shift this line down.',
+        name: tt('slash.moveDown', 'Move Down'),
+        description: tt('slash.moveDown.desc', 'Shift this line down.'),
         icon: ArrowDownBigIcon(),
-        tooltip: slashMenuToolTips['Move Down'],
+        tooltip: tips['Move Down'],
         group: '8_Actions@1',
         action: ({ std, model }) => {
           const { host } = std;
@@ -114,18 +123,19 @@ export const defaultSlashMenuConfig: SlashMenuConfig = {
         },
       },
       {
-        name: 'Copy',
-        description: 'Copy this line to clipboard.',
+        name: tt('slash.copy', 'Copy'),
+        description: tt('slash.copy.desc', 'Copy this line to clipboard.'),
         icon: CopyIcon(),
-        tooltip: slashMenuToolTips['Copy'],
+        tooltip: tips['Copy'],
         group: '8_Actions@2',
+        searchAlias: ['copy', 'duplicate'],
         action: ({ std, model }) => {
           const slice = Slice.fromModels(std.store, [model]);
 
           std.clipboard
             .copy(slice)
             .then(() => {
-              toast(std.host, 'Copied to clipboard');
+              toast(std.host, tt('common.copiedToClipboard', 'Copied to clipboard'));
             })
             .catch(e => {
               console.error(e);
@@ -133,11 +143,12 @@ export const defaultSlashMenuConfig: SlashMenuConfig = {
         },
       },
       {
-        name: 'Duplicate',
-        description: 'Create a duplicate of this line.',
+        name: tt('slash.duplicate', 'Duplicate'),
+        description: tt('slash.duplicate.desc', 'Create a duplicate of this line.'),
         icon: DualLinkIcon(),
-        tooltip: slashMenuToolTips['Copy'],
+        tooltip: tips['Copy'],
         group: '8_Actions@3',
+        searchAlias: ['duplicate', 'copy'],
         action: ({ std, model }) => {
           if (!model.text || !(model.text instanceof Text)) {
             console.error("Can't duplicate a block without text");
@@ -174,11 +185,11 @@ export const defaultSlashMenuConfig: SlashMenuConfig = {
         },
       },
       {
-        name: 'Delete',
-        description: 'Remove this line permanently.',
-        searchAlias: ['remove'],
+        name: tt('slash.delete', 'Delete'),
+        description: tt('slash.delete.desc', 'Remove this line permanently.'),
+        searchAlias: ['remove', 'delete'],
         icon: DeleteIcon(),
-        tooltip: slashMenuToolTips['Delete'],
+        tooltip: tips['Delete'],
         group: '8_Actions@4',
         action: ({ std, model }) => {
           std.host.store.deleteBlock(model);
