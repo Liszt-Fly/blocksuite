@@ -9,6 +9,7 @@ import {
   BlockCommentManager,
   ToolbarRegistryIdentifier,
 } from '@blocksuite/affine-shared/services';
+import { PeekViewProvider } from '@blocksuite/affine-components/peek';
 import { formatSize } from '@blocksuite/affine-shared/utils';
 import { IS_MOBILE } from '@blocksuite/global/env';
 import { BrokenImageIcon, ImageIcon } from '@blocksuite/icons/lit';
@@ -77,15 +78,30 @@ export class ImageBlockComponent extends CaptionedBlockComponent<ImageBlockModel
   }
 
   private _handleClick(event: MouseEvent) {
-    // the peek view need handle shift + click
+    // the peek view handles shift + click and dblclick via @Peekable
     if (event.defaultPrevented) return;
 
+    // Always select the image block on click
     event.stopPropagation();
     const selectionManager = this.host.selection;
     const blockSelection = selectionManager.create(BlockSelection, {
       blockId: this.blockId,
     });
     selectionManager.setGroup('note', [blockSelection]);
+
+    // Enable single-click preview when peek view service is available and not on mobile
+    if (!IS_MOBILE && !event.shiftKey && event.button === 0) {
+      // Only trigger when clicking on the actual image element (avoid resize handles/caption)
+      const target = event.composedPath?.()[0] as HTMLElement | undefined;
+      const isImg =
+        target instanceof HTMLElement &&
+        (target.tagName.toLowerCase() === 'img' ||
+          !!target.closest?.('img'));
+      if (isImg) {
+        const peek = this.std.getOptional(PeekViewProvider);
+        peek?.peek({ target: this }).catch(console.error);
+      }
+    }
   }
 
   private _initHover() {

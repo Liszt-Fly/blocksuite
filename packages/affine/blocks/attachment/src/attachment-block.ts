@@ -521,7 +521,7 @@ export class AttachmentBlockComponent extends CaptionedBlockComponent<Attachment
     `;
   }
 
-  override accessor selectedStyle = SelectedStyle.Border;
+  override accessor selectedStyle = SelectedStyle.Background;
 
   override accessor useCaptionEditor = true;
 }

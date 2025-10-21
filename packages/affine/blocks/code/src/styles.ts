@@ -28,8 +28,11 @@ export const codeBlockStyles = css`
   ${scrollbarStyle('.affine-code-block-container rich-text')}
 
   .affine-code-block-container .inline-editor {
-    font-family: var(--affine-font-code-family);
-    font-variant-ligatures: none;
+    font-family: var(
+      --chron-font-code-family,
+      var(--affine-font-code-family)
+    );
+    font-variant-ligatures: normal;
   }
 
   .affine-code-block-container v-line {
