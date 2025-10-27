@@ -175,130 +175,138 @@ const highlightActionGroup = {
   },
 } as const satisfies ToolbarAction;
 
-const turnIntoDatabase = {
-  id: 'e.convert-to-database',
-  tooltip: 'Create Table',
-  icon: DatabaseTableViewIcon(),
-  when({ chain }) {
-    const middleware = (count = 0) => {
-      return (ctx: { selectedBlocks: BlockComponent[] }, next: () => void) => {
-        const { selectedBlocks } = ctx;
-        if (!selectedBlocks || selectedBlocks.length === count) return;
+/*
+ * Temporarily disabled by request: remove "Create Table" action from toolbar.
+ * Date: 2025-10-27
+ */
+// const turnIntoDatabase = {
+//   id: 'e.convert-to-database',
+//   tooltip: 'Create Table',
+//   icon: DatabaseTableViewIcon(),
+//   when({ chain }) {
+//     const middleware = (count = 0) => {
+//       return (ctx: { selectedBlocks: BlockComponent[] }, next: () => void) => {
+//         const { selectedBlocks } = ctx;
+//         if (!selectedBlocks || selectedBlocks.length === count) return;
+//
+//         const allowed = selectedBlocks.every(block =>
+//           DATABASE_CONVERT_WHITE_LIST.includes(block.flavour)
+//         );
+//         if (!allowed) return;
+//
+//         next();
+//       };
+//     };
+//
+//     let [ok] = chain
+//       .pipe(getTextSelectionCommand)
+//       .pipe(getSelectedBlocksCommand, {
+//         types: ['text'],
+//       })
+//       .pipe(middleware(1))
+//       .run();
+//
+//     if (ok) return true;
+//
+//     [ok] = chain
+//       .tryAll(chain => [
+//         chain.pipe(getBlockSelectionsCommand),
+//         chain.pipe(getImageSelectionsCommand),
+//       ])
+//       .pipe(getSelectedBlocksCommand, {
+//         types: ['block', 'image'],
+//       })
+//       .pipe(middleware(0))
+//       .run();
+//
+//     return ok;
+//   },
+//   run({ host }) {
+//     convertToDatabase(host, tableViewMeta.type);
+//   },
+// } as const satisfies ToolbarAction;
 
-        const allowed = selectedBlocks.every(block =>
-          DATABASE_CONVERT_WHITE_LIST.includes(block.flavour)
-        );
-        if (!allowed) return;
-
-        next();
-      };
-    };
-
-    let [ok] = chain
-      .pipe(getTextSelectionCommand)
-      .pipe(getSelectedBlocksCommand, {
-        types: ['text'],
-      })
-      .pipe(middleware(1))
-      .run();
-
-    if (ok) return true;
-
-    [ok] = chain
-      .tryAll(chain => [
-        chain.pipe(getBlockSelectionsCommand),
-        chain.pipe(getImageSelectionsCommand),
-      ])
-      .pipe(getSelectedBlocksCommand, {
-        types: ['block', 'image'],
-      })
-      .pipe(middleware(0))
-      .run();
-
-    return ok;
-  },
-  run({ host }) {
-    convertToDatabase(host, tableViewMeta.type);
-  },
-} as const satisfies ToolbarAction;
-
-const turnIntoLinkedDoc = {
-  id: 'f.convert-to-linked-doc',
-  tooltip: 'Create Linked Doc',
-  icon: LinkedPageIcon(),
-  when({ chain, std }) {
-    const supportFlavours = [
-      EmbedLinkedDocBlockSchema,
-      EmbedSyncedDocBlockSchema,
-    ].map(schema => schema.model.flavour);
-    if (
-      supportFlavours.some(
-        flavour => !std.getOptional(BlockViewIdentifier(flavour))
-      )
-    )
-      return false;
-
-    const [ok, { selectedModels }] = chain
-      .pipe(getSelectedModelsCommand, {
-        types: ['block', 'text'],
-        mode: 'flat',
-      })
-      .run();
-    return ok && Boolean(selectedModels?.length);
-  },
-  run({ chain, store, selection, std, track }) {
-    const [ok, { draftedModels, selectedModels }] = chain
-      .pipe(getSelectedModelsCommand, {
-        types: ['block', 'text'],
-        mode: 'flat',
-      })
-      .pipe(draftSelectedModelsCommand)
-      .run();
-    if (!ok || !draftedModels || !selectedModels?.length) return;
-
-    selection.clear();
-
-    const autofill = getTitleFromSelectedModels(
-      selectedModels.map(toDraftModel)
-    );
-    promptDocTitle(std, autofill)
-      .then(async title => {
-        if (title === null) return;
-        await convertSelectedBlocksToLinkedDoc(
-          std,
-          store,
-          draftedModels,
-          title
-        );
-        notifyDocCreated(std);
-
-        track('DocCreated', {
-          segment: 'doc',
-          page: 'doc editor',
-          module: 'toolbar',
-          control: 'create linked doc',
-          type: 'embed-linked-doc',
-        });
-
-        track('LinkedDocCreated', {
-          segment: 'doc',
-          page: 'doc editor',
-          module: 'toolbar',
-          control: 'create linked doc',
-          type: 'embed-linked-doc',
-        });
-      })
-      .catch(console.error);
-  },
-} as const satisfies ToolbarAction;
+/*
+ * Temporarily disabled by request: remove "Create Linked Doc" action from toolbar.
+ * Date: 2025-10-27
+ */
+// const turnIntoLinkedDoc = {
+//   id: 'f.convert-to-linked-doc',
+//   tooltip: 'Create Linked Doc',
+//   icon: LinkedPageIcon(),
+//   when({ chain, std }) {
+//     const supportFlavours = [
+//       EmbedLinkedDocBlockSchema,
+//       EmbedSyncedDocBlockSchema,
+//     ].map(schema => schema.model.flavour);
+//     if (
+//       supportFlavours.some(
+//         flavour => !std.getOptional(BlockViewIdentifier(flavour))
+//       )
+//     )
+//       return false;
+//
+//     const [ok, { selectedModels }] = chain
+//       .pipe(getSelectedModelsCommand, {
+//         types: ['block', 'text'],
+//         mode: 'flat',
+//       })
+//       .run();
+//     return ok && Boolean(selectedModels?.length);
+//   },
+//   run({ chain, store, selection, std, track }) {
+//     const [ok, { draftedModels, selectedModels }] = chain
+//       .pipe(getSelectedModelsCommand, {
+//         types: ['block', 'text'],
+//         mode: 'flat',
+//       })
+//       .pipe(draftSelectedModelsCommand)
+//       .run();
+//     if (!ok || !draftedModels || !selectedModels?.length) return;
+//
+//     selection.clear();
+//
+//     const autofill = getTitleFromSelectedModels(
+//       selectedModels.map(toDraftModel)
+//     );
+//     promptDocTitle(std, autofill)
+//       .then(async title => {
+//         if (title === null) return;
+//         await convertSelectedBlocksToLinkedDoc(
+//           std,
+//           store,
+//           draftedModels,
+//           title
+//         );
+//         notifyDocCreated(std);
+//
+//         track('DocCreated', {
+//           segment: 'doc',
+//           page: 'doc editor',
+//           module: 'toolbar',
+//           control: 'create linked doc',
+//           type: 'embed-linked-doc',
+//         });
+//
+//         track('LinkedDocCreated', {
+//           segment: 'doc',
+//           page: 'doc editor',
+//           module: 'toolbar',
+//           control: 'create linked doc',
+//           type: 'embed-linked-doc',
+//         });
+//       })
+//       .catch(console.error);
+//   },
+// } as const satisfies ToolbarAction;
 
 export const builtinToolbarConfig = {
   actions: [
     // conversionsActionGroup, // disabled temporarily
     inlineTextActionGroup,
     highlightActionGroup,
-    turnIntoDatabase,
-    turnIntoLinkedDoc,
+    // turnIntoDatabase, // disabled temporarily
+    // turnIntoLinkedDoc, // disabled temporarily
     {
       id: 'g.comment',
       ...blockCommentToolbarButton,

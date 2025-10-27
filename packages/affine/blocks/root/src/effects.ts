@@ -11,13 +11,16 @@ export function effects() {
 }
 
 function registerRootComponents() {
-  customElements.define('affine-page-root', PageRootBlockComponent);
-  customElements.define('affine-preview-root', PreviewRootBlockComponent);
-  customElements.define('affine-edgeless-root', EdgelessRootBlockComponent);
-  customElements.define(
-    'affine-edgeless-root-preview',
-    EdgelessRootPreviewBlockComponent
-  );
+  const define = (name: string, ctor: CustomElementConstructor) => {
+    if (!customElements.get(name)) {
+      customElements.define(name, ctor);
+    }
+  };
+
+  define('affine-page-root', PageRootBlockComponent);
+  define('affine-preview-root', PreviewRootBlockComponent);
+  define('affine-edgeless-root', EdgelessRootBlockComponent);
+  define('affine-edgeless-root-preview', EdgelessRootPreviewBlockComponent);
 }
 
 declare global {
