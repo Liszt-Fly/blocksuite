@@ -1,17 +1,6 @@
-import {
-  convertToDatabase,
-  DATABASE_CONVERT_WHITE_LIST,
-} from '@blocksuite/affine-block-database';
-import {
-  convertSelectedBlocksToLinkedDoc,
-  getTitleFromSelectedModels,
-  notifyDocCreated,
-  promptDocTitle,
-} from '@blocksuite/affine-block-embed';
-import { updateBlockType } from '@blocksuite/affine-block-note';
+// Removed unused imports after toolbar simplification
 import type { HighlightType } from '@blocksuite/affine-components/highlight-dropdown-menu';
 import { toast } from '@blocksuite/affine-components/toast';
-import { EditorChevronDown } from '@blocksuite/affine-components/toolbar';
 import {
   deleteTextCommand,
   formatBlockCommand,
@@ -20,11 +9,7 @@ import {
   isFormatSupported,
   textFormatConfigs,
 } from '@blocksuite/affine-inline-preset';
-import {
-  EmbedLinkedDocBlockSchema,
-  EmbedSyncedDocBlockSchema,
-} from '@blocksuite/affine-model';
-import { textConversionConfigs } from '@blocksuite/affine-rich-text';
+// Linked doc and conversion menu disabled
 import {
   copySelectedModelsCommand,
   deleteSelectedModelsCommand,
@@ -46,20 +31,8 @@ import {
   ActionPlacement,
   blockCommentToolbarButton,
 } from '@blocksuite/affine-shared/services';
-import { tableViewMeta } from '@blocksuite/data-view/view-presets';
-import {
-  CopyIcon,
-  DatabaseTableViewIcon,
-  DeleteIcon,
-  DuplicateIcon,
-  LinkedPageIcon,
-} from '@blocksuite/icons/lit';
-import {
-  type BlockComponent,
-  BlockSelection,
-  BlockViewIdentifier,
-} from '@blocksuite/std';
-import { toDraftModel } from '@blocksuite/store';
+// Database/Linked Doc actions disabled
+import { type BlockComponent, BlockSelection } from '@blocksuite/std';
 import { html } from 'lit';
 import { repeat } from 'lit/directives/repeat.js';
 
@@ -321,7 +294,7 @@ export const builtinToolbarConfig = {
         {
           id: 'copy',
           label: 'Copy',
-          icon: CopyIcon(),
+          icon: html`<ph-copy size="16" weight="bold"></ph-copy>`,
           run({ chain, host }) {
             const [ok] = chain
               .pipe(getSelectedModelsCommand)
@@ -337,7 +310,7 @@ export const builtinToolbarConfig = {
         {
           id: 'duplicate',
           label: 'Duplicate',
-          icon: DuplicateIcon(),
+          icon: html`<ph-files size="16" weight="bold"></ph-files>`,
           run({ chain, store, selection }) {
             store.captureSync();
 
@@ -382,7 +355,7 @@ export const builtinToolbarConfig = {
         {
           id: 'delete',
           label: 'Delete',
-          icon: DeleteIcon(),
+          icon: html`<ph-trash size="16" weight="bold"></ph-trash>`,
           variant: 'destructive',
           run({ chain }) {
             // removes text
