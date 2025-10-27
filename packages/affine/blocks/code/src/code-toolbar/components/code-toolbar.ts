@@ -7,7 +7,6 @@ import { renderGroups } from '@blocksuite/affine-components/toolbar';
 import { unsafeCSSVarV2 } from '@blocksuite/affine-shared/theme';
 import { WithDisposable } from '@blocksuite/global/lit';
 import { noop } from '@blocksuite/global/utils';
-import { MoreVerticalIcon } from '@blocksuite/icons/lit';
 import { flip, offset } from '@floating-ui/dom';
 import { css, html, LitElement } from 'lit';
 import { property, query, state } from 'lit/decorators.js';
@@ -133,7 +132,7 @@ export class AffineCodeToolbar extends WithDisposable(LitElement) {
           ?disabled=${this.context.doc.readonly}
           @click=${() => this._toggleMoreMenu()}
         >
-          ${MoreVerticalIcon()}
+          <ph-dots-three-vertical size="16" weight="bold"></ph-dots-three-vertical>
         </editor-icon-button>
       </editor-toolbar>
     `;

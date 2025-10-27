@@ -53,13 +53,7 @@ export class HighlightDropdownMenu extends LitElement {
         .contentPadding="${'8px'}"
         .button=${html`
           <editor-icon-button aria-label="highlight" .tooltip="${'Highlight'}">
-            <affine-highlight-duotone-icon
-              style=${styleMap({
-                '--color':
-                  // latestHighlightColor ?? 'var(--affine-text-primary-color)',
-                  'var(--affine-text-primary-color)',
-              })}
-            ></affine-highlight-duotone-icon>
+            <ph-palette size="16" weight="bold"></ph-palette>
             ${EditorChevronDown}
           </editor-icon-button>
         `}

@@ -27,6 +27,8 @@ export const lightToolbarStyles = (selector: string) => `
     ${toolbarColorKeys
       .map(key => `${key}: ${unsafeCSS(combinedLightCssVariables[key])};`)
       .join('\n')}
+    /* Override icon color in light mode as requested */
+    --affine-v2-icon-primary: #1c1e23;
   }
 `;
 

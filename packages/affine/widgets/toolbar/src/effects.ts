@@ -1,7 +1,9 @@
 import { AFFINE_TOOLBAR_WIDGET, AffineToolbarWidget } from './toolbar';
 
 export function effects() {
-  customElements.define(AFFINE_TOOLBAR_WIDGET, AffineToolbarWidget);
+  if (!customElements.get(AFFINE_TOOLBAR_WIDGET)) {
+    customElements.define(AFFINE_TOOLBAR_WIDGET, AffineToolbarWidget);
+  }
 }
 
 declare global {

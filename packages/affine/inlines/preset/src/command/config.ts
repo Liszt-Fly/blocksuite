@@ -1,13 +1,8 @@
-import {
-  BoldIcon,
-  CodeIcon,
-  ItalicIcon,
-  LinkIcon,
-  StrikethroughIcon,
-  UnderlineIcon,
-} from '@blocksuite/affine-components/icons';
+// Keep default icons only for fallback if needed; Phosphor webcomponents are used below
+import { ItalicIcon, LinkIcon, StrikethroughIcon, UnderlineIcon } from '@blocksuite/affine-components/icons';
 import { toggleLink } from '@blocksuite/affine-inline-link';
 import { type EditorHost, TextSelection } from '@blocksuite/std';
+import { html } from 'lit';
 import type { TemplateResult } from 'lit';
 
 import {
@@ -33,7 +28,8 @@ export const textFormatConfigs: TextFormatConfig[] = [
   {
     id: 'bold',
     name: 'Bold',
-    icon: BoldIcon,
+    // Use Phosphor "text-b" icon (bold weight)
+    icon: html`<ph-text-b size="16" weight="bold"></ph-text-b>`,
     hotkey: 'Mod-b',
     activeWhen: host => {
       const [result] = host.std.command
@@ -49,7 +45,7 @@ export const textFormatConfigs: TextFormatConfig[] = [
   {
     id: 'italic',
     name: 'Italic',
-    icon: ItalicIcon,
+    icon: html`<ph-text-italic size="16" weight="bold"></ph-text-italic>`,
     hotkey: 'Mod-i',
     activeWhen: host => {
       const [result] = host.std.command
@@ -65,7 +61,7 @@ export const textFormatConfigs: TextFormatConfig[] = [
   {
     id: 'underline',
     name: 'Underline',
-    icon: UnderlineIcon,
+    icon: html`<ph-text-underline size="16" weight="bold"></ph-text-underline>`,
     hotkey: 'Mod-u',
     activeWhen: host => {
       const [result] = host.std.command
@@ -81,7 +77,7 @@ export const textFormatConfigs: TextFormatConfig[] = [
   {
     id: 'strike',
     name: 'Strikethrough',
-    icon: StrikethroughIcon,
+    icon: html`<ph-text-strikethrough size="16" weight="bold"></ph-text-strikethrough>`,
     hotkey: 'Mod-shift-s',
     activeWhen: host => {
       const [result] = host.std.command
@@ -97,7 +93,8 @@ export const textFormatConfigs: TextFormatConfig[] = [
   {
     id: 'code',
     name: 'Code',
-    icon: CodeIcon,
+    // Use Phosphor "code" icon (bold weight for thicker strokes)
+    icon: html`<ph-code size="16" weight="bold"></ph-code>`,
     hotkey: 'Mod-e',
     activeWhen: host => {
       const [result] = host.std.command
@@ -113,7 +110,7 @@ export const textFormatConfigs: TextFormatConfig[] = [
   {
     id: 'link',
     name: 'Link',
-    icon: LinkIcon,
+    icon: html`<ph-link size="16" weight="bold"></ph-link>`,
     hotkey: 'Mod-k',
     activeWhen: host => {
       const [result] = host.std.command

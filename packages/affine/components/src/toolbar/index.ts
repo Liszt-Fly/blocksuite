@@ -38,11 +38,15 @@ export {
 } from './utils.js';
 
 export function effects() {
-  customElements.define('editor-toolbar-separator', EditorToolbarSeparator);
-  customElements.define('editor-toolbar', EditorToolbar);
-  customElements.define('editor-icon-button', EditorIconButton);
-  customElements.define('editor-menu-button', EditorMenuButton);
-  customElements.define('editor-menu-content', EditorMenuContent);
-  customElements.define('editor-menu-action', EditorMenuAction);
-  customElements.define('affine-tooltip', Tooltip);
+  // Phosphor webcomponents are registered at app level (main.ts).
+  const define = (name: string, ctor: CustomElementConstructor) => {
+    if (!customElements.get(name)) customElements.define(name, ctor);
+  };
+  define('editor-toolbar-separator', EditorToolbarSeparator);
+  define('editor-toolbar', EditorToolbar);
+  define('editor-icon-button', EditorIconButton);
+  define('editor-menu-button', EditorMenuButton);
+  define('editor-menu-content', EditorMenuContent);
+  define('editor-menu-action', EditorMenuAction);
+  define('affine-tooltip', Tooltip);
 }

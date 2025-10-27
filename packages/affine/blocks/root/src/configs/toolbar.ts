@@ -137,7 +137,8 @@ import { repeat } from 'lit/directives/repeat.js';
 const inlineTextActionGroup = {
   id: 'b.inline-text',
   when: ({ chain }) => isFormatSupported(chain).run()[0],
-  actions: textFormatConfigs.map(
+  actions: [
+    ...textFormatConfigs.map(
     ({ id, name, action, activeWhen, icon }, score) => {
       return {
         id,
@@ -149,31 +150,34 @@ const inlineTextActionGroup = {
       };
     }
   ),
+    {
+      id: 'highlight',
+      content({ chain }) {
+        const updateHighlight = (styles: HighlightType) => {
+          const payload = { styles };
+          chain
+            .try(chain => [
+              chain.pipe(getTextSelectionCommand).pipe(formatTextCommand, payload),
+              chain
+                .pipe(getBlockSelectionsCommand)
+                .pipe(formatBlockCommand, payload),
+              chain.pipe(formatNativeCommand, payload),
+            ])
+            .run();
+        };
+        return html`
+          <affine-highlight-dropdown-menu
+            .updateHighlight=${updateHighlight}
+          ></affine-highlight-dropdown-menu>
+        `;
+      },
+    },
+  ],
 } as const satisfies ToolbarActionGroup;
 
-const highlightActionGroup = {
-  id: 'c.highlight',
-  when: ({ chain }) => isFormatSupported(chain).run()[0],
-  content({ chain }) {
-    const updateHighlight = (styles: HighlightType) => {
-      const payload = { styles };
-      chain
-        .try(chain => [
-          chain.pipe(getTextSelectionCommand).pipe(formatTextCommand, payload),
-          chain
-            .pipe(getBlockSelectionsCommand)
-            .pipe(formatBlockCommand, payload),
-          chain.pipe(formatNativeCommand, payload),
-        ])
-        .run();
-    };
-    return html`
-      <affine-highlight-dropdown-menu
-        .updateHighlight=${updateHighlight}
-      ></affine-highlight-dropdown-menu>
-    `;
-  },
-} as const satisfies ToolbarAction;
+/*
+ * Highlight dropdown merged into inlineTextActionGroup.actions to avoid extra separators.
+ */
 
 /*
  * Temporarily disabled by request: remove "Create Table" action from toolbar.
@@ -304,7 +308,6 @@ export const builtinToolbarConfig = {
   actions: [
     // conversionsActionGroup, // disabled temporarily
     inlineTextActionGroup,
-    highlightActionGroup,
     // turnIntoDatabase, // disabled temporarily
     // turnIntoLinkedDoc, // disabled temporarily
     {

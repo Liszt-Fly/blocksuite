@@ -11,7 +11,7 @@ import {
   type ToolbarPlacement,
 } from '@blocksuite/affine-shared/services';
 import { nextTick } from '@blocksuite/global/utils';
-import { MoreVerticalIcon } from '@blocksuite/icons/lit';
+// Use Phosphor webcomponents for the More icon
 import type {
   AutoUpdateOptions,
   ComputePositionConfig,
@@ -275,9 +275,9 @@ export function renderToolbar(
                   aria-label="More"
                   .tooltip="${'More'}"
                   .iconContainerPadding=${innerToolbar ? 4 : 2}
-                  .iconSize=${innerToolbar ? '16px' : undefined}
+                  .iconSize=${'16px'}
                 >
-                  ${MoreVerticalIcon()}
+                  <ph-dots-three-vertical size="16" weight="bold"></ph-dots-three-vertical>
                 </editor-icon-button>
               `}
             >
@@ -387,7 +387,7 @@ function renderActionItem(action: ToolbarAction, context: ToolbarContext) {
       ?disabled=${disabled}
       .tooltip=${action.tooltip}
       .iconContainerPadding=${innerToolbar ? 4 : 2}
-      .iconSize=${innerToolbar ? '16px' : undefined}
+      .iconSize=${'16px'}
       @click=${() => action.run?.(context)}
     >
       ${action.icon}
@@ -422,7 +422,7 @@ function renderMenuActionItem(action: ToolbarAction, context: ToolbarContext) {
       ?disabled=${disabled}
       .tooltip=${ifDefined(action.tooltip)}
       .iconContainerPadding=${innerToolbar ? 4 : 2}
-      .iconSize=${innerToolbar ? '16px' : undefined}
+      .iconSize=${'16px'}
       @click=${() => action.run?.(context)}
     >
       ${action.icon}
