@@ -63,8 +63,12 @@ import { toDraftModel } from '@blocksuite/store';
 import { html } from 'lit';
 import { repeat } from 'lit/directives/repeat.js';
 
-const conversionsActionGroup = {
-  id: 'a.conversions',
+/*
+ * Temporarily disabled by request: hide the "Turn into" conversions menu in the bubble toolbar.
+ * Date: 2025-10-27
+ */
+// const conversionsActionGroup = {
+/*  id: 'a.conversions',
   when: ({ chain }) => isFormatSupported(chain).run()[0],
   generate({ chain }) {
     const [ok, { selectedModels = [] }] = chain
@@ -128,7 +132,7 @@ const conversionsActionGroup = {
       `,
     };
   },
-} as const satisfies ToolbarActionGenerator;
+} as const satisfies ToolbarActionGenerator; */
 
 const inlineTextActionGroup = {
   id: 'b.inline-text',
@@ -290,7 +294,7 @@ const turnIntoLinkedDoc = {
 
 export const builtinToolbarConfig = {
   actions: [
-    conversionsActionGroup,
+    // conversionsActionGroup, // disabled temporarily
     inlineTextActionGroup,
     highlightActionGroup,
     turnIntoDatabase,
