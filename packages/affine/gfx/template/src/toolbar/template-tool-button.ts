@@ -179,7 +179,7 @@ export class EdgelessTemplateButton extends EdgelessToolbarToolMixin(
       autoUpdate(this, panel, () => {
         computePosition(this, panel, {
           placement: 'top',
-          middleware: [offset(20), arrow({ element: arrowEl }), shift()],
+          middleware: [offset(16), arrow({ element: arrowEl }), shift()],
         })
           .then(({ x, y, middlewareData }) => {
             panel.style.left = `${x}px`;

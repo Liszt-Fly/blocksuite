@@ -39,8 +39,8 @@ export class EdgelessTemplatePanel extends WithDisposable(LitElement) {
     }
 
     .edgeless-templates-panel {
-      width: 467px;
-      height: 568px;
+      width: 380px;
+      height: 500px;
       border-radius: 12px;
       background-color: var(--affine-background-overlay-panel-color);
       box-shadow: 0px 10px 80px 0px rgba(0, 0, 0, 0.2);
@@ -52,8 +52,8 @@ export class EdgelessTemplatePanel extends WithDisposable(LitElement) {
     ${unsafeCSS(darkToolbarStyles('.edgeless-templates-panel'))}
 
     .search-bar {
-      padding: 21px 24px;
-      font-size: 18px;
+      padding: 12px 16px;
+      font-size: 16px;
       color: var(--affine-secondary);
       border-bottom: 1px solid var(--affine-divider-color);
 
@@ -63,7 +63,7 @@ export class EdgelessTemplatePanel extends WithDisposable(LitElement) {
     .search-input {
       border: 0;
       color: var(--affine-text-primary-color);
-      font-size: 20px;
+      font-size: 16px;
       background-color: inherit;
       outline: none;
       width: 100%;
@@ -113,18 +113,17 @@ export class EdgelessTemplatePanel extends WithDisposable(LitElement) {
     }
 
     .template-list {
-      padding: 10px;
-      display: flex;
-      align-items: flex-start;
-      align-content: flex-start;
-      gap: 10px 20px;
-      flex-wrap: wrap;
+      padding: 8px;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      grid-auto-rows: 60px;
+      gap: 8px 12px;
     }
 
     .template-item {
       position: relative;
-      width: 135px;
-      height: 80px;
+      width: 100%;
+      height: 60px;
       box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.02);
       background-color: var(--affine-background-primary-color);
       border-radius: 4px;
@@ -134,8 +133,8 @@ export class EdgelessTemplatePanel extends WithDisposable(LitElement) {
     .template-item > svg {
       display: block;
       margin: 0 auto;
-      width: 135px;
-      height: 80px;
+      width: 100%;
+      height: 100%;
       color: var(--affine-background-primary-color);
     }
 
