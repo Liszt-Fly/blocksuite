@@ -35,6 +35,7 @@ import { cache } from 'lit/directives/cache.js';
 import { literal, unsafeStatic } from 'lit/static-html.js';
 import debounce from 'lodash-es/debounce';
 import { Subject } from 'rxjs';
+import { t } from '@blocksuite/affine-shared/utils';
 
 import {
   edgelessToolbarContext,
@@ -529,7 +530,7 @@ export class EdgelessToolbarWidget extends WidgetComponent<RootBlockModel> {
         >
           ${MoreHorizontalIcon({ width: '20px', height: '20px' })}
           <affine-tooltip tip-position="top" .offset=${25}>
-            More Tools
+            ${t('edgeless.toolbar.moreTools', 'More Tools')}
           </affine-tooltip>
         </icon-button>
       </div>

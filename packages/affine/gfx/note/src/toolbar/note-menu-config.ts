@@ -142,10 +142,8 @@ export const NOTE_MENU_ITEMS = TEXT_ITEMS.concat(LIST_ITEMS)
   .map(item => {
     return {
       icon: item.icon,
-      tooltip:
-        item.type !== 'text'
-          ? item.tooltip.replace('Drag/Click to insert ', '')
-          : 'Text',
+      // keep i18n text; only strip legacy prefix if present
+      tooltip: item.tooltip.replace('Drag/Click to insert ', ''),
       childFlavour: item.flavour as NoteChildrenFlavour,
       childType: item.type,
     } as NoteMenuItem;

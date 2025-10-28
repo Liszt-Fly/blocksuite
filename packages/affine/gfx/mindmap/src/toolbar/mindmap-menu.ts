@@ -22,6 +22,7 @@ import { computed } from '@preact/signals-core';
 import { css, html, LitElement, nothing, type TemplateResult } from 'lit';
 import { property } from 'lit/decorators.js';
 import { repeat } from 'lit/directives/repeat.js';
+import { t } from '@blocksuite/affine-shared/utils';
 
 import { getMindMaps, type ToolbarMindmapItem } from './assets.js';
 import { mediaRender, textRender } from './basket-elements.js';
@@ -172,9 +173,12 @@ export class EdgelessMindmapMenu extends EdgelessToolbarToolMixin(
         ${importMindMapIcon}
       </button>
       <affine-tooltip tip-position="top" .offset=${12}>
-        <affine-tooltip-content-with-shortcut
-          data-tip="${'Support import of FreeMind,OPML.'}"
-        ></affine-tooltip-content-with-shortcut>
+          <affine-tooltip-content-with-shortcut
+            data-tip="${t(
+              'edgeless.mindmap.supportImport',
+              'Supports importing FreeMind and OPML.'
+            )}"
+          ></affine-tooltip-content-with-shortcut>
       </affine-tooltip>
     </div>`;
   }
@@ -303,7 +307,7 @@ export class EdgelessMindmapMenu extends EdgelessToolbarToolMixin(
           </button>
           <affine-tooltip tip-position="top" .offset=${12}>
             <affine-tooltip-content-with-shortcut
-              data-tip="${'Add media'}"
+              data-tip="${t('edgeless.mindmap.addMedia', 'Add media')}"
             ></affine-tooltip-content-with-shortcut>
           </affine-tooltip>
         </div>
@@ -334,7 +338,7 @@ export class EdgelessMindmapMenu extends EdgelessToolbarToolMixin(
           </button>
           <affine-tooltip tip-position="top" .offset=${12}>
             <affine-tooltip-content-with-shortcut
-              data-tip="${'Edgeless Text'}"
+              data-tip="${t('edgeless.mindmap.edgelessText', 'Edgeless Text')}"
               data-shortcup="${'T'}"
             ></affine-tooltip-content-with-shortcut>
           </affine-tooltip>
@@ -380,7 +384,7 @@ export class EdgelessMindmapMenu extends EdgelessToolbarToolMixin(
               </button>
               <affine-tooltip tip-position="top" .offset=${12}>
                 <affine-tooltip-content-with-shortcut
-                  data-tip="${'Mind Map'}"
+                  data-tip="${t('edgeless.nav.mindmap', 'Mind Map')}"
                   data-shortcup="${'M'}"
                 ></affine-tooltip-content-with-shortcut>
               </affine-tooltip>

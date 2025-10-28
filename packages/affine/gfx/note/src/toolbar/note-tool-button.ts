@@ -7,6 +7,7 @@ import { PageIcon } from '@blocksuite/icons/lit';
 import { effect } from '@preact/signals-core';
 import { css, html, LitElement } from 'lit';
 import { state } from 'lit/decorators.js';
+import { t } from '@blocksuite/affine-shared/utils';
 
 import { NoteTool, type NoteToolOption } from '../note-tool.js';
 import type { EdgelessNoteMenu } from './note-menu.js';
@@ -92,7 +93,7 @@ export class EdgelessNoteToolButton extends QuickToolMixin(LitElement) {
         .tooltip=${this._noteMenu
           ? ''
           : html`<affine-tooltip-content-with-shortcut
-              data-tip="${'Note'}"
+              data-tip="${t('edgeless.nav.note', 'Note')}"
               data-shortcut="${'N'}"
             ></affine-tooltip-content-with-shortcut>`}
         .tooltipOffset=${17}
@@ -116,5 +117,5 @@ export class EdgelessNoteToolButton extends QuickToolMixin(LitElement) {
   accessor childType = 'text';
 
   @state()
-  accessor tip = 'Text';
+  accessor tip = t('edgeless.note.tooltip.text', 'Text');
 }

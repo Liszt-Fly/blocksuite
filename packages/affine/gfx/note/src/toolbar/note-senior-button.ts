@@ -12,6 +12,7 @@ import { SignalWatcher } from '@blocksuite/global/lit';
 import { computed } from '@preact/signals-core';
 import { css, html, LitElement } from 'lit';
 import { state } from 'lit/decorators.js';
+import { t } from '@blocksuite/affine-shared/utils';
 
 import { NoteTool, type NoteToolOption } from '../note-tool.js';
 import { toShapeNotToAdapt } from './icon.js';
@@ -187,7 +188,7 @@ export class EdgelessNoteSeniorButton extends EdgelessToolbarToolMixin(
       .tooltip=${this.popper
         ? ''
         : html`<affine-tooltip-content-with-shortcut
-            data-tip="${'Note'}"
+            data-tip="${t('edgeless.nav.note', 'Note')}"
             data-shortcut="${'N'}"
           ></affine-tooltip-content-with-shortcut>`}
       .tooltipOffset=${5}
@@ -214,5 +215,5 @@ export class EdgelessNoteSeniorButton extends EdgelessToolbarToolMixin(
   accessor childType = 'text';
 
   @state()
-  accessor tip = 'Note';
+  accessor tip = t('edgeless.nav.note', 'Note');
 }

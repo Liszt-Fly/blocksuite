@@ -16,6 +16,7 @@ import { effect } from '@preact/signals-core';
 import { css, html, LitElement } from 'lit';
 import { property, state } from 'lit/decorators.js';
 import { repeat } from 'lit/directives/repeat.js';
+import { t } from '@blocksuite/affine-shared/utils';
 
 import { NoteTool, type NoteToolOption } from '../note-tool.js';
 import { NOTE_MENU_ITEMS } from './note-menu-config.js';
@@ -115,7 +116,7 @@ export class EdgelessNoteMenu extends EdgelessToolbarToolMixin(LitElement) {
           <div class="button-group-container">
             <edgeless-tool-icon-button
               .activeMode=${'background'}
-              .tooltip=${'Image'}
+              .tooltip=${t('editor.imageBlock.defaultCaption', 'Image')}
               @click=${this._addImages}
               .disabled=${this._imageLoading}
             >
@@ -125,7 +126,7 @@ export class EdgelessNoteMenu extends EdgelessToolbarToolMixin(LitElement) {
             <edgeless-tool-icon-button
               .activeMode=${'background'}
               .tooltip=${html`<affine-tooltip-content-with-shortcut
-                data-tip="${'Link'}"
+                data-tip="${t('editor.link', 'Link')}"
                 data-shortcut="${'@'}"
               ></affine-tooltip-content-with-shortcut>`}
               @click=${() => {
@@ -137,7 +138,7 @@ export class EdgelessNoteMenu extends EdgelessToolbarToolMixin(LitElement) {
 
             <edgeless-tool-icon-button
               .activeMode=${'background'}
-              .tooltip=${'File'}
+              .tooltip=${t('common.file', 'File')}
               @click=${async () => {
                 const file = await openSingleFileWith();
                 if (!file) return;

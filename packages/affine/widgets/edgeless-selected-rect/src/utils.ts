@@ -19,6 +19,7 @@ import { BlockSuiteError, ErrorCode } from '@blocksuite/global/exceptions';
 import { Bound, normalizeDegAngle, type XYWH } from '@blocksuite/global/gfx';
 import { assertType } from '@blocksuite/global/utils';
 import type { BlockComponent } from '@blocksuite/std';
+import { t } from '@blocksuite/affine-shared/utils';
 import type {
   CursorType,
   GfxController,
@@ -142,7 +143,12 @@ export class AutoCompleteFrameOverlay extends AutoCompleteTargetOverlay {
     ctx.fillStyle = 'white';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    ctx.fillText('Frame', x + titleWidth / 2, titleY + titleHeight / 2);
+    // i18n: use translated label for Frame
+    ctx.fillText(
+      t('edgeless.toolbar.frame', 'Frame'),
+      x + titleWidth / 2,
+      titleY + titleHeight / 2
+    );
 
     // frame stroke
     ctx.globalAlpha = 0.4;

@@ -4,6 +4,7 @@ import { css, html, LitElement, nothing } from 'lit';
 import { property } from 'lit/decorators.js';
 import { cache } from 'lit/directives/cache.js';
 import { styleMap } from 'lit/directives/style-map.js';
+import { t } from '@blocksuite/affine-shared/utils';
 
 export class EdgelessToolIconButton extends LitElement {
   static override styles = css`
@@ -97,7 +98,9 @@ export class EdgelessToolIconButton extends LitElement {
   }
 
   override render() {
-    const tooltip = this.coming ? '(Coming soon)' : this.tooltip;
+    const tooltip = this.coming
+      ? t('common.comingSoonSuffix', '(Coming soon)')
+      : this.tooltip;
     const classnames = `icon-container active-mode-${this.activeMode} ${this.hoverState ? 'hovered' : ''}`;
     const padding = this.iconContainerPadding;
     const iconContainerStyles = styleMap({

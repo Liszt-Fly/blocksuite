@@ -2,6 +2,7 @@ import { BRUSH_LINE_WIDTHS, LineWidth } from '@blocksuite/affine-model';
 import { WithDisposable } from '@blocksuite/global/lit';
 import { html, LitElement } from 'lit';
 import { property } from 'lit/decorators.js';
+import { t } from '@blocksuite/affine-shared/utils';
 
 import type { SliderSelectEvent } from '../slider';
 
@@ -22,7 +23,9 @@ export class EdgelessLineWidthPanel extends WithDisposable(LitElement) {
       ?disabled=${this.disabled}
       .range=${{ points: this.lineWidths }}
       .value=${this.selectedSize}
-      .tooltip=${this.hasTooltip ? 'Thickness' : undefined}
+      .tooltip=${this.hasTooltip
+        ? t('edgeless.line.thickness', 'Thickness')
+        : undefined}
       @select=${(e: SliderSelectEvent) => {
         e.stopPropagation();
         this._onSelect(e.detail.value);

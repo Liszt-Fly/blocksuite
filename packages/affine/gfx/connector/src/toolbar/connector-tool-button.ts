@@ -1,4 +1,4 @@
-import { ConnectorMode, getConnectorModeName } from '@blocksuite/affine-model';
+import { ConnectorMode } from '@blocksuite/affine-model';
 import { EditPropsStore } from '@blocksuite/affine-shared/services';
 import { QuickToolMixin } from '@blocksuite/affine-widget-edgeless-toolbar';
 import { SignalWatcher } from '@blocksuite/global/lit';
@@ -9,6 +9,7 @@ import {
 } from '@blocksuite/icons/lit';
 import { computed } from '@preact/signals-core';
 import { css, html, LitElement } from 'lit';
+import { t } from '@blocksuite/affine-shared/utils';
 
 import { ConnectorTool } from '../connector-tool';
 
@@ -50,13 +51,19 @@ export class EdgelessConnectorToolButton extends QuickToolMixin(
   override render() {
     const { active } = this;
     const mode = this._mode$.value;
+    const tip =
+      mode === ConnectorMode.Curve
+        ? t('edgeless.connector.mode.curve', 'Curve')
+        : mode === ConnectorMode.Orthogonal
+          ? t('edgeless.connector.mode.elbowed', 'Elbowed')
+          : t('edgeless.connector.mode.straight', 'Straight');
     return html`
       <edgeless-tool-icon-button
         class="edgeless-connector-button"
         .tooltip=${this.popper
           ? ''
           : html`<affine-tooltip-content-with-shortcut
-              data-tip="${getConnectorModeName(mode)}"
+              data-tip="${tip}"
               data-shortcut="${'C'}"
             ></affine-tooltip-content-with-shortcut>`}
         .tooltipOffset=${17}
