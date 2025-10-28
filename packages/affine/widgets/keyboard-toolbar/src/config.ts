@@ -54,6 +54,7 @@ import {
 import type { AffineLinkedDocWidget } from '@blocksuite/affine-widget-linked-doc';
 import { viewPresets } from '@blocksuite/data-view/view-presets';
 import { assertType } from '@blocksuite/global/utils';
+import { t } from '@blocksuite/affine-shared/utils';
 import {
   AttachmentIcon,
   BoldIcon,
@@ -814,7 +815,7 @@ const textToolPanel: KeyboardToolPanelConfig = {
 
 const textStyleToolItems: KeyboardToolbarItem[] = [
   {
-    name: 'Bold',
+    name: t('toolbar.bold', 'Bold'),
     icon: BoldIcon(),
     background: ({ std }) => {
       const [_, { textAttributes }] = std.command.exec(getTextAttributes);
@@ -825,7 +826,7 @@ const textStyleToolItems: KeyboardToolbarItem[] = [
     },
   },
   {
-    name: 'Italic',
+    name: t('toolbar.italic', 'Italic'),
     icon: ItalicIcon(),
     background: ({ std }) => {
       const [_, { textAttributes }] = std.command.exec(getTextAttributes);
@@ -836,7 +837,7 @@ const textStyleToolItems: KeyboardToolbarItem[] = [
     },
   },
   {
-    name: 'UnderLine',
+    name: t('toolbar.underline', 'Underline'),
     icon: UnderLineIcon(),
     background: ({ std }) => {
       const [_, { textAttributes }] = std.command.exec(getTextAttributes);
@@ -847,7 +848,7 @@ const textStyleToolItems: KeyboardToolbarItem[] = [
     },
   },
   {
-    name: 'StrikeThrough',
+    name: t('toolbar.strike', 'Strikethrough'),
     icon: StrikeThroughIcon(),
     background: ({ std }) => {
       const [_, { textAttributes }] = std.command.exec(getTextAttributes);
@@ -858,7 +859,7 @@ const textStyleToolItems: KeyboardToolbarItem[] = [
     },
   },
   {
-    name: 'Code',
+    name: t('toolbar.code', 'Code'),
     icon: CodeIcon(),
     background: ({ std }) => {
       const [_, { textAttributes }] = std.command.exec(getTextAttributes);
@@ -869,7 +870,7 @@ const textStyleToolItems: KeyboardToolbarItem[] = [
     },
   },
   {
-    name: 'Link',
+    name: t('toolbar.link', 'Link'),
     icon: LinkIcon(),
     background: ({ std }) => {
       const [_, { textAttributes }] = std.command.exec(getTextAttributes);
@@ -892,10 +893,10 @@ const highlightToolPanel: KeyboardToolPanelConfig = {
   },
   groups: [
     {
-      name: 'Color',
+      name: t('editor.textColor', 'Color'),
       items: [
         {
-          name: 'Default Color',
+          name: t('toolbar.defaultColor', 'Default Color'),
           icon: TextColorIcon(cssVarV2('text/highlight/fg/orange')),
         },
         ...(
@@ -910,7 +911,7 @@ const highlightToolPanel: KeyboardToolPanelConfig = {
             'grey',
           ] as const
         ).map<KeyboardToolbarActionItem>(color => ({
-          name: color.charAt(0).toUpperCase() + color.slice(1),
+          name: t(`colors.${color}`, color.charAt(0).toUpperCase() + color.slice(1)),
           icon: TextColorIcon(cssVarV2(`text/highlight/fg/${color}`)),
           action: ({ std }) => {
             const payload = {
@@ -935,10 +936,10 @@ const highlightToolPanel: KeyboardToolPanelConfig = {
       ],
     },
     {
-      name: 'Background',
+      name: t('editor.backgroundColor', 'Background'),
       items: [
         {
-          name: 'Default Color',
+          name: t('toolbar.defaultBackground', 'Default background'),
           icon: TextBackgroundDuotoneIcon(cssVarV2('text/highlight/bg/orange')),
         },
         ...(
@@ -953,7 +954,7 @@ const highlightToolPanel: KeyboardToolPanelConfig = {
             'grey',
           ] as const
         ).map<KeyboardToolbarActionItem>(color => ({
-          name: color.charAt(0).toUpperCase() + color.slice(1),
+          name: t(`colors.${color}`, color.charAt(0).toUpperCase() + color.slice(1)),
           icon: TextBackgroundDuotoneIcon(
             cssVarV2(`text/highlight/bg/${color}`)
           ),

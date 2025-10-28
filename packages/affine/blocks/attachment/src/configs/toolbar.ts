@@ -18,16 +18,7 @@ import {
 } from '@blocksuite/affine-shared/services';
 import { getBlockProps } from '@blocksuite/affine-shared/utils';
 import { Bound } from '@blocksuite/global/gfx';
-import {
-  CaptionIcon,
-  CopyIcon,
-  DeleteIcon,
-  DownloadIcon,
-  DuplicateIcon,
-  EditIcon,
-  ReplaceIcon,
-  ResetIcon,
-} from '@blocksuite/icons/lit';
+import { t } from '@blocksuite/affine-shared/utils';
 import { BlockFlavourIdentifier } from '@blocksuite/std';
 import type { ExtensionType } from '@blocksuite/store';
 import { flip, offset } from '@floating-ui/dom';
@@ -49,7 +40,7 @@ export const attachmentViewDropdownMenu = {
   actions: [
     {
       id: 'card',
-      label: 'Card view',
+      label: t('attachment.cardView', 'Card view'),
       run(ctx) {
         const model = ctx.getCurrentModelByType(AttachmentBlockModel);
         if (!model) return;
@@ -70,7 +61,7 @@ export const attachmentViewDropdownMenu = {
     },
     {
       id: 'embed',
-      label: 'Embed view',
+      label: t('attachment.embedView', 'Embed view'),
       disabled: ctx => {
         const block = ctx.getCurrentBlockByType(AttachmentBlockComponent);
         return block ? !block.embedded() : true;
@@ -152,8 +143,8 @@ export const attachmentViewDropdownMenu = {
 
 const replaceAction = {
   id: 'c.replace',
-  tooltip: 'Replace attachment',
-  icon: ReplaceIcon(),
+  tooltip: t('attachment.replace', 'Replace attachment'),
+  icon: html`<ph-arrow-clockwise size="16" weight="bold"></ph-arrow-clockwise>`,
   disabled(ctx) {
     const block = ctx.getCurrentBlockByType(AttachmentBlockComponent);
     if (!block) return true;
@@ -170,8 +161,8 @@ const replaceAction = {
 
 const downloadAction = {
   id: 'd.download',
-  tooltip: 'Download',
-  icon: DownloadIcon(),
+  tooltip: t('attachment.download', 'Download'),
+  icon: html`<ph-download-simple size="16" weight="bold"></ph-download-simple>`,
   run(ctx) {
     const block = ctx.getCurrentBlockByType(AttachmentBlockComponent);
     block?.download();
@@ -186,8 +177,8 @@ const downloadAction = {
 
 const captionAction = {
   id: 'e.caption',
-  tooltip: 'Caption',
-  icon: CaptionIcon(),
+  tooltip: t('attachment.caption', 'Caption'),
+  icon: html`<ph-chat-text size="16" weight="bold"></ph-chat-text>`,
   run(ctx) {
     const block = ctx.getCurrentBlockByType(AttachmentBlockComponent);
     block?.captionEditor?.show();
@@ -212,8 +203,8 @@ const builtinToolbarConfig = {
 
         return html`
           <editor-icon-button
-            aria-label="Rename"
-            .tooltip="${'Rename'}"
+            aria-label="${t('attachment.rename', 'Rename')}"
+            .tooltip="${t('attachment.rename', 'Rename')}"
             @click=${() => {
               ctx.hide();
 
@@ -232,7 +223,7 @@ const builtinToolbarConfig = {
               });
             }}
           >
-            ${EditIcon()}
+            <ph-pencil size="16" weight="bold"></ph-pencil>
           </editor-icon-button>
         `;
       },
@@ -251,8 +242,8 @@ const builtinToolbarConfig = {
       actions: [
         {
           id: 'copy',
-          label: 'Copy',
-          icon: CopyIcon(),
+          label: t('common.copy', 'Copy'),
+          icon: html`<ph-copy size="16" weight="bold"></ph-copy>`,
           run(ctx) {
             // TODO(@fundon): unify `clone` method
             const block = ctx.getCurrentBlockByType(AttachmentBlockComponent);
@@ -261,8 +252,8 @@ const builtinToolbarConfig = {
         },
         {
           id: 'duplicate',
-          label: 'Duplicate',
-          icon: DuplicateIcon(),
+          label: t('file.duplicate', 'Duplicate'),
+          icon: html`<ph-files size="16" weight="bold"></ph-files>`,
           run(ctx) {
             const model = ctx.getCurrentModelByType(AttachmentBlockModel);
             if (!model) return;
@@ -281,8 +272,8 @@ const builtinToolbarConfig = {
     {
       placement: ActionPlacement.More,
       id: 'b.refresh',
-      label: 'Reload',
-      icon: ResetIcon(),
+      label: t('attachment.reload', 'Reload'),
+  icon: html`<ph-arrows-clockwise size="16" weight="bold"></ph-arrows-clockwise>`,
       run(ctx) {
         const block = ctx.getCurrentBlockByType(AttachmentBlockComponent);
         block?.reload();
@@ -297,8 +288,8 @@ const builtinToolbarConfig = {
     {
       placement: ActionPlacement.More,
       id: 'c.delete',
-      label: 'Delete',
-      icon: DeleteIcon(),
+      label: t('common.delete', 'Delete'),
+  icon: html`<ph-trash size="16" weight="bold"></ph-trash>`,
       variant: 'destructive',
       run(ctx) {
         const model = ctx.getCurrentModel();
@@ -322,11 +313,11 @@ const builtinSurfaceToolbarConfig = {
       actions: [
         {
           id: 'horizontalThin',
-          label: 'Horizontal style',
+          label: t('attachment.horizontalStyle', 'Horizontal style'),
         },
         {
           id: 'cubeThick',
-          label: 'Vertical style',
+          label: t('attachment.verticalStyle', 'Vertical style'),
         },
       ],
       content(ctx) {

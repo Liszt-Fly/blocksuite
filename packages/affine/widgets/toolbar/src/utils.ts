@@ -30,6 +30,7 @@ import {
   size,
 } from '@floating-ui/dom';
 import { html, render } from 'lit';
+import { t } from '@blocksuite/affine-shared/utils';
 import { ifDefined } from 'lit/directives/if-defined.js';
 import { join } from 'lit/directives/join.js';
 import { keyed } from 'lit/directives/keyed.js';
@@ -268,12 +269,12 @@ export function renderToolbar(
           `${flavour}:${key}`,
           html`
             <editor-menu-button
-              aria-label="More menu"
+              aria-label="${t('toolbar.moreMenu', 'More menu')}"
               .contentPadding="${'8px'}"
               .button=${html`
                 <editor-icon-button
-                  aria-label="More"
-                  .tooltip="${'More'}"
+                  aria-label="${t('toolbar.more', 'More')}"
+                  .tooltip="${t('toolbar.more', 'More')}"
                   .iconContainerPadding=${innerToolbar ? 4 : 2}
                   .iconSize=${'16px'}
                 >

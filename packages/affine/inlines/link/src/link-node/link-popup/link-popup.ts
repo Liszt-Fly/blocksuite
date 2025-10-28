@@ -21,6 +21,7 @@ import {
   shift,
 } from '@floating-ui/dom';
 import { html } from 'lit';
+import { t } from '@blocksuite/affine-shared/utils';
 import { property, query } from 'lit/decorators.js';
 import { choose } from 'lit/directives/choose.js';
 
@@ -47,7 +48,7 @@ export class LinkPopup extends WithDisposable(ShadowlessElement) {
           class="affine-link-popover-input"
           type="text"
           spellcheck="false"
-          placeholder="Paste or type a link"
+          placeholder="${t('editor.linkInput.placeholder', 'Paste or type a link')}"
           @paste=${this._updateConfirmBtn}
           @input=${this._updateConfirmBtn}
         />
@@ -83,10 +84,12 @@ export class LinkPopup extends WithDisposable(ShadowlessElement) {
             class="affine-edit-input"
             id="text-input"
             type="text"
-            placeholder="Enter text"
+            placeholder="${t('editor.linkInput.textPlaceholder', 'Enter text')}"
             @input=${this._updateConfirmBtn}
           />
-          <label class="affine-edit-label" for="text-input">Text</label>
+          <label class="affine-edit-label" for="text-input">
+            ${t('editor.linkInput.textLabel', 'Text')}
+          </label>
         </div>
         <div class="affine-edit-area link">
           <input
@@ -94,10 +97,12 @@ export class LinkPopup extends WithDisposable(ShadowlessElement) {
             class="affine-edit-input"
             type="text"
             spellcheck="false"
-            placeholder="Paste or type a link"
+            placeholder="${t('editor.linkInput.placeholder', 'Paste or type a link')}"
             @input=${this._updateConfirmBtn}
           />
-          <label class="affine-edit-label" for="link-input">Link</label>
+          <label class="affine-edit-label" for="link-input">
+            ${t('editor.linkInput.linkLabel', 'Link')}
+          </label>
         </div>
         ${this._confirmBtnTemplate()}
       </div>

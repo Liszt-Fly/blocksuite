@@ -34,6 +34,7 @@ import {
 // Database/Linked Doc actions disabled
 import { type BlockComponent, BlockSelection } from '@blocksuite/std';
 import { html } from 'lit';
+import { t } from '@blocksuite/affine-shared/utils';
 import { repeat } from 'lit/directives/repeat.js';
 
 /*
@@ -112,19 +113,28 @@ const inlineTextActionGroup = {
   when: ({ chain }) => isFormatSupported(chain).run()[0],
   actions: [
     ...textFormatConfigs.map(
-    ({ id, name, action, activeWhen, icon }, score) => {
-      return {
-        id,
-        icon,
-        score,
-        tooltip: name,
-        run: ({ host }) => action(host),
-        active: ({ host }) => activeWhen(host),
-      };
-    }
-  ),
+      ({ id, name, action, activeWhen, icon }) => {
+        const orderMap: Record<string, string> = {
+          // Writing-first order
+          bold: 'a',
+          italic: 'b',
+          underline: 'c',
+          strike: 'd',
+          link: 'e',
+          code: 'f',
+        };
+        const withOrder = (k: string) => `${orderMap[k] ?? 'z'}.${k}`;
+        return {
+          id: withOrder(id),
+          icon,
+          tooltip: name,
+          run: ({ host }) => action(host),
+          active: ({ host }) => activeWhen(host),
+        } as const;
+      }
+    ),
     {
-      id: 'highlight',
+      id: 'z.highlight',
       content({ chain }) {
         const updateHighlight = (styles: HighlightType) => {
           const payload = { styles };
@@ -293,7 +303,7 @@ export const builtinToolbarConfig = {
       actions: [
         {
           id: 'copy',
-          label: 'Copy',
+          label: t('common.copy', 'Copy'),
           icon: html`<ph-copy size="16" weight="bold"></ph-copy>`,
           run({ chain, host }) {
             const [ok] = chain
@@ -304,12 +314,12 @@ export const builtinToolbarConfig = {
 
             if (!ok) return;
 
-            toast(host, 'Copied to clipboard');
+            toast(host, t('toast.copied', 'Copied to clipboard'));
           },
         },
         {
           id: 'duplicate',
-          label: 'Duplicate',
+          label: t('file.duplicate', 'Duplicate'),
           icon: html`<ph-files size="16" weight="bold"></ph-files>`,
           run({ chain, store, selection }) {
             store.captureSync();
@@ -354,7 +364,7 @@ export const builtinToolbarConfig = {
       actions: [
         {
           id: 'delete',
-          label: 'Delete',
+          label: t('common.delete', 'Delete'),
           icon: html`<ph-trash size="16" weight="bold"></ph-trash>`,
           variant: 'destructive',
           run({ chain }) {

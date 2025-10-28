@@ -13,6 +13,7 @@ import {
   toggleStrike,
   toggleUnderline,
 } from './text-style.js';
+import { t } from '@blocksuite/affine-shared/utils';
 
 export interface TextFormatConfig {
   id: string;
@@ -27,7 +28,7 @@ export interface TextFormatConfig {
 export const textFormatConfigs: TextFormatConfig[] = [
   {
     id: 'bold',
-    name: 'Bold',
+    name: t('toolbar.bold', 'Bold'),
     // Use Phosphor "text-b" icon (bold weight)
     icon: html`<ph-text-b size="16" weight="bold"></ph-text-b>`,
     hotkey: 'Mod-b',
@@ -44,7 +45,7 @@ export const textFormatConfigs: TextFormatConfig[] = [
   },
   {
     id: 'italic',
-    name: 'Italic',
+    name: t('toolbar.italic', 'Italic'),
     icon: html`<ph-text-italic size="16" weight="bold"></ph-text-italic>`,
     hotkey: 'Mod-i',
     activeWhen: host => {
@@ -60,7 +61,7 @@ export const textFormatConfigs: TextFormatConfig[] = [
   },
   {
     id: 'underline',
-    name: 'Underline',
+    name: t('toolbar.underline', 'Underline'),
     icon: html`<ph-text-underline size="16" weight="bold"></ph-text-underline>`,
     hotkey: 'Mod-u',
     activeWhen: host => {
@@ -76,7 +77,7 @@ export const textFormatConfigs: TextFormatConfig[] = [
   },
   {
     id: 'strike',
-    name: 'Strikethrough',
+    name: t('toolbar.strike', 'Strikethrough'),
     icon: html`<ph-text-strikethrough size="16" weight="bold"></ph-text-strikethrough>`,
     hotkey: 'Mod-shift-s',
     activeWhen: host => {
@@ -92,7 +93,7 @@ export const textFormatConfigs: TextFormatConfig[] = [
   },
   {
     id: 'code',
-    name: 'Code',
+    name: t('toolbar.code', 'Code'),
     // Use Phosphor "code" icon (bold weight for thicker strokes)
     icon: html`<ph-code size="16" weight="bold"></ph-code>`,
     hotkey: 'Mod-e',
@@ -109,7 +110,7 @@ export const textFormatConfigs: TextFormatConfig[] = [
   },
   {
     id: 'link',
-    name: 'Link',
+    name: t('toolbar.link', 'Link'),
     icon: html`<ph-link size="16" weight="bold"></ph-link>`,
     hotkey: 'Mod-k',
     activeWhen: host => {

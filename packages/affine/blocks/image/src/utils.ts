@@ -30,8 +30,9 @@ import {
 } from './components/image-block-fallback';
 import type { ImageBlockComponent } from './image-block';
 import type { ImageEdgelessBlockComponent } from './image-edgeless-block';
+import { t } from '@blocksuite/affine-shared/utils';
 
-const DEFAULT_ATTACHMENT_NAME = 'chronnote-attachment';
+const DEFAULT_ATTACHMENT_NAME = () => t('attachment.defaultName', 'Attachment');
 
 async function getImageBlob(model: ImageBlockModel) {
   const sourceId = model.props.sourceId$.peek();
@@ -66,18 +67,18 @@ export async function downloadImageBlob(
   const { host, blobUrl, resourceController } = block;
 
   if (!blobUrl) {
-    toast(host, 'Failed to download image!');
+    toast(host, t('editor.imageBlock.downloadFailed', 'Failed to download image!'));
     return;
   }
 
   if (resourceController.state$.peek().downloading) {
-    toast(host, 'Download in progress...');
+    toast(host, t('editor.imageBlock.downloadingInProgress', 'Download in progress...'));
     return;
   }
 
   resourceController.updateState({ downloading: true });
 
-  toast(host, 'Downloading image...');
+  toast(host, t('editor.imageBlock.downloading', 'Downloading image...'));
 
   const tmpLink = document.createElement('a');
   const event = new MouseEvent('click');
@@ -160,7 +161,7 @@ export async function copyImageBlob(
       ]);
     }
 
-    toast(host, 'Copied image to clipboard');
+    toast(host, t('editor.imageBlock.copiedToClipboard', 'Copied image to clipboard'));
   } catch (error) {
     console.error(error);
   }
@@ -194,11 +195,12 @@ export async function turnImageIntoCardView(
   const attachmentConvertData = getAttachmentData(sourceId);
   const attachmentProp: Partial<AttachmentBlockProps> = {
     sourceId,
-    name: DEFAULT_ATTACHMENT_NAME,
     size: blob.size,
     type: blob.type,
     caption: model.props.caption,
-    ...attachmentConvertData,
+    ...(attachmentConvertData ?? {}),
+    // Always use i18n default for new attachments
+    name: DEFAULT_ATTACHMENT_NAME(),
   };
   transformModel(model, 'affine:attachment', attachmentProp);
 }
@@ -221,7 +223,7 @@ function hasExceeded(
 
   if (exceeded) {
     const size = formatSize(maxFileSize);
-    toast(std.host, `You can only upload files less than ${size}`);
+    toast(std.host, t('editor.imageBlock.maxFileSizeTip', 'You can only upload files less than {size}', { size }));
   }
 
   return exceeded;
@@ -235,7 +237,7 @@ async function buildPropsWith(std: BlockStdScope, file: File) {
   ]);
 
   if (!(imageSize.width * imageSize.height)) {
-    toast(std.host, 'Failed to read image size, please try another image');
+    toast(std.host, t('editor.imageBlock.readSizeFailed', 'Failed to read image size, please try another image'));
     throw new Error('Failed to read image size');
   }
 

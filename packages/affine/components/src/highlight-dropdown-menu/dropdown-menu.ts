@@ -7,6 +7,7 @@ import { html } from 'lit-html';
 import { repeat } from 'lit-html/directives/repeat.js';
 
 import { EditorChevronDown } from '../toolbar';
+import { t } from '@blocksuite/affine-shared/utils';
 
 const colors = [
   'default',
@@ -19,6 +20,17 @@ const colors = [
   'purple',
   'grey',
 ] as const;
+
+const colorFallbackLabel: Record<Exclude<(typeof colors)[number], 'default'>, string> = {
+  red: 'Red',
+  orange: 'Orange',
+  yellow: 'Yellow',
+  green: 'Green',
+  teal: 'Teal',
+  blue: 'Blue',
+  purple: 'Purple',
+  grey: 'Grey',
+};
 
 export type HighlightType = Pick<
   AffineTextStyleAttributes,
@@ -52,14 +64,14 @@ export class HighlightDropdownMenu extends LitElement {
       <editor-menu-button
         .contentPadding="${'8px'}"
         .button=${html`
-          <editor-icon-button aria-label="highlight" .tooltip="${'Highlight'}">
+          <editor-icon-button aria-label="${t('toolbar.highlight', 'Highlight')}" .tooltip="${t('toolbar.highlight', 'Highlight')}">
             <ph-palette size="16" weight="bold"></ph-palette>
             ${EditorChevronDown}
           </editor-icon-button>
         `}
       >
         <div data-size="large" data-orientation="vertical">
-          <div class="highlight-heading">Color</div>
+          <div class="highlight-heading">${t('editor.textColor', 'Color')}</div>
           ${repeat(colors, color => {
             const isDefault = color === 'default';
             const value = isDefault
@@ -76,13 +88,16 @@ export class HighlightDropdownMenu extends LitElement {
                   })}
                 ></affine-text-duotone-icon>
                 <span class="label capitalize"
-                  >${isDefault ? `${color} color` : color}</span
+                  >${isDefault
+                    ? t('toolbar.defaultColor', 'default color')
+                    : t(`colors.${color}`, colorFallbackLabel[color as Exclude<(typeof colors)[number], 'default'>])}
+                </span
                 >
               </editor-menu-action>
             `;
           })}
 
-          <div class="highlight-heading">Background</div>
+          <div class="highlight-heading">${t('editor.backgroundColor', 'Background')}</div>
           ${repeat(colors, color => {
             const isDefault = color === 'default';
             const value = isDefault ? null : `var(${prefix}-${color})`;
@@ -99,7 +114,10 @@ export class HighlightDropdownMenu extends LitElement {
                 ></affine-text-duotone-icon>
 
                 <span class="label capitalize"
-                  >${isDefault ? `${color} background` : color}</span
+                  >${isDefault
+                    ? t('toolbar.defaultBackground', 'default background')
+                    : t(`colors.${color}`, colorFallbackLabel[color as Exclude<(typeof colors)[number], 'default'>])}
+                </span
                 >
               </editor-menu-action>
             `;

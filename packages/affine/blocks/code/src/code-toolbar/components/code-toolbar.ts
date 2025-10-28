@@ -9,6 +9,7 @@ import { WithDisposable } from '@blocksuite/global/lit';
 import { noop } from '@blocksuite/global/utils';
 import { flip, offset } from '@floating-ui/dom';
 import { css, html, LitElement } from 'lit';
+import { t } from '@blocksuite/affine-shared/utils';
 import { property, query, state } from 'lit/decorators.js';
 import { styleMap } from 'lit/directives/style-map.js';
 
@@ -123,8 +124,8 @@ export class AffineCodeToolbar extends WithDisposable(LitElement) {
         <editor-icon-button
           class="code-toolbar-button more"
           data-testid="more"
-          aria-label="More"
-          .tooltip=${'More'}
+          aria-label="${t('toolbar.more', 'More')}"
+          .tooltip=${t('toolbar.more', 'More')}
           .tooltipOffset=${4}
           .iconSize=${'16px'}
           .iconContainerPadding=${4}

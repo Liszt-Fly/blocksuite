@@ -25,4 +25,5 @@ export * from './title';
 export * from './url';
 export * from './virtual-padding';
 export * from './zod-schema';
+export * from './i18n';
 export { default as formatSize } from 'bytes';

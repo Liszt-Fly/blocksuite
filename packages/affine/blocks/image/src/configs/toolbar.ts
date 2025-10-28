@@ -5,18 +5,12 @@ import {
   type ToolbarModuleConfig,
   ToolbarModuleExtension,
 } from '@blocksuite/affine-shared/services';
-import {
-  BookmarkIcon,
-  CaptionIcon,
-  CopyIcon,
-  DeleteIcon,
-  DownloadIcon,
-  DuplicateIcon,
-} from '@blocksuite/icons/lit';
+import { html } from 'lit';
 import { BlockFlavourIdentifier } from '@blocksuite/std';
 import type { ExtensionType } from '@blocksuite/store';
 
 import { ImageBlockComponent } from '../image-block';
+import { t } from '@blocksuite/affine-shared/utils';
 import { ImageEdgelessBlockComponent } from '../image-edgeless-block';
 import { duplicate } from '../utils';
 
@@ -29,8 +23,8 @@ const builtinToolbarConfig = {
   actions: [
     {
       id: 'a.download',
-      tooltip: 'Download',
-      icon: DownloadIcon(),
+      tooltip: t('image.download', 'Download'),
+      icon: html`<ph-download-simple size="16" weight="regular"></ph-download-simple>`,
       run(ctx) {
         const block = ctx.getCurrentBlockByType(ImageBlockComponent);
         block?.download();
@@ -38,8 +32,8 @@ const builtinToolbarConfig = {
     },
     {
       id: 'b.caption',
-      tooltip: 'Caption',
-      icon: CaptionIcon(),
+      tooltip: t('image.caption', 'Caption'),
+      icon: html`<ph-chat-text size="16" weight="regular"></ph-chat-text>`,
       run(ctx) {
         const block = ctx.getCurrentBlockByType(ImageBlockComponent);
         block?.captionEditor?.show();
@@ -60,8 +54,8 @@ const builtinToolbarConfig = {
       actions: [
         {
           id: 'a.copy',
-          label: 'Copy',
-          icon: CopyIcon(),
+          label: t('common.copy', 'Copy'),
+          icon: html`<ph-copy size="16" weight="regular"></ph-copy>`,
           run(ctx) {
             const block = ctx.getCurrentBlockByType(ImageBlockComponent);
             block?.copy();
@@ -69,8 +63,8 @@ const builtinToolbarConfig = {
         },
         {
           id: 'b.duplicate',
-          label: 'Duplicate',
-          icon: DuplicateIcon(),
+          label: t('file.duplicate', 'Duplicate'),
+          icon: html`<ph-files size="16" weight="regular"></ph-files>`,
           run(ctx) {
             const block = ctx.getCurrentBlockByType(ImageBlockComponent);
             if (!block) return;
@@ -86,8 +80,8 @@ const builtinToolbarConfig = {
       actions: [
         {
           id: 'a.turn-into-card-view',
-          label: 'Turn into card view',
-          icon: BookmarkIcon(),
+          label: t('image.turnIntoCardView', 'Turn into card view'),
+          icon: html`<ph-bookmark-simple size="16" weight="regular"></ph-bookmark-simple>`,
           when(ctx) {
             const supported =
               ctx.store.schema.flavourSchemaMap.has('affine:attachment');
@@ -106,8 +100,8 @@ const builtinToolbarConfig = {
     {
       placement: ActionPlacement.More,
       id: 'c.delete',
-      label: 'Delete',
-      icon: DeleteIcon(),
+      label: t('common.delete', 'Delete'),
+      icon: html`<ph-trash size="16" weight="regular"></ph-trash>`,
       variant: 'destructive',
       run(ctx) {
         const block = ctx.getCurrentBlockByType(ImageBlockComponent);
@@ -125,8 +119,8 @@ const builtinSurfaceToolbarConfig = {
   actions: [
     {
       id: 'a.download',
-      tooltip: 'Download',
-      icon: DownloadIcon(),
+      tooltip: t('image.download', 'Download'),
+      icon: html`<ph-download-simple size="16" weight="regular"></ph-download-simple>`,
       run(ctx) {
         const block = ctx.getCurrentBlockByType(ImageEdgelessBlockComponent);
         block?.download();
@@ -134,8 +128,8 @@ const builtinSurfaceToolbarConfig = {
     },
     {
       id: 'b.caption',
-      tooltip: 'Caption',
-      icon: CaptionIcon(),
+      tooltip: t('image.caption', 'Caption'),
+      icon: html`<ph-chat-text size="16" weight="regular"></ph-chat-text>`,
       run(ctx) {
         const block = ctx.getCurrentBlockByType(ImageEdgelessBlockComponent);
         block?.captionEditor?.show();

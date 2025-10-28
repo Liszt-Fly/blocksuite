@@ -17,6 +17,7 @@ import {
 import type { BaseSelection } from '@blocksuite/store';
 import { computed } from '@preact/signals-core';
 import { css, html, type PropertyValues } from 'lit';
+import { t } from '@blocksuite/affine-shared/utils';
 import { property, query } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import { styleMap } from 'lit/directives/style-map.js';
@@ -224,7 +225,7 @@ export class ImageBlockPageComponent extends SignalWatcher(
 
   private _handleError() {
     this.block.resourceController.updateState({
-      errorMessage: 'Failed to download image!',
+      errorMessage: t('editor.imageBlock.downloadFailed', 'Failed to download image!'),
     });
   }
 
@@ -365,7 +366,7 @@ export class ImageBlockPageComponent extends SignalWatcher(
       : null;
 
     const blobUrl = this.block.blobUrl;
-    const caption = this.block.model.props.caption$.value ?? 'Image';
+    const caption = this.block.model.props.caption$.value ?? t('editor.imageBlock.defaultCaption', 'Image');
     const { loading, error, icon, description, needUpload } = this.state;
 
     return html`

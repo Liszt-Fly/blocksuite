@@ -13,6 +13,7 @@ import { GfxBlockComponent } from '@blocksuite/std';
 import { GfxViewInteractionExtension } from '@blocksuite/std/gfx';
 import { computed } from '@preact/signals-core';
 import { css, html } from 'lit';
+import { t } from '@blocksuite/affine-shared/utils';
 import { query } from 'lit/decorators.js';
 import { styleMap } from 'lit/directives/style-map.js';
 import { when } from 'lit/directives/when.js';
@@ -67,7 +68,7 @@ export class ImageEdgelessBlockComponent extends GfxBlockComponent<ImageBlockMod
 
   resourceController = new ResourceController(
     computed(() => this.model.props.sourceId$.value),
-    'Image'
+    t('editor.imageBlock.defaultCaption', 'Image')
   );
 
   get blobUrl() {
@@ -92,7 +93,7 @@ export class ImageEdgelessBlockComponent extends GfxBlockComponent<ImageBlockMod
 
   private _handleError() {
     this.resourceController.updateState({
-      errorMessage: 'Failed to download image!',
+      errorMessage: t('editor.imageBlock.downloadFailed', 'Failed to download image!'),
     });
   }
 
@@ -115,7 +116,7 @@ export class ImageEdgelessBlockComponent extends GfxBlockComponent<ImageBlockMod
 
   override renderGfxBlock() {
     const blobUrl = this.blobUrl;
-    const { rotate = 0, size = 0, caption = 'Image' } = this.model.props;
+    const { rotate = 0, size = 0, caption = t('editor.imageBlock.defaultCaption', 'Image') } = this.model.props;
 
     const containerStyleMap = styleMap({
       display: 'flex',
@@ -133,7 +134,7 @@ export class ImageEdgelessBlockComponent extends GfxBlockComponent<ImageBlockMod
       }),
       errorIcon: BrokenImageIcon(),
       icon: ImageIcon(),
-      title: 'Image',
+      title: t('editor.imageBlock.defaultCaption', 'Image'),
       description: formatSize(size),
     });
 
