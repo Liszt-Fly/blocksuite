@@ -51,6 +51,7 @@ import type { BlockComponent } from '@blocksuite/std';
 import { GfxBlockElementModel, type GfxModel } from '@blocksuite/std/gfx';
 
 import { EdgelessClipboardController } from '../../clipboard/clipboard';
+import { t } from '@blocksuite/affine-shared/utils';
 import { duplicate } from '../../utils/clipboard-utils';
 import { getSortedCloneElements } from '../../utils/clone-utils';
 import { moveConnectors } from '../../utils/connector';
@@ -68,7 +69,7 @@ export const moreActions = [
     actions: [
       {
         id: 'a.create-frame',
-        label: 'Frame section',
+        label: t('edgeless.more.frameSection', 'Frame section'),
         icon: FrameIcon(),
         run(ctx) {
           const frame = ctx.std
@@ -89,7 +90,7 @@ export const moreActions = [
       },
       {
         id: 'b.create-group',
-        label: 'Group section',
+        label: t('edgeless.more.groupSection', 'Group section'),
         icon: GroupIcon(),
         when(ctx) {
           const models = ctx.getSurfaceModels();
@@ -109,7 +110,7 @@ export const moreActions = [
     actions: [
       {
         id: 'a.bring-to-front',
-        label: 'Bring to Front',
+        label: t('edgeless.more.bringToFront', 'Bring to Front'),
         icon: ArrowUpBigTopIcon(),
         run(ctx) {
           const models = ctx.getSurfaceModels();
@@ -118,7 +119,7 @@ export const moreActions = [
       },
       {
         id: 'b.bring-forward',
-        label: 'Bring Forward',
+        label: t('edgeless.more.bringForward', 'Bring Forward'),
         icon: ArrowUpBigIcon(),
         run(ctx) {
           const models = ctx.getSurfaceModels();
@@ -127,7 +128,7 @@ export const moreActions = [
       },
       {
         id: 'c.send-backward',
-        label: 'Send Backward',
+        label: t('edgeless.more.sendBackward', 'Send Backward'),
         icon: ArrowDownBigIcon(),
         run(ctx) {
           const models = ctx.getSurfaceModels();
@@ -136,7 +137,7 @@ export const moreActions = [
       },
       {
         id: 'c.send-to-back',
-        label: 'Send to Back',
+        label: t('edgeless.more.sendToBack', 'Send to Back'),
         icon: ArrowDownBigBottomIcon(),
         run(ctx) {
           const models = ctx.getSurfaceModels();
@@ -153,7 +154,7 @@ export const moreActions = [
     actions: [
       {
         id: 'copy',
-        label: 'Copy',
+        label: t('edgeless.more.copy', 'Copy'),
         icon: CopyIcon(),
         run(ctx) {
           const models = ctx.getSurfaceModels();
@@ -169,7 +170,7 @@ export const moreActions = [
       },
       {
         id: 'duplicate',
-        label: 'Duplicate',
+        label: t('edgeless.more.duplicate', 'Duplicate'),
         icon: DuplicateIcon(),
         run(ctx) {
           const models = ctx.getSurfaceModels();
@@ -183,7 +184,7 @@ export const moreActions = [
       },
       {
         id: 'reload',
-        label: 'Reload',
+        label: t('edgeless.more.reload', 'Reload'),
         icon: ResetIcon(),
         when(ctx) {
           const models = ctx.getSurfaceModels();
@@ -212,7 +213,7 @@ export const moreActions = [
     actions: [
       {
         id: 'a.turn-into-linked-doc',
-        label: 'Turn into linked doc',
+        label: t('edgeless.more.turnIntoLinkedDoc', 'Turn into linked doc'),
         icon: LinkedPageIcon(),
         when(ctx) {
           const models = ctx.getSurfaceModels();
@@ -289,7 +290,7 @@ export const moreActions = [
       },
       {
         id: 'b.create-linked-doc',
-        label: 'Create linked doc',
+        label: t('edgeless.more.createLinkedDoc', 'Create linked doc'),
         icon: LinkedPageIcon(),
         when(ctx) {
           const models = ctx.getSurfaceModels();
@@ -373,7 +374,7 @@ export const moreActions = [
   // Deleting Group
   {
     id: 'e.delete',
-    label: 'Delete',
+    label: t('common.delete', 'Delete'),
     icon: DeleteIcon(),
     variant: 'destructive',
     run(ctx) {

@@ -1,11 +1,12 @@
 import { SeniorToolExtension } from '@blocksuite/affine-widget-edgeless-toolbar';
 import { html } from 'lit';
+import { t } from '@blocksuite/affine-shared/utils';
 
 export const shapeSeniorTool = SeniorToolExtension(
   'shape',
   ({ block, toolbarContainer }) => {
-    return {
-      name: 'Shape',
+  return {
+    name: t('edgeless.nav.shape', 'Shape'),
       content: html`<edgeless-shape-tool-button
         .edgeless=${block}
         .toolbarContainer=${toolbarContainer}

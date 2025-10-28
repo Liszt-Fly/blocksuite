@@ -10,6 +10,7 @@ import {
   ZOOM_STEP,
 } from '@blocksuite/std/gfx';
 import { effect } from '@preact/signals-core';
+import { t } from '@blocksuite/affine-shared/utils';
 import { baseTheme } from '@toeverything/theme';
 import { css, html, LitElement, nothing, unsafeCSS } from 'lit';
 import { property } from 'lit/decorators.js';
@@ -162,7 +163,7 @@ export class EdgelessZoomToolbar extends WithDisposable(LitElement) {
         @pointerdown=${stopPropagation}
       >
         <edgeless-tool-icon-button
-          .tooltip=${'Fit to screen'}
+          .tooltip=${t('edgeless.zoom.fitToScreen', 'Fit to screen')}
           .tipPosition=${this._isVerticalBar() ? 'right' : 'top-end'}
           .arrow=${!this._isVerticalBar()}
           @click=${() => this.gfx.fitToScreen()}
@@ -173,7 +174,7 @@ export class EdgelessZoomToolbar extends WithDisposable(LitElement) {
           ${ViewBarIcon()}
         </edgeless-tool-icon-button>
         <edgeless-tool-icon-button
-          .tooltip=${'Zoom out'}
+          .tooltip=${t('edgeless.zoom.zoomOut', 'Zoom out')}
           .tipPosition=${this._isVerticalBar() ? 'right' : 'top'}
           .arrow=${!this._isVerticalBar()}
           @click=${() => this.setZoomByStep(-ZOOM_STEP)}
@@ -191,7 +192,7 @@ export class EdgelessZoomToolbar extends WithDisposable(LitElement) {
           ${formattedZoom}
         </button>
         <edgeless-tool-icon-button
-          .tooltip=${'Zoom in'}
+          .tooltip=${t('edgeless.zoom.zoomIn', 'Zoom in')}
           .tipPosition=${this._isVerticalBar() ? 'right' : 'top'}
           .arrow=${!this._isVerticalBar()}
           @click=${() => this.setZoomByStep(ZOOM_STEP)}

@@ -38,6 +38,7 @@ import {
 import type { GfxModel } from '@blocksuite/std/gfx';
 import { signal } from '@preact/signals-core';
 import { html } from 'lit';
+import { t } from '@blocksuite/affine-shared/utils';
 import { styleMap } from 'lit/directives/style-map.js';
 
 import {
@@ -47,15 +48,15 @@ import {
 
 const FONT_WEIGHT_LIST = [
   {
-    key: 'Light',
+    key: t('edgeless.text.weight.light', 'Light'),
     value: FontWeight.Light,
   },
   {
-    key: 'Regular',
+    key: t('edgeless.text.weight.regular', 'Regular'),
     value: FontWeight.Regular,
   },
   {
-    key: 'Semibold',
+    key: t('edgeless.text.weight.semibold', 'Semibold'),
     value: FontWeight.SemiBold,
   },
 ] as const satisfies MenuItem<FontWeight>[];
@@ -65,7 +66,7 @@ const FONT_STYLE_LIST = [
     value: FontStyle.Normal,
   },
   {
-    key: 'Italic',
+    key: t('edgeless.text.style.italic', 'Italic'),
     value: FontStyle.Italic,
   },
 ] as const satisfies MenuItem<FontStyle>[];
@@ -81,17 +82,17 @@ const FONT_SIZE_LIST = [
 
 const TEXT_ALIGN_LIST = [
   {
-    key: 'Left',
+    key: t('edgeless.text.align.left', 'Left'),
     value: TextAlign.Left,
     icon: TextAlignLeftIcon(),
   },
   {
-    key: 'Center',
+    key: t('edgeless.text.align.center', 'Center'),
     value: TextAlign.Center,
     icon: TextAlignCenterIcon(),
   },
   {
-    key: 'Right',
+    key: t('edgeless.text.align.right', 'Right'),
     value: TextAlign.Right,
     icon: TextAlignRightIcon(),
   },
@@ -157,8 +158,8 @@ export function createTextActions<
             .contentPadding="${'8px'}"
             .button=${html`
               <editor-icon-button
-                aria-label="Font"
-                .tooltip="${'Font'}"
+                aria-label="${t('edgeless.text.font', 'Font')}"
+                .tooltip="${t('edgeless.text.font', 'Font')}"
                 .justify="${'space-between'}"
                 .iconContainerWidth="${'40px'}"
               >
@@ -289,8 +290,8 @@ export function createTextActions<
             .contentPadding="${'8px'}"
             .button=${html`
               <editor-icon-button
-                aria-label="Font style"
-                .tooltip="${'Font style'}"
+                aria-label="${t('edgeless.text.fontStyle', 'Font style')}"
+                .tooltip="${t('edgeless.text.fontStyle', 'Font style')}"
                 .justify="${'space-between'}"
                 .iconContainerWidth="${'90px'}"
                 .disabled=${disabled}
@@ -351,7 +352,7 @@ export function createTextActions<
 
         return html`<affine-size-dropdown-menu
           @select=${onPick}
-          .label="${'Font size'}"
+          .label="${t('edgeless.text.fontSize', 'Font size')}"
           .sizes=${FONT_SIZE_LIST}
           .size$=${fontSize$}
         ></affine-size-dropdown-menu>`;
@@ -378,7 +379,7 @@ export function createTextActions<
         };
 
         return renderMenu({
-          label: 'Alignment',
+          label: t('edgeless.text.alignment', 'Alignment'),
           items: TEXT_ALIGN_LIST,
           currentValue: textAlign,
           onPick,

@@ -143,7 +143,9 @@ export class EdgelessShapeMenu extends SignalWatcher(
               () => html`
                 <div class="shape-style-container">
                   <edgeless-tool-icon-button
-                    .tooltip=${'General'}
+                    .tooltip=${(globalThis as any).__APP_I18N_T__
+                      ? (globalThis as any).__APP_I18N_T__('edgeless.shape.category.general')
+                      : 'General'}
                     .active=${shapeStyle === ShapeStyle.General}
                     .activeMode=${'background'}
                     .iconSize=${'20px'}
@@ -154,7 +156,9 @@ export class EdgelessShapeMenu extends SignalWatcher(
                     ${StyleGeneralIcon()}
                   </edgeless-tool-icon-button>
                   <edgeless-tool-icon-button
-                    .tooltip=${'Scribbled'}
+                    .tooltip=${(globalThis as any).__APP_I18N_T__
+                      ? (globalThis as any).__APP_I18N_T__('edgeless.shape.category.scribbled')
+                      : 'Scribbled'}
                     .active=${shapeStyle === ShapeStyle.Scribbled}
                     .activeMode=${'background'}
                     .iconSize=${'20px'}

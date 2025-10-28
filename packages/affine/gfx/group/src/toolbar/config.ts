@@ -20,6 +20,7 @@ import {
   UngroupIcon,
 } from '@blocksuite/icons/lit';
 import { BlockFlavourIdentifier } from '@blocksuite/std';
+import { t } from '@blocksuite/affine-shared/utils';
 
 import { ungroupCommand } from '../command';
 import { mountGroupTitleEditor } from '../text/text';
@@ -28,8 +29,8 @@ export const groupToolbarConfig = {
   actions: [
     {
       id: 'a.insert-into-page',
-      label: 'Insert into Page',
-      tooltip: 'Insert into Page',
+      label: t('edgeless.group.insertIntoPage', 'Insert into Page'),
+      tooltip: t('edgeless.group.insertIntoPage', 'Insert into Page'),
       icon: InsertIntoPageIcon(),
       when: ctx => ctx.getSurfaceModelsByType(GroupElementModel).length === 1,
       run(ctx) {
@@ -64,12 +65,12 @@ export const groupToolbarConfig = {
           lastNoteId
         );
 
-        toast(ctx.host, 'Group has been inserted into doc');
+        toast(ctx.host, t('edgeless.group.toast.inserted', 'Group has been inserted into doc'));
       },
     },
     {
       id: 'b.rename',
-      tooltip: 'Rename',
+      tooltip: t('edgeless.group.rename', 'Rename'),
       icon: EditIcon(),
       when: ctx => ctx.getSurfaceModelsByType(GroupElementModel).length === 1,
       run(ctx) {
@@ -84,7 +85,7 @@ export const groupToolbarConfig = {
     },
     {
       id: 'b.ungroup',
-      tooltip: 'Ungroup',
+      tooltip: t('edgeless.group.ungroup', 'Ungroup'),
       icon: UngroupIcon(),
       run(ctx) {
         const models = ctx.getSurfaceModelsByType(GroupElementModel);

@@ -338,6 +338,9 @@ export class EdgelessMindmapToolButton extends EdgelessToolbarToolMixin(
 
   override render() {
     const { popper } = this;
+    const others = (globalThis as any).__APP_I18N_T__
+      ? (globalThis as any).__APP_I18N_T__('edgeless.mindmap.others')
+      : 'Others';
     const appTheme = this.edgeless.std.get(ThemeProvider).app$.value;
     const basketIcon = appTheme === 'light' ? basketIconLight : basketIconDark;
     const glassBg =
@@ -351,7 +354,7 @@ export class EdgelessMindmapToolButton extends EdgelessToolbarToolMixin(
     return html`<edgeless-toolbar-button
       class="edgeless-mindmap-button"
       ?withHover=${true}
-      .tooltip=${popper ? '' : 'Others'}
+      .tooltip=${popper ? '' : others}
       .tooltipOffset=${4}
       @click=${this._toggleMenu}
       style="width: 100%; height: 100%; display: inline-block"

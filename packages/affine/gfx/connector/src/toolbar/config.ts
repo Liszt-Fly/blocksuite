@@ -56,6 +56,7 @@ import {
 } from '@blocksuite/icons/lit';
 import { BlockFlavourIdentifier } from '@blocksuite/std';
 import { html } from 'lit';
+import { t } from '@blocksuite/affine-shared/utils';
 import { styleMap } from 'lit/directives/style-map.js';
 
 import { isConnectorWithLabel } from '../connector-manager';
@@ -109,17 +110,17 @@ const REAR_ENDPOINT_STYLE_LIST = [
 
 const CONNECTOR_MODE_LIST = [
   {
-    key: 'Curve',
+    key: t('edgeless.connector.mode.curve', 'Curve'),
     value: ConnectorMode.Curve,
     icon: ConnectorCIcon(),
   },
   {
-    key: 'Elbowed',
+    key: t('edgeless.connector.mode.elbowed', 'Elbowed'),
     value: ConnectorMode.Orthogonal,
     icon: ConnectorEIcon(),
   },
   {
-    key: 'Straight',
+    key: t('edgeless.connector.mode.straight', 'Straight'),
     value: ConnectorMode.Straight,
     icon: ConnectorLIcon(),
   },
@@ -232,7 +233,7 @@ export const connectorToolbarConfig = {
         };
 
         return renderMenu({
-          label: 'Style',
+          label: t('edgeless.connector.style', 'Style'),
           items: LINE_STYLE_LIST,
           currentValue: rough,
           onPick,
@@ -256,7 +257,7 @@ export const connectorToolbarConfig = {
             };
 
             return renderMenu({
-              label: 'Start point style',
+              label: t('edgeless.connector.startStyle', 'Start point style'),
               items: FRONT_ENDPOINT_STYLE_LIST,
               currentValue: pointStyle,
               onPick,
@@ -266,7 +267,7 @@ export const connectorToolbarConfig = {
         {
           id: 'b.flip-direction',
           icon: FlipDirectionIcon(),
-          tooltip: 'Flip direction',
+          tooltip: t('edgeless.connector.flipDirection', 'Flip direction'),
           run(ctx) {
             const models = ctx.getSurfaceModelsByType(ConnectorElementModel);
             if (!models.length) return;
@@ -302,7 +303,7 @@ export const connectorToolbarConfig = {
             };
 
             return renderMenu({
-              label: 'End point style',
+              label: t('edgeless.connector.endStyle', 'End point style'),
               items: REAR_ENDPOINT_STYLE_LIST,
               currentValue: pointStyle,
               onPick,
@@ -323,8 +324,8 @@ export const connectorToolbarConfig = {
             };
 
             return renderMenu({
-              label: 'Shape',
-              tooltip: 'Connector shape',
+              label: t('edgeless.connector.shape', 'Shape'),
+              tooltip: t('edgeless.connector.shapeTooltip', 'Connector shape'),
               items: CONNECTOR_MODE_LIST,
               currentValue: mode,
               onPick,
@@ -335,7 +336,7 @@ export const connectorToolbarConfig = {
     },
     {
       id: 'g.text',
-      tooltip: 'Add text',
+  tooltip: t('edgeless.connector.addText', 'Add text'),
       icon: AddTextIcon(),
       when(ctx) {
         const models = ctx.getSurfaceModelsByType(ConnectorElementModel);

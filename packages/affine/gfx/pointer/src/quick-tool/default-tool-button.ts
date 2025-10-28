@@ -6,6 +6,7 @@ import { css, html, LitElement } from 'lit';
 import { query } from 'lit/decorators.js';
 
 import { PanTool } from '../tools';
+import { t } from '@blocksuite/affine-shared/utils';
 
 export class EdgelessDefaultToolButton extends QuickToolMixin(LitElement) {
   static override styles = css`
@@ -77,8 +78,8 @@ export class EdgelessDefaultToolButton extends QuickToolMixin(LitElement) {
     const { active } = this;
     const tipInfo =
       type === 'pan'
-        ? { tip: 'Hand', shortcut: 'H' }
-        : { tip: 'Select', shortcut: 'V' };
+        ? { tip: t('edgeless.toolbar.hand', 'Hand'), shortcut: 'H' }
+        : { tip: t('edgeless.toolbar.select', 'Select'), shortcut: 'V' };
     return html`
       <edgeless-tool-icon-button
         class="edgeless-default-button ${type}"

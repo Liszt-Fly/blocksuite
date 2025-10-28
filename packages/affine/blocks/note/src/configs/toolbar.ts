@@ -19,6 +19,7 @@ import { BlockFlavourIdentifier } from '@blocksuite/std';
 import type { ExtensionType } from '@blocksuite/store';
 import { computed } from '@preact/signals-core';
 import { html } from 'lit';
+import { t } from '@blocksuite/affine-shared/utils';
 
 import { changeNoteDisplayMode } from '../commands';
 import { NoteConfigExtension } from '../config';
@@ -81,8 +82,8 @@ const builtinSurfaceToolbarConfig = {
         );
         const label$ = computed(() =>
           firstModel.props.displayMode$.value === NoteDisplayMode.EdgelessOnly
-            ? 'Display in Page'
-            : 'Displayed in Page'
+            ? t('edgeless.note.displayInPage.on', 'Display in Page')
+            : t('edgeless.note.displayInPage.displayed', 'Displayed in Page')
         );
         const onSelect = () => {
           const newMode =
@@ -105,7 +106,10 @@ const builtinSurfaceToolbarConfig = {
           content: html`<editor-icon-button
             aria-label="${label$.value}"
             .showTooltip="${shouldShowTooltip$.value}"
-            .tooltip="${'This note is part of Page Mode. Click to remove it from the page.'}"
+            .tooltip="${t(
+              'edgeless.note.displayInPage.tooltip',
+              'This note is part of Page Mode. Click to remove it from the page.'
+            )}"
             data-testid="display-in-page"
             @click=${() => onSelect()}
           >
@@ -146,10 +150,10 @@ const builtinSurfaceToolbarConfig = {
     },
     {
       id: 'e.slicer',
-      label: 'Slicer',
+      label: t('edgeless.note.slicer.label', 'Slicer'),
       icon: ScissorsIcon(),
       tooltip: html`<affine-tooltip-content-with-shortcut
-        data-tip="${'Cutting mode'}"
+        data-tip="${t('edgeless.note.slicer.tooltip', 'Cutting mode')}"
         data-shortcut="${'-'}"
       ></affine-tooltip-content-with-shortcut>`,
       active: false,
@@ -165,7 +169,7 @@ const builtinSurfaceToolbarConfig = {
     },
     {
       id: 'f.auto-height',
-      label: 'Size',
+      label: t('edgeless.note.size.label', 'Size'),
       when(ctx) {
         const elements = ctx.getSurfaceModelsByType(NoteBlockModel);
         return (
@@ -183,11 +187,11 @@ const builtinSurfaceToolbarConfig = {
         const { collapse } = firstModel.props.edgeless$.value;
         const options: Pick<ToolbarAction, 'tooltip' | 'icon'> = collapse
           ? {
-              tooltip: 'Auto height',
+              tooltip: t('edgeless.note.height.auto', 'Auto height'),
               icon: AutoHeightIcon(),
             }
           : {
-              tooltip: 'Customized height',
+              tooltip: t('edgeless.note.height.customized', 'Customized height'),
               icon: CustomizedHeightIcon(),
             };
 
@@ -273,6 +277,7 @@ const builtinSurfaceToolbarConfig = {
           @select=${onSelect}
           @toggle=${onToggle}
           .format=${format}
+          .label=${t('edgeless.toolbar.scale', 'Scale')}
           .size$=${scale$}
         ></affine-size-dropdown-menu>`;
       },
@@ -303,24 +308,39 @@ function setDisplayMode(
   const data =
     newMode === NoteDisplayMode.EdgelessOnly
       ? {
-          title: 'Note removed from Page Mode',
-          message: 'Content removed from your page.',
+          title: t(
+            'edgeless.note.displayInPage.notification.removed.title',
+            'Note removed from Page Mode'
+          ),
+          message: t(
+            'edgeless.note.displayInPage.notification.removed.message',
+            'Content removed from your page.'
+          ),
         }
       : {
-          title: 'Note displayed in Page Mode',
-          message: 'Content added to your page.',
+          title: t(
+            'edgeless.note.displayInPage.notification.displayed.title',
+            'Note displayed in Page Mode'
+          ),
+          message: t(
+            'edgeless.note.displayInPage.notification.displayed.message',
+            'Content added to your page.'
+          ),
         };
 
   const notification = ctx.std.getOptional(NotificationProvider);
   notification?.notifyWithUndoAction({
     title: data.title,
-    message: `${data.message} Find it in the TOC for quick navigation.`,
+    message: `${data.message} ${t(
+      'edgeless.note.displayInPage.notification.findInToc',
+      'Find it in the TOC for quick navigation.'
+    )}`,
     accent: 'success',
     duration: 5 * 1000,
     actions: [
       {
         key: 'view-in-toc',
-        label: 'View in Toc',
+        label: t('edgeless.note.displayInPage.viewInToc', 'View in Toc'),
         onClick: () => {
           const sidebar = ctx.std.getOptional(SidebarExtensionIdentifier);
           sidebar?.open('outline');

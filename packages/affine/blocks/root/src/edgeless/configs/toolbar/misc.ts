@@ -34,6 +34,7 @@ import {
 } from '@blocksuite/icons/lit';
 import type { GfxModel } from '@blocksuite/std/gfx';
 import { html } from 'lit';
+import { t } from '@blocksuite/affine-shared/utils';
 
 import { renderAlignmentMenu } from './alignment';
 import { moreActions } from './more';
@@ -43,7 +44,7 @@ export const builtinMiscToolbarConfig = {
     {
       placement: ActionPlacement.Start,
       id: 'a.release-from-group',
-      tooltip: 'Release from group',
+      tooltip: t('edgeless.toolbar.releaseFromGroup', 'Release from group'),
       icon: ReleaseFromGroupIcon(),
       when(ctx) {
         const models = ctx.getSurfaceModels();
@@ -74,9 +75,9 @@ export const builtinMiscToolbarConfig = {
     {
       placement: ActionPlacement.Start,
       id: 'b.add-frame',
-      label: 'Frame',
+      label: t('edgeless.toolbar.frame', 'Frame'),
       showLabel: true,
-      tooltip: 'Frame',
+      tooltip: t('edgeless.toolbar.frame', 'Frame'),
       icon: FrameIcon(),
       when(ctx) {
         const models = ctx.getSurfaceModels();
@@ -117,9 +118,9 @@ export const builtinMiscToolbarConfig = {
     {
       placement: ActionPlacement.Start,
       id: 'c.add-group',
-      label: 'Group',
+      label: t('edgeless.toolbar.group', 'Group'),
       showLabel: true,
-      tooltip: 'Group',
+      tooltip: t('edgeless.toolbar.group', 'Group'),
       icon: GroupingIcon(),
       when(ctx) {
         const models = ctx.getSurfaceModels();
@@ -168,16 +169,16 @@ export const builtinMiscToolbarConfig = {
 
         return renderAlignmentMenu(ctx, models, {
           icon: AlignLeftIcon(),
-          label: 'Align objects',
-          tooltip: 'Align objects',
+          label: t('edgeless.toolbar.alignObjects', 'Align objects'),
+          tooltip: t('edgeless.toolbar.alignObjects', 'Align objects'),
         });
       },
     },
     {
       placement: ActionPlacement.End,
       id: 'a.draw-connector',
-      label: 'Draw connector',
-      tooltip: 'Draw connector',
+      label: t('edgeless.toolbar.drawConnector', 'Draw connector'),
+      tooltip: t('edgeless.toolbar.drawConnector', 'Draw connector'),
       icon: ConnectorCIcon(),
       when(ctx) {
         const models = ctx.getSurfaceModels();
@@ -218,7 +219,7 @@ export const builtinMiscToolbarConfig = {
     {
       placement: ActionPlacement.End,
       id: 'b.lock',
-      tooltip: 'Lock',
+      tooltip: t('edgeless.toolbar.lock', 'Lock'),
       icon: LockIcon(),
       run(ctx) {
         const models = ctx.getSurfaceModels();
@@ -322,7 +323,7 @@ export const builtinLockedToolbarConfig = {
     {
       placement: ActionPlacement.End,
       id: 'b.unlock',
-      label: 'Click to unlock',
+      label: t('edgeless.toolbar.clickToUnlock', 'Click to unlock'),
       showLabel: true,
       icon: UnlockIcon(),
       run(ctx) {

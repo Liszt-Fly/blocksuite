@@ -5,6 +5,7 @@ import {
   EdgelessHighlighterLightIcon,
 } from './icons';
 import type { Pen } from './types';
+import { t } from '@blocksuite/affine-shared/utils';
 
 export const penIconMap = {
   dark: {
@@ -19,11 +20,11 @@ export const penIconMap = {
 
 export const penInfoMap: { [k in Pen]: { tip: string; shortcut: string } } = {
   brush: {
-    tip: 'Pen',
+    tip: t('edgeless.pen.pen', 'Pen'),
     shortcut: 'P',
   },
   highlighter: {
-    tip: 'Highlighter',
+    tip: t('edgeless.pen.highlighter', 'Highlighter'),
     shortcut: '⇧ P',
   },
 };

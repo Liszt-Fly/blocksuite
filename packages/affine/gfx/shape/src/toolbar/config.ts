@@ -38,6 +38,7 @@ import { Bound } from '@blocksuite/global/gfx';
 import { AddTextIcon, ShapeIcon } from '@blocksuite/icons/lit';
 import { BlockFlavourIdentifier } from '@blocksuite/std';
 import { html } from 'lit';
+import { t } from '@blocksuite/affine-shared/utils';
 import isEqual from 'lodash-es/isEqual';
 
 import { normalizeShapeBound } from '../element-renderer';
@@ -86,7 +87,7 @@ export const shapeToolbarConfig = {
 
         return renderMenu({
           icon: ShapeIcon(),
-          label: 'Switch shape type',
+          label: t('edgeless.shape.switchType', 'Switch shape type'),
           items: ShapeComponentConfig.map(item => ({
             key: item.tooltip,
             value: item.name,
@@ -123,7 +124,7 @@ export const shapeToolbarConfig = {
         };
 
         return renderMenu({
-          label: 'Style',
+          label: t('edgeless.shape.style', 'Style'),
           items: LINE_STYLE_LIST,
           currentValue: shapeStyle === ShapeStyle.Scribbled,
           onPick,

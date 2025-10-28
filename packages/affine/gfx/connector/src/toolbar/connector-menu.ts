@@ -18,6 +18,7 @@ import {
 } from '@blocksuite/icons/lit';
 import { computed } from '@preact/signals-core';
 import { css, html, LitElement } from 'lit';
+import { t } from '@blocksuite/affine-shared/utils';
 import { property } from 'lit/decorators.js';
 
 import { ConnectorTool } from '../connector-tool';
@@ -36,7 +37,7 @@ function ConnectorModeButtonGroup(
       <edgeless-tool-icon-button
         .active=${mode === ConnectorMode.Curve}
         .activeMode=${'background'}
-        .tooltip=${'Curve'}
+        .tooltip=${t('edgeless.connector.mode.curve', 'Curve')}
         .iconSize=${'20px'}
         @click=${() => setConnectorMode({ mode: ConnectorMode.Curve })}
       >
@@ -45,7 +46,7 @@ function ConnectorModeButtonGroup(
       <edgeless-tool-icon-button
         .active=${mode === ConnectorMode.Orthogonal}
         .activeMode=${'background'}
-        .tooltip=${'Elbowed'}
+        .tooltip=${t('edgeless.connector.mode.elbowed', 'Elbowed')}
         .iconSize=${'20px'}
         @click=${() => setConnectorMode({ mode: ConnectorMode.Orthogonal })}
       >
@@ -54,7 +55,7 @@ function ConnectorModeButtonGroup(
       <edgeless-tool-icon-button
         .active=${mode === ConnectorMode.Straight}
         .activeMode=${'background'}
-        .tooltip=${'Straight'}
+        .tooltip=${t('edgeless.connector.mode.straight', 'Straight')}
         .iconSize=${'20px'}
         @click=${() => setConnectorMode({ mode: ConnectorMode.Straight })}
       >
