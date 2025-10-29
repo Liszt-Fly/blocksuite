@@ -1,6 +1,6 @@
 import { EdgelessLegacySlotIdentifier } from '@blocksuite/affine-block-surface';
 import { createLitPortal } from '@blocksuite/affine-components/portal';
-import { stopPropagation } from '@blocksuite/affine-shared/utils';
+import { stopPropagation, t } from '@blocksuite/affine-shared/utils';
 import { WithDisposable } from '@blocksuite/global/lit';
 import { MoreHorizontalIcon } from '@blocksuite/icons/lit';
 import type { BlockStdScope } from '@blocksuite/std';
@@ -87,7 +87,7 @@ export class ZoomBarToggleButton extends WithDisposable(LitElement) {
     return html`
       <div class="toggle-button" @pointerdown=${stopPropagation}>
         <edgeless-tool-icon-button
-          .tooltip=${'Toggle Zoom Tool Bar'}
+          .tooltip=${t('edgeless.zoom.toggleToolbar', 'Toggle Zoom Tool Bar')}
           .tipPosition=${'right'}
           .active=${this._showPopper}
           .arrow=${false}
