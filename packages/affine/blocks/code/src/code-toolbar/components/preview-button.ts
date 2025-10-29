@@ -5,6 +5,7 @@ import {
 import { unsafeCSSVarV2 } from '@blocksuite/affine-shared/theme';
 import { SignalWatcher, WithDisposable } from '@blocksuite/global/lit';
 import { css, html, LitElement, nothing } from 'lit';
+import { t } from '@blocksuite/affine-shared/utils';
 import { property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 
@@ -92,7 +93,7 @@ export class PreviewButton extends WithDisposable(SignalWatcher(LitElement)) {
           })}
           @click=${() => this._toggle(false)}
         >
-          Code
+          ${t('code.toolbar.code', 'Code')}
         </div>
         <div
           class=${classMap({
@@ -101,7 +102,7 @@ export class PreviewButton extends WithDisposable(SignalWatcher(LitElement)) {
           })}
           @click=${() => this._toggle(true)}
         >
-          Preview
+          ${t('code.toolbar.preview', 'Preview')}
         </div>
       </div>
     `;

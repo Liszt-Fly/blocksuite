@@ -1,4 +1,5 @@
 import type { SlashMenuTooltip } from '@blocksuite/affine-widget-slash-menu';
+import { t } from '@blocksuite/affine-shared/utils';
 import { html } from 'lit';
 // prettier-ignore
 const TextTooltip = html`<svg width="170" height="68" viewBox="0 0 170 68" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -280,7 +281,7 @@ export const tooltips: Record<string, SlashMenuTooltip> = {
 
   'Code Block': {
     figure: CodeBlockTooltip,
-    caption: 'Code Block',
+    caption: t('slash.note.codeBlock', 'Code Block'),
   },
 
   Quote: {

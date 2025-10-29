@@ -15,6 +15,7 @@ import { css, LitElement, nothing } from 'lit';
 import { property, query } from 'lit/decorators.js';
 import { styleMap } from 'lit/directives/style-map.js';
 import { html } from 'lit/static-html.js';
+import { t } from '@blocksuite/affine-shared/utils';
 
 import type { CodeBlockComponent } from '../..';
 
@@ -66,7 +67,10 @@ export class LanguageListButton extends WithDisposable(
     this.onActiveStatusChange(true);
 
     const options: FilterableListOptions = {
-      placeholder: 'Search for a language',
+      placeholder: t(
+        'code.languageSearchPlaceholder',
+        'Search for a language'
+      ),
       onSelect: item => {
         const sortedBundledLanguages = this._sortedBundledLanguages;
         const index = sortedBundledLanguages.indexOf(item);

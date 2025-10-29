@@ -13,6 +13,7 @@ import { noop, sleep } from '@blocksuite/global/utils';
 import { CommentIcon, NumberedListIcon } from '@blocksuite/icons/lit';
 import { BlockSelection } from '@blocksuite/std';
 import { html } from 'lit';
+import { t } from '@blocksuite/affine-shared/utils';
 import { ifDefined } from 'lit/directives/if-defined.js';
 
 import { CodeBlockConfigExtension } from '../code-block-config.js';
@@ -59,7 +60,7 @@ export const PRIMARY_GROUPS: MenuItemGroup<CodeBlockToolbarContext>[] = [
       },
       {
         type: 'copy-code',
-        label: 'Copy code',
+        label: t('code.toolbar.copyCode', 'Copy code'),
         icon: CopyIcon,
         generate: ({ blockComponent }) => {
           return {
@@ -87,7 +88,7 @@ export const PRIMARY_GROUPS: MenuItemGroup<CodeBlockToolbarContext>[] = [
       },
       {
         type: 'caption',
-        label: 'Caption',
+        label: t('code.toolbar.caption', 'Caption'),
         icon: CaptionIcon,
         when: ({ doc }) => !doc.readonly,
         generate: ({ blockComponent }) => {
@@ -116,8 +117,8 @@ export const PRIMARY_GROUPS: MenuItemGroup<CodeBlockToolbarContext>[] = [
       },
       {
         type: 'comment',
-        label: 'Comment',
-        tooltip: 'Comment',
+        label: t('code.toolbar.comment', 'Comment'),
+        tooltip: t('code.toolbar.comment', 'Comment'),
         icon: CommentIcon({
           width: '20',
           height: '20',
@@ -169,7 +170,9 @@ export const toggleGroup: MenuItemGroup<CodeBlockToolbarContext> = {
           action: () => {},
           render: () => {
             const wrapped = blockComponent.model.props.wrap;
-            const label = wrapped ? 'Cancel wrap' : 'Wrap';
+            const label = wrapped
+              ? t('code.toolbar.cancelWrap', 'Cancel wrap')
+              : t('code.toolbar.wrap', 'Wrap');
             const icon = wrapped ? CancelWrapIcon : WrapIcon;
             return html`
               <editor-menu-action
@@ -200,7 +203,9 @@ export const toggleGroup: MenuItemGroup<CodeBlockToolbarContext> = {
           action: () => {},
           render: () => {
             const lineNumber = blockComponent.model.props.lineNumber ?? true;
-            const label = lineNumber ? 'Cancel line number' : 'Line number';
+            const label = lineNumber
+              ? t('code.toolbar.cancelLineNumber', 'Cancel line number')
+              : t('code.toolbar.lineNumber', 'Line number');
             return html`
               <editor-menu-action
                 @click=${() => {
@@ -231,7 +236,7 @@ export const clipboardGroup: MenuItemGroup<CodeBlockToolbarContext> = {
   items: [
     {
       type: 'duplicate',
-      label: 'Duplicate',
+      label: t('code.toolbar.duplicate', 'Duplicate'),
       icon: DuplicateIcon,
       when: ({ doc }) => !doc.readonly,
       action: ({ host, blockComponent, close }) => {
@@ -266,7 +271,7 @@ export const deleteGroup: MenuItemGroup<CodeBlockToolbarContext> = {
   items: [
     {
       type: 'delete',
-      label: 'Delete',
+      label: t('code.toolbar.delete', 'Delete'),
       icon: DeleteIcon,
       when: ({ doc }) => !doc.readonly,
       action: ({ doc, blockComponent, close }) => {
