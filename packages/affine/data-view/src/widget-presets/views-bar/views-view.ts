@@ -19,6 +19,7 @@ import { property } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 
 import { WidgetBase } from '../../core/widget/widget-base.js';
+import { tt } from '../../core/utils/i18n.js';
 
 export class DataViewHeaderViews extends WidgetBase {
   static override styles = css`
@@ -138,7 +139,7 @@ export class DataViewHeaderViews extends WidgetBase {
         menu.group({
           items: this.dataSource.viewMetas.map(v => {
             return menu.action({
-              name: `Create ${v.model.defaultName}`,
+              name: `${tt(this.view, 'database.view.create', 'Create')} ${v.model.defaultName}`,
               hide: () => this.readonly,
               prefix: PlusIcon(),
               select: () => {
@@ -170,7 +171,7 @@ export class DataViewHeaderViews extends WidgetBase {
         items: [
           menu.input({
             initialValue: view.name$.value,
-            placeholder: 'View name',
+            placeholder: tt(this.view, 'database.view.viewName', 'View name'),
             onChange: text => {
               view.nameSet(text);
             },
@@ -178,7 +179,7 @@ export class DataViewHeaderViews extends WidgetBase {
           menu.group({
             items: [
               menu.action({
-                name: 'Edit View',
+                name: tt(this.view, 'database.view.editView', 'Edit View'),
                 prefix: InfoIcon(),
                 select: () => {
                   this.closest('affine-data-view-renderer')
@@ -187,7 +188,7 @@ export class DataViewHeaderViews extends WidgetBase {
                 },
               }),
               menu.action({
-                name: 'Move Left',
+                name: tt(this.view, 'database.view.moveLeft', 'Move Left'),
                 hide: () => index === 0,
                 prefix: MoveLeftIcon(),
                 select: () => {
@@ -199,7 +200,7 @@ export class DataViewHeaderViews extends WidgetBase {
                 },
               }),
               menu.action({
-                name: 'Move Right',
+                name: tt(this.view, 'database.view.moveRight', 'Move Right'),
                 prefix: MoveRightIcon(),
                 hide: () => index === views.length - 1,
                 select: () => {
@@ -215,14 +216,14 @@ export class DataViewHeaderViews extends WidgetBase {
           menu.group({
             items: [
               menu.action({
-                name: 'Duplicate',
+                name: tt(this.view, 'common.duplicate', 'Duplicate'),
                 prefix: DuplicateIcon(),
                 select: () => {
                   this.viewManager.viewDuplicate(id);
                 },
               }),
               menu.action({
-                name: 'Delete',
+                name: tt(this.view, 'common.delete', 'Delete'),
                 prefix: DeleteIcon(),
                 select: () => {
                   view.delete();
@@ -252,7 +253,7 @@ export class DataViewHeaderViews extends WidgetBase {
     }
     return html`
       <div class="database-view-button dv-hover" @click="${this._showMore}">
-        ${views.length - count} More
+        ${views.length - count} ${tt(this.view, 'common.more', 'More')}
       </div>
     `;
   };

@@ -3,6 +3,7 @@ import { PlusIcon } from '@blocksuite/icons/lit';
 import { ShadowlessElement } from '@blocksuite/std';
 import { computed } from '@preact/signals-core';
 import { html } from 'lit';
+import { tt } from '../../../../../core/utils/i18n.js';
 import { property } from 'lit/decorators.js';
 
 import { TableViewAreaSelection } from '../../../selection';
@@ -84,9 +85,9 @@ export class TableGroupFooter extends WithDisposable(ShadowlessElement) {
                 data-test-id="affine-database-add-row-button"
                 role="button"
               >
-                ${PlusIcon()}<span class="${styles.addRowText}"
-                  >New Record</span
-                >
+                ${PlusIcon()}<span class="${styles.addRowText}">
+                  ${tt(this.tableViewManager, 'database.newRecord', 'New Record')}
+                </span>
               </div>
             </div>
           `}

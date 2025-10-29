@@ -10,6 +10,7 @@ import { cssVarV2 } from '@toeverything/theme/v2';
 import type { TemplateResult } from 'lit';
 import { styleMap } from 'lit/directives/style-map.js';
 import { html } from 'lit/static-html.js';
+import { tt } from '../../../core/utils/i18n.js';
 
 import { dv } from '../../../core/common/dv-css.js';
 import {
@@ -173,7 +174,7 @@ export class VirtualTableViewUILogic extends DataViewUILogicBase<
     return html` <div style="display:flex;">
       <div class="${dv.hover} ${dv.round8} ${styles.addGroup}" @click="${add}">
         <div class="${dv.icon16}" style="display:flex;">${AddCursorIcon()}</div>
-        <div>New Group</div>
+        <div>${tt(this.view, 'database.group.new', 'New Group')}</div>
       </div>
     </div>`;
   };

@@ -13,13 +13,15 @@ export const popCreateSort = (
     sortUtils: SortUtils;
     onClose?: () => void;
     onBack?: () => void;
+    t?: (key: string, fb: string) => string;
   }
 ) => {
+  const t = props.t ?? ((_: string, fb: string) => fb);
   popMenu(target, {
     options: {
       onClose: props.onClose,
       title: {
-        text: 'New sort',
+        text: t('database.sort.new', 'New sort'),
         onBack: props.onBack,
       },
       items: [

@@ -38,13 +38,16 @@ export const defaultSlashMenuConfig: SlashMenuConfig = {
     yesterday.setDate(yesterday.getDate() - 1);
     tomorrow.setDate(tomorrow.getDate() + 1);
 
+    const groupDate = tt('slash.group.date', 'Date');
+    const groupActions = tt('slash.group.actions', 'Actions');
+
     return [
       {
         name: tt('slash.today', 'Today'),
         icon: TodayIcon(),
         tooltip: tips['Today'],
         description: formatDate(now),
-        group: '6_Date@0',
+        group: `6_${groupDate}@0`,
         action: ({ std, model }) => {
           insertContent(std, model, formatDate(now));
         },
@@ -54,7 +57,7 @@ export const defaultSlashMenuConfig: SlashMenuConfig = {
         icon: TomorrowIcon(),
         tooltip: tips['Tomorrow'],
         description: formatDate(tomorrow),
-        group: '6_Date@1',
+        group: `6_${groupDate}@1`,
         action: ({ std, model }) => {
           const tomorrow = new Date();
           tomorrow.setDate(tomorrow.getDate() + 1);
@@ -66,7 +69,7 @@ export const defaultSlashMenuConfig: SlashMenuConfig = {
         icon: YesterdayIcon(),
         tooltip: tips['Yesterday'],
         description: formatDate(yesterday),
-        group: '6_Date@2',
+        group: `6_${groupDate}@2`,
         action: ({ std, model }) => {
           const yesterday = new Date();
           yesterday.setDate(yesterday.getDate() - 1);
@@ -78,7 +81,7 @@ export const defaultSlashMenuConfig: SlashMenuConfig = {
         icon: NowIcon(),
         tooltip: tips['Now'],
         description: formatTime(now),
-        group: '6_Date@3',
+        group: `6_${groupDate}@3`,
         action: ({ std, model }) => {
           insertContent(std, model, formatTime(now));
         },
@@ -88,7 +91,7 @@ export const defaultSlashMenuConfig: SlashMenuConfig = {
         description: tt('slash.moveUp.desc', 'Shift this line up.'),
         icon: ArrowUpBigIcon(),
         tooltip: tips['Move Up'],
-        group: '8_Actions@0',
+        group: `8_${groupActions}@0`,
         action: ({ std, model }) => {
           const { host } = std;
           const previousSiblingModel = host.store.getPrev(model);
@@ -110,7 +113,7 @@ export const defaultSlashMenuConfig: SlashMenuConfig = {
         description: tt('slash.moveDown.desc', 'Shift this line down.'),
         icon: ArrowDownBigIcon(),
         tooltip: tips['Move Down'],
-        group: '8_Actions@1',
+        group: `8_${groupActions}@1`,
         action: ({ std, model }) => {
           const { host } = std;
           const nextSiblingModel = host.store.getNext(model);
@@ -127,7 +130,7 @@ export const defaultSlashMenuConfig: SlashMenuConfig = {
         description: tt('slash.copy.desc', 'Copy this line to clipboard.'),
         icon: CopyIcon(),
         tooltip: tips['Copy'],
-        group: '8_Actions@2',
+        group: `8_${groupActions}@2`,
         searchAlias: ['copy', 'duplicate'],
         action: ({ std, model }) => {
           const slice = Slice.fromModels(std.store, [model]);
@@ -147,7 +150,7 @@ export const defaultSlashMenuConfig: SlashMenuConfig = {
         description: tt('slash.duplicate.desc', 'Create a duplicate of this line.'),
         icon: DualLinkIcon(),
         tooltip: tips['Copy'],
-        group: '8_Actions@3',
+        group: `8_${groupActions}@3`,
         searchAlias: ['duplicate', 'copy'],
         action: ({ std, model }) => {
           if (!model.text || !(model.text instanceof Text)) {
@@ -190,7 +193,7 @@ export const defaultSlashMenuConfig: SlashMenuConfig = {
         searchAlias: ['remove', 'delete'],
         icon: DeleteIcon(),
         tooltip: tips['Delete'],
-        group: '8_Actions@4',
+        group: `8_${groupActions}@4`,
         action: ({ std, model }) => {
           std.host.store.deleteBlock(model);
         },

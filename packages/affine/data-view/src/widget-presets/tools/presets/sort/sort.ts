@@ -7,6 +7,7 @@ import { css, html, nothing } from 'lit';
 import { styleMap } from 'lit/directives/style-map.js';
 
 import { popCreateSort } from '../../../../core/sort/add-sort.js';
+import { tt } from '../../../../core/utils/i18n.js';
 import { sortTraitKey } from '../../../../core/sort/manager.js';
 import { createSortUtils } from '../../../../core/sort/utils.js';
 import { WidgetBase } from '../../../../core/widget/widget-base.js';
@@ -83,6 +84,7 @@ export class DataViewHeaderToolsSort extends WidgetBase {
           });
         },
       },
+      t: (key, fb) => tt(this.view, key, fb),
     });
     return;
   }

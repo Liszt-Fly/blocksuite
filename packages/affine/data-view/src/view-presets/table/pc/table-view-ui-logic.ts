@@ -11,6 +11,7 @@ import { ref } from 'lit/directives/ref.js';
 import { repeat } from 'lit/directives/repeat.js';
 import { styleMap } from 'lit/directives/style-map.js';
 import { html } from 'lit/static-html.js';
+import { tt } from '../../../core/utils/i18n.js';
 
 import type { GroupTrait } from '../../../core/group-by/trait.js';
 import {
@@ -133,7 +134,7 @@ export class TableViewUILogic extends DataViewUILogicBase<
     return html` <div style="display:flex;">
       <div class="${addGroupStyle}" @click="${add}">
         <div class="${addGroupIconStyle}">${AddCursorIcon()}</div>
-        <div>New Group</div>
+        <div>${tt(this.view, 'database.group.new', 'New Group')}</div>
       </div>
     </div>`;
   };

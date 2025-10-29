@@ -359,6 +359,7 @@ const pageToolGroup: KeyboardToolPanelGroup = {
   ],
 };
 
+import { I18nProvider } from '@blocksuite/affine-shared/services';
 const contentMediaToolGroup: KeyboardToolPanelGroup = {
   name: 'Content & Media',
   items: [
@@ -381,6 +382,9 @@ const contentMediaToolGroup: KeyboardToolPanelGroup = {
       showWhen: ({ std }) =>
         std.store.schema.flavourSchemaMap.has('affine:bookmark'),
       action: async ({ std }) => {
+        const i18n = std.getOptional?.(I18nProvider);
+        const t: (key: string) => string = i18n?.t ?? (k => k);
+        const tt = (key: string, fb: string) => (t(key) === key ? fb : t(key));
         const [_, { selectedModels }] = std.command.exec(
           getSelectedModelsCommand
         );
@@ -393,8 +397,11 @@ const contentMediaToolGroup: KeyboardToolPanelGroup = {
         const index = parentModel.children.indexOf(model) + 1;
         await toggleEmbedCardCreateModal(
           std.host,
-          'Links',
-          'The added link will be displayed as a card view.',
+          tt('edgeless.link.modal.title', 'Links'),
+          tt(
+            'edgeless.link.modal.desc',
+            'The added link will be displayed as a card view.'
+          ),
           { mode: 'page', parentModel, index },
           ({ mode }) => {
             if (mode === 'edgeless') {

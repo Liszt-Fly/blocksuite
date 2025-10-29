@@ -9,6 +9,7 @@ import { ShadowlessElement } from '@blocksuite/std';
 import { effect } from '@preact/signals-core';
 import { cssVarV2 } from '@toeverything/theme/v2';
 import { css, html, unsafeCSS } from 'lit';
+import { tt } from '../../../core/utils/i18n.js';
 import { property, query } from 'lit/decorators.js';
 import { repeat } from 'lit/directives/repeat.js';
 
@@ -273,7 +274,7 @@ export class TableGroup extends SignalWatcher(
               data-test-id="affine-database-add-row-button"
               role="button"
             >
-              ${PlusIcon()}<span style="font-size: 12px">New Record</span>
+              ${PlusIcon()}<span style="font-size: 12px">${tt(this.view, 'database.newRecord', 'New Record')}</span>
             </div>
           </div>`}
       <affine-database-column-stats

@@ -7,6 +7,7 @@ import { css, html, nothing } from 'lit';
 import { styleMap } from 'lit/directives/style-map.js';
 
 import { popCreateFilter } from '../../../../core/filter/add-filter.js';
+import { getT } from '../../../../core/utils/i18n.js';
 import { filterTraitKey } from '../../../../core/filter/trait.js';
 import type { FilterGroup } from '../../../../core/filter/types.js';
 import { emptyFilterGroup } from '../../../../core/filter/utils.js';
@@ -69,6 +70,7 @@ export class DataViewHeaderToolsFilter extends WidgetBase {
       popupTargetFromElement(event.currentTarget as HTMLElement),
       {
         vars: this.view.vars$,
+        t: getT(this.view),
         onSelect: filter => {
           this._filter = {
             ...this._filter,

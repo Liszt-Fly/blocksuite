@@ -10,6 +10,7 @@ import type { TemplateResult } from 'lit';
 import { repeat } from 'lit/directives/repeat.js';
 import { styleMap } from 'lit/directives/style-map.js';
 import { html } from 'lit/static-html.js';
+import { tt } from '../../../core/utils/i18n.js';
 
 import type { GroupTrait } from '../../../core/group-by/trait.js';
 import {
@@ -90,7 +91,7 @@ export class MobileTableViewUILogic extends DataViewUILogicBase<
         @click="${add}"
       >
         <div class="dv-icon-16" style="display:flex;">${AddCursorIcon()}</div>
-        <div>New Group</div>
+        <div>${tt(this.view, 'database.group.new', 'New Group')}</div>
       </div>
     </div>`;
   };

@@ -5,6 +5,7 @@ import {
   type SlashMenuConfig,
   SlashMenuConfigIdentifier,
 } from '@blocksuite/affine-widget-slash-menu';
+import { I18nProvider } from '@blocksuite/affine-shared/services';
 import { LinkIcon } from '@blocksuite/icons/lit';
 import { GfxControllerIdentifier } from '@blocksuite/std/gfx';
 import type { ExtensionType } from '@blocksuite/store';
@@ -12,29 +13,41 @@ import type { ExtensionType } from '@blocksuite/store';
 import { LinkTooltip } from './tooltips';
 
 const bookmarkSlashMenuConfig: SlashMenuConfig = {
-  items: [
-    {
-      name: 'Link',
-      description: 'Add a bookmark for reference.',
-      icon: LinkIcon(),
-      tooltip: {
-        figure: LinkTooltip,
-        caption: 'Link',
-      },
-      group: '4_Content & Media@2',
-      when: ({ model }) =>
-        model.store.schema.flavourSchemaMap.has('affine:bookmark'),
-      action: ({ std, model }) => {
-        const { host } = std;
-        const parentModel = host.store.getParent(model);
-        if (!parentModel) {
-          return;
-        }
-        const index = parentModel.children.indexOf(model) + 1;
-        toggleEmbedCardCreateModal(
+  items: ({ std }) => {
+    const i18n = std.getOptional?.(I18nProvider);
+    const t: (key: string) => string = i18n?.t ?? (k => k);
+    const tt = (key: string, fb: string) => (t(key) === key ? fb : t(key));
+    const group = tt('slash.group.media', 'Content & Media');
+
+    return [
+      {
+        name: tt('slash.bookmark.link', 'Link'),
+        description: tt(
+          'slash.bookmark.link.desc',
+          'Add a bookmark for reference.'
+        ),
+        icon: LinkIcon(),
+        tooltip: {
+          figure: LinkTooltip,
+          caption: tt('slash.bookmark.link', 'Link'),
+        },
+        group: `4_${group}@2`,
+        when: ({ model }) =>
+          model.store.schema.flavourSchemaMap.has('affine:bookmark'),
+        action: ({ std, model }) => {
+          const { host } = std;
+          const parentModel = host.store.getParent(model);
+          if (!parentModel) {
+            return;
+          }
+          const index = parentModel.children.indexOf(model) + 1;
+          toggleEmbedCardCreateModal(
           host,
-          'Links',
-          'The added link will be displayed as a card view.',
+          tt('edgeless.link.modal.title', 'Links'),
+          tt(
+            'edgeless.link.modal.desc',
+            'The added link will be displayed as a card view.'
+          ),
           { mode: 'page', parentModel, index },
           ({ mode }) => {
             if (mode === 'edgeless') {
@@ -49,9 +62,10 @@ const bookmarkSlashMenuConfig: SlashMenuConfig = {
             }
           })
           .catch(console.error);
+        },
       },
-    },
-  ],
+    ];
+  },
 };
 
 export const BookmarkSlashMenuConfigIdentifier = SlashMenuConfigIdentifier(

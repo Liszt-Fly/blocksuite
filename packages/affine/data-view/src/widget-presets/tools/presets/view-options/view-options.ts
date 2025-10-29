@@ -40,6 +40,7 @@ import { createSortUtils } from '../../../../core/sort/utils.js';
 import { WidgetBase } from '../../../../core/widget/widget-base.js';
 import { popFilterRoot } from '../../../quick-setting-bar/filter/root-panel-view.js';
 import { popSortRoot } from '../../../quick-setting-bar/sort/root-panel.js';
+import { tt } from '../../../../core/utils/i18n.js';
 
 const styles = css`
   .affine-database-toolbar-item.more-action {
@@ -103,10 +104,10 @@ const createSettingMenus = (
   const settingItems: MenuConfig[] = [];
   settingItems.push(
     menu.action({
-      name: 'Properties',
+      name: tt(view, 'database.view.properties', 'Properties'),
       prefix: InfoIcon(),
       postfix: html` <div style="font-size: 14px;">
-          ${view.properties$.value.length} shown
+          ${view.properties$.value.length} ${tt(view, 'database.view.properties.shown', 'shown')}
         </div>
         ${ArrowRightSmallIcon()}`,
       select: () => {
@@ -122,20 +123,21 @@ const createSettingMenus = (
     const filterCount = filterTrait.filter$.value.conditions.length;
     settingItems.push(
       menu.action({
-        name: 'Filter',
+        name: tt(view, 'database.view.filter', 'Filter'),
         prefix: FilterIcon(),
         postfix: html` <div style="font-size: 14px;">
             ${filterCount === 0
               ? ''
               : filterCount === 1
-                ? '1 filter'
-                : `${filterCount} filters`}
+                ? tt(view, 'database.view.filter.one', '1 filter')
+                : `${filterCount} ${tt(view, 'database.view.filter.manySuffix', 'filters')}`}
           </div>
           ${ArrowRightSmallIcon()}`,
         select: () => {
           if (!filterTrait.filter$.value.conditions.length) {
             popCreateFilter(target, {
               vars: view.vars$,
+              t: (key, fb) => tt(view, key, fb),
               onBack: reopen,
               onSelect: filter => {
                 filterTrait.filterSet({
@@ -166,14 +168,14 @@ const createSettingMenus = (
     const sortCount = sortTrait.sortList$.value.length;
     settingItems.push(
       menu.action({
-        name: 'Sort',
+        name: tt(view, 'database.view.sort', 'Sort'),
         prefix: SortIcon(),
         postfix: html` <div style="font-size: 14px;">
             ${sortCount === 0
               ? ''
               : sortCount === 1
-                ? '1 sort'
-                : `${sortCount} sorts`}
+                ? tt(view, 'database.view.sort.one', '1 sort')
+                : `${sortCount} ${tt(view, 'database.view.sort.manySuffix', 'sorts')}`}
           </div>
           ${ArrowRightSmallIcon()}`,
         select: () => {
@@ -185,13 +187,14 @@ const createSettingMenus = (
           if (!sortList.length) {
             popCreateSort(target, {
               sortUtils: sortUtils,
+              t: (key, fb) => tt(view, key, fb),
               onBack: reopen,
             });
           } else {
             popSortRoot(target, {
               sortUtils: sortUtils,
               title: {
-                text: 'Sort',
+                text: tt(view, 'database.view.sort', 'Sort'),
                 onBack: reopen,
               },
             });
@@ -204,7 +207,7 @@ const createSettingMenus = (
   if (groupTrait) {
     settingItems.push(
       menu.action({
-        name: 'Group',
+        name: tt(view, 'database.view.group', 'Group'),
         prefix: GroupingIcon(),
         postfix: html` <div style="font-size: 14px;">
             ${groupTrait.property$.value?.name$.value ?? ''}
@@ -239,7 +242,7 @@ export const popViewOptions = (
   items.push(
     menu.input({
       initialValue: view.name$.value,
-      placeholder: 'View name',
+      placeholder: tt(view, 'database.view.viewName', 'View name'),
       onChange: text => {
         view.nameSet(text);
       },
@@ -249,7 +252,7 @@ export const popViewOptions = (
     menu.group({
       items: [
         menu.action({
-          name: 'Layout',
+          name: tt(view, 'database.view.layout', 'Layout'),
           postfix: html` <div
               style="font-size: 14px;text-transform: capitalize;"
             >
@@ -312,7 +315,7 @@ export const popViewOptions = (
               options: {
                 title: {
                   onBack: reopen,
-                  text: 'Layout',
+                  text: tt(view, 'database.view.layout', 'Layout'),
                 },
                 items: [
                   menu => {
@@ -355,14 +358,14 @@ export const popViewOptions = (
     menu.group({
       items: [
         menu.action({
-          name: 'Duplicate',
+          name: tt(view, 'common.duplicate', 'Duplicate'),
           prefix: DuplicateIcon(),
           select: () => {
             view.duplicate();
           },
         }),
         menu.action({
-          name: 'Delete',
+          name: tt(view, 'common.delete', 'Delete'),
           prefix: DeleteIcon(),
           select: () => {
             view.delete();
@@ -375,7 +378,7 @@ export const popViewOptions = (
   popMenu(target, {
     options: {
       title: {
-        text: 'View settings',
+        text: tt(view, 'database.view.settings', 'View settings'),
       },
       items,
       onClose: onClose,

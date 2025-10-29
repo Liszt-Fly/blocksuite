@@ -3,6 +3,7 @@ import { IS_MOBILE } from '@blocksuite/global/env';
 import { CloseIcon, SearchIcon } from '@blocksuite/icons/lit';
 import { baseTheme } from '@toeverything/theme';
 import { css, html, unsafeCSS } from 'lit';
+import { tt } from '../../../../core/utils/i18n.js';
 import { query, state } from 'lit/decorators.js';
 import { classMap } from 'lit/directives/class-map.js';
 import { styleMap } from 'lit/directives/style-map.js';
@@ -146,7 +147,7 @@ export class DataViewHeaderToolsSearch extends WidgetBase<
       <label class="${searchToolClassMap}" @click="${this._clickSearch}">
         <div class="affine-database-search-input-icon">${SearchIcon()}</div>
         <input
-          placeholder="Search..."
+          placeholder="${tt(this.view, 'database.search.placeholder', 'Search...')}"
           class="affine-database-search-input"
           @input="${this._onSearch}"
           @click="${(event: MouseEvent) => event.stopPropagation()}"
@@ -166,9 +167,9 @@ export class DataViewHeaderToolsSearch extends WidgetBase<
                 borderRadius: '4px',
                 background: 'var(--affine-white-10)',
               })}
-              >Esc</span
-            >
-            to clear all
+            >Esc</span
+          >
+            ${tt(this.view, 'database.search.clearTip', 'to clear all')}
           </affine-tooltip>
         </div>
       </label>
