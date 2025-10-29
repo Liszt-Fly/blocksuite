@@ -16,6 +16,7 @@ import {
   NotificationProvider,
   type TelemetryEventMap,
   TelemetryProvider,
+  I18nProvider,
 } from '@blocksuite/affine-shared/services';
 import { getDropResult } from '@blocksuite/affine-widget-drag-handle';
 import {
@@ -72,11 +73,12 @@ import type { DatabaseViewExtensionOptions } from './view';
 
 export class DatabaseBlockComponent extends CaptionedBlockComponent<DatabaseBlockModel> {
   private readonly clickDatabaseOps = (e: MouseEvent) => {
+    const t = this.std.getOptional(I18nProvider)?.t ?? ((k: string) => k)
     const options = this.optionsConfig.configure(this.model, {
       items: [
         menu.input({
           initialValue: this.model.props.title.toString(),
-          placeholder: 'Database title',
+          placeholder: t('database.titlePlaceholder'),
           onChange: text => {
             this.model.props.title.replace(
               0,
@@ -87,7 +89,7 @@ export class DatabaseBlockComponent extends CaptionedBlockComponent<DatabaseBloc
         }),
         menu.action({
           prefix: CommentIcon(),
-          name: 'Comment',
+          name: t('database.comment'),
           hide: () => !this.std.getOptional(CommentProviderIdentifier),
           select: () => {
             this.std.getOptional(CommentProviderIdentifier)?.addComment([
@@ -99,13 +101,13 @@ export class DatabaseBlockComponent extends CaptionedBlockComponent<DatabaseBloc
         }),
         menu.action({
           prefix: CopyIcon(),
-          name: 'Copy',
+          name: t('common.copy'),
           select: () => {
             const slice = Slice.fromModels(this.store, [this.model]);
             this.std.clipboard
               .copySlice(slice)
               .then(() => {
-                toast(this.host, 'Copied to clipboard');
+                toast(this.host, t('common.copiedToClipboard'));
               })
               .catch(console.error);
           },
@@ -117,7 +119,7 @@ export class DatabaseBlockComponent extends CaptionedBlockComponent<DatabaseBloc
               class: {
                 'delete-item': true,
               },
-              name: 'Delete Database',
+              name: t('database.deleteDatabase'),
               select: () => {
                 this.model.children.slice().forEach(block => {
                   this.store.deleteBlock(block);

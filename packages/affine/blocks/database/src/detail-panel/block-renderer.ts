@@ -8,6 +8,7 @@ import { WithDisposable } from '@blocksuite/global/lit';
 import type { EditorHost } from '@blocksuite/std';
 import { ShadowlessElement } from '@blocksuite/std';
 import { cssVarV2 } from '@toeverything/theme/v2';
+import { I18nProvider } from '@blocksuite/affine-shared/services';
 import { css, html, unsafeCSS } from 'lit';
 import { property } from 'lit/decorators.js';
 
@@ -38,7 +39,7 @@ export class BlockRenderer
     }
 
     database-datasource-block-renderer.empty rich-text::before {
-      content: 'Untitled';
+      content: attr(data-placeholder);
       position: absolute;
       color: var(--affine-text-disable-color);
       font-size: 15px;
@@ -121,6 +122,7 @@ export class BlockRenderer
     if (!model) {
       return;
     }
+    const t = this.host?.std?.getOptional?.(I18nProvider)?.t ?? ((k: string) => k)
     return html`
       ${this.renderIcon()}
       <rich-text
@@ -130,6 +132,7 @@ export class BlockRenderer
         .embedChecker=${this.inlineManager.embedChecker}
         .markdownMatches=${this.inlineManager.markdownMatches}
         class="inline-editor"
+        data-placeholder="${t('database.untitled')}"
       ></rich-text>
     `;
   }

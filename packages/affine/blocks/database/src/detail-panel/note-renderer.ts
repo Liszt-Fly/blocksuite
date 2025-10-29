@@ -6,7 +6,7 @@ import {
   type RootBlockModel,
 } from '@blocksuite/affine-model';
 import { REFERENCE_NODE } from '@blocksuite/affine-shared/consts';
-import { TelemetryProvider } from '@blocksuite/affine-shared/services';
+import { TelemetryProvider, I18nProvider } from '@blocksuite/affine-shared/services';
 import type { AffineTextAttributes } from '@blocksuite/affine-shared/types';
 import { createDefaultDoc, matchModels } from '@blocksuite/affine-shared/utils';
 import type { DetailSlotProps, SingleView } from '@blocksuite/data-view';
@@ -103,12 +103,13 @@ export class NoteRenderer
 
   renderNote() {
     if (this.allowCreateDoc$.value) {
+      const t = this.host?.std?.getOptional?.(I18nProvider)?.t ?? ((k: string) => k)
       return html` <div>
         <div
           @click="${this.addNote}"
           style="max-width: var(--affine-editor-width);margin: auto;cursor: pointer;color: var(--affine-text-disable-color)"
         >
-          Click to create a linked doc in center peek.
+          ${t('database.clickToCreateLinkedDocInPeek')}
         </div>
       </div>`;
     }

@@ -4,6 +4,7 @@ import {
   popupTargetFromElement,
 } from '@blocksuite/affine-components/context-menu';
 import type { UniComponent } from '@blocksuite/affine-shared/types';
+import { I18nProvider } from '@blocksuite/affine-shared/services';
 import { SignalWatcher, WithDisposable } from '@blocksuite/global/lit';
 import {
   ArrowDownBigIcon,
@@ -262,7 +263,7 @@ export class RecordDetail extends SignalWatcher(
                 @click="${this._clickAddProperty}"
               >
                 <div class="icon">${PlusIcon()}</div>
-                Add Property
+                ${this.view.serviceGet(I18nProvider)?.t('database.addProperty') ?? 'Add Property'}
               </div>`
             : nothing}
         </div>

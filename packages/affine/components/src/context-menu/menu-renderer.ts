@@ -441,8 +441,23 @@ export const createPopup = (
     container?: HTMLElement;
   }
 ) => {
+  // Global outside-click listeners so clicks beyond target.root can also close
+  const onDocPointerDown = (ev: Event) => {
+    if (!content.contains(ev.target as Node)) {
+      close();
+    }
+  };
+  const onDocContextMenu = (ev: Event) => {
+    if (!content.contains(ev.target as Node)) {
+      close();
+    }
+  };
+
   const close = () => {
     modal.remove();
+    document.removeEventListener('pointerdown', onDocPointerDown, true);
+    document.removeEventListener('mousedown', onDocPointerDown, true);
+    document.removeEventListener('contextmenu', onDocContextMenu, true);
     options?.onClose?.();
   };
   const modal = createModal(target.root);
@@ -460,21 +475,30 @@ export const createPopup = (
   });
   modal.append(content);
 
+  // Capture on document so clicks outside target.root also close the popup
+  document.addEventListener('pointerdown', onDocPointerDown, true);
+  document.addEventListener('mousedown', onDocPointerDown, true);
+  document.addEventListener('contextmenu', onDocContextMenu, true);
+
+  const shouldClose = (ev: Event) =>
+    ev.target === modal || !content.contains(ev.target as Node);
+
   modal.onpointerdown = ev => {
-    if (ev.target === modal) {
+    // Close when clicking anywhere outside the popup content
+    if (shouldClose(ev)) {
       close();
     }
   };
 
   modal.onmousedown = ev => {
-    if (ev.target === modal) {
+    if (shouldClose(ev)) {
       close();
     }
   };
 
   modal.oncontextmenu = ev => {
     ev.preventDefault();
-    if (ev.target === modal) {
+    if (shouldClose(ev)) {
       close();
     }
   };
