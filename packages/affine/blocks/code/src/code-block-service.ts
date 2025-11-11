@@ -40,6 +40,8 @@ export class CodeBlockHighlighter extends LifeCycleWatcher {
     const lightTheme = config?.theme?.light ?? CODE_BLOCK_DEFAULT_LIGHT_THEME;
     this._darkThemeKey = (await normalizeGetter(darkTheme)).name;
     this._lightThemeKey = (await normalizeGetter(lightTheme)).name;
+    // Always ensure themes are loaded on the shared highlighter. Duplicate
+    // loads are ignored by Shiki and cheap compared to spawning instances.
     await highlighter.loadTheme(darkTheme, lightTheme);
     this.highlighter$.value = highlighter;
   };
@@ -47,15 +49,25 @@ export class CodeBlockHighlighter extends LifeCycleWatcher {
   override mounted(): void {
     super.mounted();
 
-    createHighlighterCore({
-      engine: createOnigurumaEngine(() => getWasm),
-    })
+    // Use a shared singleton highlighter across all CodeBlockHighlighter
+    // instances to avoid spawning multiple Shiki cores during development
+    // (which triggers "Shiki is supposed to be used as a singleton").
+    sharedRefCount++;
+    getSharedHighlighter()
       .then(this._loadTheme)
       .catch(console.error);
   }
 
   override unmounted(): void {
-    this.highlighter$.value?.dispose();
+    // Release reference; dispose the shared instance only when the last
+    // consumer is gone.
+    this.highlighter$.value = null;
+    sharedRefCount = Math.max(0, sharedRefCount - 1);
+    if (sharedRefCount === 0) {
+      sharedHighlighter?.dispose?.();
+      sharedHighlighter = null;
+      sharedInitPromise = null;
+    }
   }
 }
 
@@ -66,4 +78,29 @@ export async function normalizeGetter<T>(p: MaybeGetter<T>): Promise<T> {
   return Promise.resolve(typeof p === 'function' ? (p as any)() : p).then(
     r => r.default || r
   );
+}
+
+// -----------------------------
+// Shared Shiki Highlighter Core
+// -----------------------------
+let sharedHighlighter: HighlighterCore | null = null;
+let sharedInitPromise: Promise<HighlighterCore> | null = null;
+let sharedRefCount = 0;
+
+function getSharedHighlighter(): Promise<HighlighterCore> {
+  if (sharedHighlighter) return Promise.resolve(sharedHighlighter);
+  if (sharedInitPromise) return sharedInitPromise;
+
+  sharedInitPromise = createHighlighterCore({
+    engine: createOnigurumaEngine(() => getWasm),
+  })
+    .then(h => {
+      sharedHighlighter = h;
+      return h;
+    })
+    .finally(() => {
+      // Do not clear promise here to keep a single inflight initializer.
+    });
+
+  return sharedInitPromise;
 }
