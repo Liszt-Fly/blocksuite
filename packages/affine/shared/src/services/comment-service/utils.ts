@@ -2,6 +2,7 @@ import { CommentIcon } from '@blocksuite/icons/lit';
 import { BlockSelection } from '@blocksuite/std';
 import type { BlockModel, Store } from '@blocksuite/store';
 
+import { t } from '../../utils';
 import type { ToolbarAction } from '../toolbar-service';
 import { type CommentId, CommentProviderIdentifier } from './comment-provider';
 
@@ -23,7 +24,7 @@ export function findCommentedBlocks(store: Store, commentId: CommentId) {
 }
 
 export const blockCommentToolbarButton: Omit<ToolbarAction, 'id'> = {
-  tooltip: 'Comment',
+  tooltip: t('common.comment', 'Comment'),
   when: ({ std }) => !!std.getOptional(CommentProviderIdentifier),
   icon: CommentIcon(),
   run: ctx => {

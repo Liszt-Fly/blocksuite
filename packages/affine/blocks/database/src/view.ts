@@ -40,7 +40,9 @@ export class DatabaseViewExtension extends ViewExtensionProvider<DatabaseViewExt
     context.register([
       FlavourExtension('affine:database'),
       BlockViewExtension('affine:database', literal`affine-database`),
-      SlashMenuConfigExtension('affine:database', databaseSlashMenuConfig),
+      // Slash menu temporarily disabled because database views are not supported yet.
+      // Re-enable once table/kanban creation is ready for release.
+      // SlashMenuConfigExtension('affine:database', databaseSlashMenuConfig),
     ]);
     if (options) {
       context.register(
