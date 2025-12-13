@@ -39,8 +39,8 @@ export class CalloutBlockComponent extends CaptionedBlockComponent<CalloutBlockM
       display: flex;
       align-items: center;
       justify-content: center;
-      /* Fine-tune baseline alignment against the first line of text */
-      transform: translateY(6px);
+      /* Optional fine-tune for baseline alignment */
+      transform: translateY(var(--affine-callout-emoji-offset-y, 0px));
     }
     .affine-callout-emoji:hover {
       cursor: pointer;
