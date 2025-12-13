@@ -2,6 +2,99 @@ import type { Constructor } from '@blocksuite/global/utils';
 import type { CSSResultGroup, CSSResultOrNative } from 'lit';
 import { CSSResult, LitElement } from 'lit';
 
+function scopeShadowlessCssText(cssText: string, scopeSelector: string): string {
+  if (!scopeSelector) return cssText;
+
+  const replaceHostSelectors = (selectorText: string) => {
+    // Transform Shadow DOM specific :host(...) into light DOM selectors.
+    // Examples:
+    //   :host { ... }              -> <tag> { ... }
+    //   :host([foo]) .bar { ... }  -> <tag>[foo] .bar { ... }
+    return selectorText
+      .replace(/:host\(([^)]+)\)/g, `${scopeSelector}$1`)
+      .replace(/:host\b/g, scopeSelector);
+  };
+
+  const scopeSelectorList = (selectorText: string) => {
+    const selectors = selectorText
+      .split(',')
+      .map(s => s.trim())
+      .filter(Boolean)
+      .map(replaceHostSelectors)
+      .map(sel => {
+        // Allow intentionally global selectors to stay global.
+        if (sel === ':root' || sel.startsWith(':root ') || sel.startsWith('html') || sel.startsWith('body')) {
+          return sel;
+        }
+
+        // If already scoped, don't double-scope.
+        if (sel === scopeSelector) return sel;
+        if (sel.startsWith(scopeSelector)) {
+          const next = sel[scopeSelector.length];
+          if (
+            next === ' ' ||
+            next === '[' ||
+            next === '.' ||
+            next === '#' ||
+            next === ':' ||
+            next === '>' ||
+            next === '+' ||
+            next === '~' ||
+            next === '*' ||
+            next === undefined
+          ) {
+            return sel;
+          }
+        }
+        return `${scopeSelector} ${sel}`;
+      });
+    return selectors.join(', ');
+  };
+
+  const serializeRules = (rules: CSSRuleList): string => {
+    const out: string[] = [];
+    for (const rule of Array.from(rules)) {
+      // Keep keyframes and other at-rules as-is.
+      if ((globalThis as any).CSSKeyframesRule && rule instanceof CSSKeyframesRule) {
+        out.push(rule.cssText);
+        continue;
+      }
+      if ((globalThis as any).CSSFontFaceRule && rule instanceof CSSFontFaceRule) {
+        out.push(rule.cssText);
+        continue;
+      }
+
+      if ((globalThis as any).CSSMediaRule && rule instanceof CSSMediaRule) {
+        out.push(`@media ${rule.conditionText}{${serializeRules(rule.cssRules)}}`);
+        continue;
+      }
+      if ((globalThis as any).CSSSupportsRule && rule instanceof CSSSupportsRule) {
+        out.push(`@supports ${rule.conditionText}{${serializeRules(rule.cssRules)}}`);
+        continue;
+      }
+
+      if (rule instanceof CSSStyleRule) {
+        const selectorText = scopeSelectorList(rule.selectorText);
+        out.push(`${selectorText}{${rule.style.cssText}}`);
+        continue;
+      }
+
+      out.push(rule.cssText);
+    }
+    return out.join('\n');
+  };
+
+  // Prefer browser CSS parser for correctness. Fallback keeps existing behavior.
+  try {
+    if (typeof CSSStyleSheet === 'undefined') return replaceHostSelectors(cssText);
+    const sheet = new CSSStyleSheet();
+    sheet.replaceSync(cssText);
+    return serializeRules(sheet.cssRules);
+  } catch {
+    return replaceHostSelectors(cssText);
+  }
+}
+
 export class ShadowlessElement extends LitElement {
   // Map of the number of styles injected into a node
   // A reference count of the number of ShadowlessElements that are still connected
@@ -15,23 +108,13 @@ export class ShadowlessElement extends LitElement {
     WeakMap<Node, (() => void) | null>
   >();
 
-  // styles registered in ShadowlessElement will be available globally
-  // even if the element is not being rendered
+  // NOTE: ShadowlessElement renders into light DOM (no shadow root).
+  // We must not inject raw (unscoped) CSS into the document, otherwise selectors
+  // like `input { ... }` will affect the whole app.
   protected static override finalizeStyles(
     styles?: CSSResultGroup
   ): CSSResultOrNative[] {
-    const elementStyles = super.finalizeStyles(styles);
-    // XXX: This breaks component encapsulation and applies styles to the document.
-    // These styles should be manually scoped.
-    elementStyles.forEach((s: CSSResultOrNative) => {
-      if (s instanceof CSSResult && typeof document !== 'undefined') {
-        const styleRoot = document.head;
-        const style = document.createElement('style');
-        style.textContent = s.cssText;
-        styleRoot.append(style);
-      }
-    });
-    return elementStyles;
+    return super.finalizeStyles(styles);
   }
 
   private getConnectedCount() {
@@ -53,17 +136,24 @@ export class ShadowlessElement extends LitElement {
     super.connectedCallback();
     const parentRoot = this.getRootNode();
     const SE = this.constructor as typeof ShadowlessElement;
-    const insideShadowRoot = parentRoot instanceof ShadowRoot;
     const styleInjectedCount = this.getConnectedCount();
 
-    if (styleInjectedCount === 0 && insideShadowRoot) {
+    if (styleInjectedCount === 0) {
+      if (typeof document === 'undefined') {
+        this.setConnectedCount(styleInjectedCount + 1);
+        return;
+      }
       const elementStyles = SE.elementStyles;
       const injectedStyles: HTMLStyleElement[] = [];
+      const scopeSelector = this.localName;
+      const injectionTarget =
+        parentRoot instanceof ShadowRoot ? parentRoot : document.head;
+
       elementStyles.forEach((s: CSSResultOrNative) => {
-        if (s instanceof CSSResult && typeof document !== 'undefined') {
+        if (s instanceof CSSResult) {
           const style = document.createElement('style');
-          style.textContent = s.cssText;
-          parentRoot.prepend(style);
+          style.textContent = scopeShadowlessCssText(s.cssText, scopeSelector);
+          injectionTarget.prepend(style);
           injectedStyles.push(style);
         }
       });
