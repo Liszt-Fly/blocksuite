@@ -5,16 +5,28 @@ import { SurfaceRefBlockComponent } from './surface-ref-block';
 import { EdgelessSurfaceRefBlockComponent } from './surface-ref-block-edgeless';
 
 export function effects() {
-  customElements.define(
-    'surface-ref-generic-block-portal',
-    SurfaceRefGenericBlockPortal
-  );
-  customElements.define('affine-surface-ref', SurfaceRefBlockComponent);
-  customElements.define(
-    'affine-edgeless-surface-ref',
-    EdgelessSurfaceRefBlockComponent
-  );
-  customElements.define('surface-ref-note-portal', SurfaceRefNotePortal);
-  customElements.define('surface-ref-toolbar-title', SurfaceRefToolbarTitle);
-  customElements.define('surface-ref-placeholder', SurfaceRefPlaceHolder);
+  if (!customElements.get('surface-ref-generic-block-portal')) {
+    customElements.define(
+      'surface-ref-generic-block-portal',
+      SurfaceRefGenericBlockPortal
+    );
+  }
+  if (!customElements.get('affine-surface-ref')) {
+    customElements.define('affine-surface-ref', SurfaceRefBlockComponent);
+  }
+  if (!customElements.get('affine-edgeless-surface-ref')) {
+    customElements.define(
+      'affine-edgeless-surface-ref',
+      EdgelessSurfaceRefBlockComponent
+    );
+  }
+  if (!customElements.get('surface-ref-note-portal')) {
+    customElements.define('surface-ref-note-portal', SurfaceRefNotePortal);
+  }
+  if (!customElements.get('surface-ref-toolbar-title')) {
+    customElements.define('surface-ref-toolbar-title', SurfaceRefToolbarTitle);
+  }
+  if (!customElements.get('surface-ref-placeholder')) {
+    customElements.define('surface-ref-placeholder', SurfaceRefPlaceHolder);
+  }
 }

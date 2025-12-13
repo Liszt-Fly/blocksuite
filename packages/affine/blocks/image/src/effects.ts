@@ -6,16 +6,28 @@ import { ImageEdgelessPlaceholderBlockComponent } from './preview-image/edgeless
 import { ImagePlaceholderBlockComponent } from './preview-image/page.js';
 
 export function effects() {
-  customElements.define('affine-image', ImageBlockComponent);
-  customElements.define('affine-edgeless-image', ImageEdgelessBlockComponent);
-  customElements.define('affine-page-image', ImageBlockPageComponent);
-  customElements.define('affine-image-fallback-card', ImageBlockFallbackCard);
-  customElements.define(
-    'affine-placeholder-preview-image',
-    ImagePlaceholderBlockComponent
-  );
-  customElements.define(
-    'affine-edgeless-placeholder-preview-image',
-    ImageEdgelessPlaceholderBlockComponent
-  );
+  if (!customElements.get('affine-image')) {
+    customElements.define('affine-image', ImageBlockComponent);
+  }
+  if (!customElements.get('affine-edgeless-image')) {
+    customElements.define('affine-edgeless-image', ImageEdgelessBlockComponent);
+  }
+  if (!customElements.get('affine-page-image')) {
+    customElements.define('affine-page-image', ImageBlockPageComponent);
+  }
+  if (!customElements.get('affine-image-fallback-card')) {
+    customElements.define('affine-image-fallback-card', ImageBlockFallbackCard);
+  }
+  if (!customElements.get('affine-placeholder-preview-image')) {
+    customElements.define(
+      'affine-placeholder-preview-image',
+      ImagePlaceholderBlockComponent
+    );
+  }
+  if (!customElements.get('affine-edgeless-placeholder-preview-image')) {
+    customElements.define(
+      'affine-edgeless-placeholder-preview-image',
+      ImageEdgelessPlaceholderBlockComponent
+    );
+  }
 }

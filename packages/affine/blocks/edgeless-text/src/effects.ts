@@ -1,5 +1,7 @@
 import { EdgelessTextBlockComponent } from './edgeless-text-block';
 
 export function effects() {
-  customElements.define('affine-edgeless-text', EdgelessTextBlockComponent);
+  if (!customElements.get('affine-edgeless-text')) {
+    customElements.define('affine-edgeless-text', EdgelessTextBlockComponent);
+  }
 }

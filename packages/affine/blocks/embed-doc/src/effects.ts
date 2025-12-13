@@ -5,25 +5,35 @@ import { EmbedSyncedDocCard } from './embed-synced-doc-block/components/embed-sy
 import { EmbedEdgelessSyncedDocBlockComponent } from './embed-synced-doc-block/embed-edgeless-synced-doc-block';
 
 export function effects() {
-  customElements.define('affine-embed-synced-doc-card', EmbedSyncedDocCard);
+  if (!customElements.get('affine-embed-synced-doc-card')) {
+    customElements.define('affine-embed-synced-doc-card', EmbedSyncedDocCard);
+  }
 
-  customElements.define(
-    'affine-embed-edgeless-linked-doc-block',
-    EmbedEdgelessLinkedDocBlockComponent
-  );
-  customElements.define(
-    'affine-embed-linked-doc-block',
-    EmbedLinkedDocBlockComponent
-  );
+  if (!customElements.get('affine-embed-edgeless-linked-doc-block')) {
+    customElements.define(
+      'affine-embed-edgeless-linked-doc-block',
+      EmbedEdgelessLinkedDocBlockComponent
+    );
+  }
+  if (!customElements.get('affine-embed-linked-doc-block')) {
+    customElements.define(
+      'affine-embed-linked-doc-block',
+      EmbedLinkedDocBlockComponent
+    );
+  }
 
-  customElements.define(
-    'affine-embed-edgeless-synced-doc-block',
-    EmbedEdgelessSyncedDocBlockComponent
-  );
-  customElements.define(
-    'affine-embed-synced-doc-block',
-    EmbedSyncedDocBlockComponent
-  );
+  if (!customElements.get('affine-embed-edgeless-synced-doc-block')) {
+    customElements.define(
+      'affine-embed-edgeless-synced-doc-block',
+      EmbedEdgelessSyncedDocBlockComponent
+    );
+  }
+  if (!customElements.get('affine-embed-synced-doc-block')) {
+    customElements.define(
+      'affine-embed-synced-doc-block',
+      EmbedSyncedDocBlockComponent
+    );
+  }
 }
 
 declare global {

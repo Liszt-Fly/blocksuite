@@ -11,25 +11,46 @@ import { EdgelessNavigatorSettingButton } from './present/navigator-setting-butt
 import { EdgelessPresentButton } from './present/present-button';
 
 export function effects() {
-  customElements.define('affine-frame', FrameBlockComponent);
-  customElements.define('edgeless-frame-tool-button', EdgelessFrameToolButton);
-  customElements.define('edgeless-frame-menu', EdgelessFrameMenu);
-  customElements.define(
-    'edgeless-frame-order-button',
-    EdgelessFrameOrderButton
-  );
-  customElements.define('edgeless-frame-order-menu', EdgelessFrameOrderMenu);
-  customElements.define(
-    'edgeless-navigator-setting-button',
-    EdgelessNavigatorSettingButton
-  );
-  customElements.define('edgeless-present-button', EdgelessPresentButton);
-  customElements.define('presentation-toolbar', PresentationToolbar);
+  if (!customElements.get('affine-frame')) {
+    customElements.define('affine-frame', FrameBlockComponent);
+  }
+  if (!customElements.get('edgeless-frame-tool-button')) {
+    customElements.define(
+      'edgeless-frame-tool-button',
+      EdgelessFrameToolButton
+    );
+  }
+  if (!customElements.get('edgeless-frame-menu')) {
+    customElements.define('edgeless-frame-menu', EdgelessFrameMenu);
+  }
+  if (!customElements.get('edgeless-frame-order-button')) {
+    customElements.define(
+      'edgeless-frame-order-button',
+      EdgelessFrameOrderButton
+    );
+  }
+  if (!customElements.get('edgeless-frame-order-menu')) {
+    customElements.define('edgeless-frame-order-menu', EdgelessFrameOrderMenu);
+  }
+  if (!customElements.get('edgeless-navigator-setting-button')) {
+    customElements.define(
+      'edgeless-navigator-setting-button',
+      EdgelessNavigatorSettingButton
+    );
+  }
+  if (!customElements.get('edgeless-present-button')) {
+    customElements.define('edgeless-present-button', EdgelessPresentButton);
+  }
+  if (!customElements.get('presentation-toolbar')) {
+    customElements.define('presentation-toolbar', PresentationToolbar);
+  }
   // Navigation components
-  customElements.define(
-    EDGELESS_NAVIGATOR_BLACK_BACKGROUND_WIDGET,
-    EdgelessNavigatorBlackBackgroundWidget
-  );
+  if (!customElements.get(EDGELESS_NAVIGATOR_BLACK_BACKGROUND_WIDGET)) {
+    customElements.define(
+      EDGELESS_NAVIGATOR_BLACK_BACKGROUND_WIDGET,
+      EdgelessNavigatorBlackBackgroundWidget
+    );
+  }
 }
 
 declare global {

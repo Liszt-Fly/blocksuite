@@ -4,8 +4,10 @@ import {
 } from '.';
 
 export function effects() {
-  customElements.define(
-    AFFINE_EDGELESS_AUTO_CONNECT_WIDGET,
-    EdgelessAutoConnectWidget
-  );
+  if (!customElements.get(AFFINE_EDGELESS_AUTO_CONNECT_WIDGET)) {
+    customElements.define(
+      AFFINE_EDGELESS_AUTO_CONNECT_WIDGET,
+      EdgelessAutoConnectWidget
+    );
+  }
 }

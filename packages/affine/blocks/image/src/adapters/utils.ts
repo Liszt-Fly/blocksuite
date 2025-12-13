@@ -20,7 +20,20 @@ export async function processImageNodeToBlock(
   configs: Map<string, string>
 ) {
   let blobId = '';
-  if (!FetchUtils.fetchable(imageURL)) {
+  // Chronnote extension: allow direct blob reference without path mapping or network fetch.
+  // Format: cnblob:<blobId>
+  if (imageURL.startsWith('cnblob:')) {
+    const raw = imageURL.slice('cnblob:'.length);
+    if (raw) {
+      try {
+        blobId = decodeURIComponent(raw);
+      } catch {
+        blobId = raw;
+      }
+    }
+  }
+
+  if (!blobId && !FetchUtils.fetchable(imageURL)) {
     const fullFilePath = configs.get(FULL_FILE_PATH_KEY);
     // When importing markdown file with assets in a zip file,
     // the image URL is the relative path of the image file in the zip file
@@ -42,7 +55,7 @@ export async function processImageNodeToBlock(
         imageURLSplit.shift();
       }
     }
-  } else {
+  } else if (!blobId) {
     try {
       const res = await FetchUtils.fetchImage(
         imageURL,

@@ -11,19 +11,37 @@ import {
   EdgelessNoteBlockComponent,
 } from './note-edgeless-block';
 export function effects() {
-  customElements.define('affine-note', NoteBlockComponent);
-  customElements.define(AFFINE_EDGELESS_NOTE, EdgelessNoteBlockComponent);
-  customElements.define('edgeless-note-mask', EdgelessNoteMask);
-  customElements.define('edgeless-note-background', EdgelessNoteBackground);
-  customElements.define('edgeless-page-block-title', EdgelessPageBlockTitle);
-  customElements.define('edgeless-note-shadow-menu', EdgelessNoteShadowMenu);
-  customElements.define(
-    'edgeless-note-border-dropdown-menu',
-    EdgelessNoteBorderDropdownMenu
-  );
-  customElements.define(
-    'edgeless-note-display-mode-dropdown-menu',
-    EdgelessNoteDisplayModeDropdownMenu
-  );
-  customElements.define('edgeless-note-style-panel', EdgelessNoteStylePanel);
+  if (!customElements.get('affine-note')) {
+    customElements.define('affine-note', NoteBlockComponent);
+  }
+  if (!customElements.get(AFFINE_EDGELESS_NOTE)) {
+    customElements.define(AFFINE_EDGELESS_NOTE, EdgelessNoteBlockComponent);
+  }
+  if (!customElements.get('edgeless-note-mask')) {
+    customElements.define('edgeless-note-mask', EdgelessNoteMask);
+  }
+  if (!customElements.get('edgeless-note-background')) {
+    customElements.define('edgeless-note-background', EdgelessNoteBackground);
+  }
+  if (!customElements.get('edgeless-page-block-title')) {
+    customElements.define('edgeless-page-block-title', EdgelessPageBlockTitle);
+  }
+  if (!customElements.get('edgeless-note-shadow-menu')) {
+    customElements.define('edgeless-note-shadow-menu', EdgelessNoteShadowMenu);
+  }
+  if (!customElements.get('edgeless-note-border-dropdown-menu')) {
+    customElements.define(
+      'edgeless-note-border-dropdown-menu',
+      EdgelessNoteBorderDropdownMenu
+    );
+  }
+  if (!customElements.get('edgeless-note-display-mode-dropdown-menu')) {
+    customElements.define(
+      'edgeless-note-display-mode-dropdown-menu',
+      EdgelessNoteDisplayModeDropdownMenu
+    );
+  }
+  if (!customElements.get('edgeless-note-style-panel')) {
+    customElements.define('edgeless-note-style-panel', EdgelessNoteStylePanel);
+  }
 }

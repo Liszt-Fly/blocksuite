@@ -4,10 +4,12 @@ import {
 } from './scroll-anchoring.js';
 
 export function effects() {
-  customElements.define(
-    AFFINE_SCROLL_ANCHORING_WIDGET,
-    AffineScrollAnchoringWidget
-  );
+  if (!customElements.get(AFFINE_SCROLL_ANCHORING_WIDGET)) {
+    customElements.define(
+      AFFINE_SCROLL_ANCHORING_WIDGET,
+      AffineScrollAnchoringWidget
+    );
+  }
 }
 
 declare global {

@@ -6,12 +6,16 @@ import {
 } from './edgeless';
 
 export function effects() {
-  customElements.define(
-    AFFINE_DOC_REMOTE_SELECTION_WIDGET,
-    AffineDocRemoteSelectionWidget
-  );
-  customElements.define(
-    AFFINE_EDGELESS_REMOTE_SELECTION_WIDGET,
-    EdgelessRemoteSelectionWidget
-  );
+  if (!customElements.get(AFFINE_DOC_REMOTE_SELECTION_WIDGET)) {
+    customElements.define(
+      AFFINE_DOC_REMOTE_SELECTION_WIDGET,
+      AffineDocRemoteSelectionWidget
+    );
+  }
+  if (!customElements.get(AFFINE_EDGELESS_REMOTE_SELECTION_WIDGET)) {
+    customElements.define(
+      AFFINE_EDGELESS_REMOTE_SELECTION_WIDGET,
+      EdgelessRemoteSelectionWidget
+    );
+  }
 }

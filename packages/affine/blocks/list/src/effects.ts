@@ -1,7 +1,9 @@
 import { ListBlockComponent } from './list-block.js';
 
 export function effects() {
-  customElements.define('affine-list', ListBlockComponent);
+  if (!customElements.get('affine-list')) {
+    customElements.define('affine-list', ListBlockComponent);
+  }
 }
 
 declare global {

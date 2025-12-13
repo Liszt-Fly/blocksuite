@@ -9,12 +9,24 @@ import { PreviewButton } from './code-toolbar/components/preview-button';
 import { AffineCodeUnit } from './highlight/affine-code-unit';
 
 export function effects() {
-  customElements.define('language-list-button', LanguageListButton);
-  customElements.define('affine-code-toolbar', AffineCodeToolbar);
-  customElements.define(AFFINE_CODE_TOOLBAR_WIDGET, AffineCodeToolbarWidget);
-  customElements.define('affine-code-unit', AffineCodeUnit);
-  customElements.define('affine-code', CodeBlockComponent);
-  customElements.define('preview-button', PreviewButton);
+  if (!customElements.get('language-list-button')) {
+    customElements.define('language-list-button', LanguageListButton);
+  }
+  if (!customElements.get('affine-code-toolbar')) {
+    customElements.define('affine-code-toolbar', AffineCodeToolbar);
+  }
+  if (!customElements.get(AFFINE_CODE_TOOLBAR_WIDGET)) {
+    customElements.define(AFFINE_CODE_TOOLBAR_WIDGET, AffineCodeToolbarWidget);
+  }
+  if (!customElements.get('affine-code-unit')) {
+    customElements.define('affine-code-unit', AffineCodeUnit);
+  }
+  if (!customElements.get('affine-code')) {
+    customElements.define('affine-code', CodeBlockComponent);
+  }
+  if (!customElements.get('preview-button')) {
+    customElements.define('preview-button', PreviewButton);
+  }
 }
 
 declare global {

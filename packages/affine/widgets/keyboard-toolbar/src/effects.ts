@@ -12,12 +12,18 @@ import {
 } from './keyboard-toolbar.js';
 
 export function effects() {
-  customElements.define(
-    AFFINE_KEYBOARD_TOOLBAR_WIDGET,
-    AffineKeyboardToolbarWidget
-  );
-  customElements.define(AFFINE_KEYBOARD_TOOLBAR, AffineKeyboardToolbar);
-  customElements.define(AFFINE_KEYBOARD_TOOL_PANEL, AffineKeyboardToolPanel);
+  if (!customElements.get(AFFINE_KEYBOARD_TOOLBAR_WIDGET)) {
+    customElements.define(
+      AFFINE_KEYBOARD_TOOLBAR_WIDGET,
+      AffineKeyboardToolbarWidget
+    );
+  }
+  if (!customElements.get(AFFINE_KEYBOARD_TOOLBAR)) {
+    customElements.define(AFFINE_KEYBOARD_TOOLBAR, AffineKeyboardToolbar);
+  }
+  if (!customElements.get(AFFINE_KEYBOARD_TOOL_PANEL)) {
+    customElements.define(AFFINE_KEYBOARD_TOOL_PANEL, AffineKeyboardToolPanel);
+  }
 }
 
 declare global {

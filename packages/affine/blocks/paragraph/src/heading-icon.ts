@@ -82,7 +82,9 @@ export class ParagraphHeadingIcon extends SignalWatcher(
 }
 
 export function effects() {
-  customElements.define('affine-paragraph-heading-icon', ParagraphHeadingIcon);
+  if (!customElements.get('affine-paragraph-heading-icon')) {
+    customElements.define('affine-paragraph-heading-icon', ParagraphHeadingIcon);
+  }
 }
 
 declare global {

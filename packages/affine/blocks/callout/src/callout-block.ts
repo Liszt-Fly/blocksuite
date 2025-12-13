@@ -22,6 +22,7 @@ export class CalloutBlockComponent extends CaptionedBlockComponent<CalloutBlockM
 
     .affine-callout-block-container {
       display: flex;
+      align-items: center;
       padding: 5px 10px;
       border-radius: 8px;
       background-color: ${unsafeCSSVarV2('block/callout/background/grey')};
@@ -29,14 +30,17 @@ export class CalloutBlockComponent extends CaptionedBlockComponent<CalloutBlockM
 
     .affine-callout-emoji-container {
       margin-right: 10px;
-      margin-top: 14px;
+      margin-top: 0;
       user-select: none;
       font-size: 1.2em;
+      line-height: 1;
       width: 24px;
       height: 24px;
       display: flex;
       align-items: center;
       justify-content: center;
+      /* Fine-tune baseline alignment against the first line of text */
+      transform: translateY(6px);
     }
     .affine-callout-emoji:hover {
       cursor: pointer;

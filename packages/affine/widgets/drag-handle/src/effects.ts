@@ -6,9 +6,13 @@ import { AFFINE_DRAG_HANDLE_WIDGET } from './consts';
 import { AffineDragHandleWidget } from './drag-handle';
 
 export function effects() {
-  customElements.define(AFFINE_DRAG_HANDLE_WIDGET, AffineDragHandleWidget);
-  customElements.define(
-    EDGELESS_DND_PREVIEW_ELEMENT,
-    EdgelessDndPreviewElement
-  );
+  if (!customElements.get(AFFINE_DRAG_HANDLE_WIDGET)) {
+    customElements.define(AFFINE_DRAG_HANDLE_WIDGET, AffineDragHandleWidget);
+  }
+  if (!customElements.get(EDGELESS_DND_PREVIEW_ELEMENT)) {
+    customElements.define(
+      EDGELESS_DND_PREVIEW_ELEMENT,
+      EdgelessDndPreviewElement
+    );
+  }
 }

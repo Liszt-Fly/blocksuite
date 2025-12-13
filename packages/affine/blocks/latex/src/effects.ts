@@ -1,5 +1,7 @@
 import { LatexBlockComponent } from './latex-block';
 
 export function effects() {
-  customElements.define('affine-latex', LatexBlockComponent);
+  if (!customElements.get('affine-latex')) {
+    customElements.define('affine-latex', LatexBlockComponent);
+  }
 }

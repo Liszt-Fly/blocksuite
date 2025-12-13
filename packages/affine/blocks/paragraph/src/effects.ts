@@ -3,7 +3,9 @@ import { ParagraphBlockComponent } from './paragraph-block.js';
 
 export function effects() {
   ParagraphHeadingIconEffects();
-  customElements.define('affine-paragraph', ParagraphBlockComponent);
+  if (!customElements.get('affine-paragraph')) {
+    customElements.define('affine-paragraph', ParagraphBlockComponent);
+  }
 }
 
 declare global {

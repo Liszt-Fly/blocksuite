@@ -4,8 +4,10 @@ import {
 } from './index';
 
 export function effects() {
-  customElements.define(
-    AFFINE_VIEWPORT_OVERLAY_WIDGET,
-    AffineViewportOverlayWidget
-  );
+  if (!customElements.get(AFFINE_VIEWPORT_OVERLAY_WIDGET)) {
+    customElements.define(
+      AFFINE_VIEWPORT_OVERLAY_WIDGET,
+      AffineViewportOverlayWidget
+    );
+  }
 }

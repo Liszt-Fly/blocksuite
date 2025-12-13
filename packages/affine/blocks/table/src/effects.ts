@@ -4,8 +4,16 @@ import { TableBlockComponent, TableBlockComponentName } from './table-block';
 import { TableCell, TableCellComponentName } from './table-cell';
 
 export function effects() {
-  customElements.define(TableBlockComponentName, TableBlockComponent);
-  customElements.define(TableCellComponentName, TableCell);
-  customElements.define(AddButtonComponentName, AddButton);
-  customElements.define(SelectionLayerComponentName, SelectionLayer);
+  if (!customElements.get(TableBlockComponentName)) {
+    customElements.define(TableBlockComponentName, TableBlockComponent);
+  }
+  if (!customElements.get(TableCellComponentName)) {
+    customElements.define(TableCellComponentName, TableCell);
+  }
+  if (!customElements.get(AddButtonComponentName)) {
+    customElements.define(AddButtonComponentName, AddButton);
+  }
+  if (!customElements.get(SelectionLayerComponentName)) {
+    customElements.define(SelectionLayerComponentName, SelectionLayer);
+  }
 }

@@ -2,6 +2,10 @@ import { SurfaceBlockComponent } from './surface-block.js';
 import { SurfaceBlockVoidComponent } from './surface-block-void.js';
 
 export function effects() {
-  customElements.define('affine-surface-void', SurfaceBlockVoidComponent);
-  customElements.define('affine-surface', SurfaceBlockComponent);
+  if (!customElements.get('affine-surface-void')) {
+    customElements.define('affine-surface-void', SurfaceBlockVoidComponent);
+  }
+  if (!customElements.get('affine-surface')) {
+    customElements.define('affine-surface', SurfaceBlockComponent);
+  }
 }

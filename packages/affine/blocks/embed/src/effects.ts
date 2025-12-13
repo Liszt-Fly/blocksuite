@@ -18,59 +18,95 @@ import { EmbedYoutubeBlockComponent } from './embed-youtube-block';
 import { EmbedEdgelessYoutubeBlockComponent } from './embed-youtube-block/embed-edgeless-youtube-block';
 
 export function effects() {
-  customElements.define(
-    'affine-embed-edgeless-figma-block',
-    EmbedEdgelessBlockComponent
-  );
-  customElements.define('affine-embed-figma-block', EmbedFigmaBlockComponent);
+  if (!customElements.get('affine-embed-edgeless-figma-block')) {
+    customElements.define(
+      'affine-embed-edgeless-figma-block',
+      EmbedEdgelessBlockComponent
+    );
+  }
+  if (!customElements.get('affine-embed-figma-block')) {
+    customElements.define('affine-embed-figma-block', EmbedFigmaBlockComponent);
+  }
 
-  customElements.define('affine-embed-html-block', EmbedHtmlBlockComponent);
-  customElements.define(
-    'affine-embed-edgeless-html-block',
-    EmbedEdgelessHtmlBlockComponent
-  );
+  if (!customElements.get('affine-embed-html-block')) {
+    customElements.define('affine-embed-html-block', EmbedHtmlBlockComponent);
+  }
+  if (!customElements.get('affine-embed-edgeless-html-block')) {
+    customElements.define(
+      'affine-embed-edgeless-html-block',
+      EmbedEdgelessHtmlBlockComponent
+    );
+  }
 
-  customElements.define(
-    'embed-html-fullscreen-toolbar',
-    EmbedHtmlFullscreenToolbar
-  );
-  customElements.define(
-    'affine-embed-edgeless-github-block',
-    EmbedEdgelessGithubBlockComponent
-  );
-  customElements.define('affine-embed-github-block', EmbedGithubBlockComponent);
+  if (!customElements.get('embed-html-fullscreen-toolbar')) {
+    customElements.define(
+      'embed-html-fullscreen-toolbar',
+      EmbedHtmlFullscreenToolbar
+    );
+  }
+  if (!customElements.get('affine-embed-edgeless-github-block')) {
+    customElements.define(
+      'affine-embed-edgeless-github-block',
+      EmbedEdgelessGithubBlockComponent
+    );
+  }
+  if (!customElements.get('affine-embed-github-block')) {
+    customElements.define(
+      'affine-embed-github-block',
+      EmbedGithubBlockComponent
+    );
+  }
 
-  customElements.define(
-    'affine-embed-edgeless-youtube-block',
-    EmbedEdgelessYoutubeBlockComponent
-  );
-  customElements.define(
-    'affine-embed-youtube-block',
-    EmbedYoutubeBlockComponent
-  );
+  if (!customElements.get('affine-embed-edgeless-youtube-block')) {
+    customElements.define(
+      'affine-embed-edgeless-youtube-block',
+      EmbedEdgelessYoutubeBlockComponent
+    );
+  }
+  if (!customElements.get('affine-embed-youtube-block')) {
+    customElements.define('affine-embed-youtube-block', EmbedYoutubeBlockComponent);
+  }
 
-  customElements.define(
-    'affine-embed-edgeless-loom-block',
-    EmbedEdgelessLoomBlockComponent
-  );
-  customElements.define('affine-embed-loom-block', EmbedLoomBlockComponent);
+  if (!customElements.get('affine-embed-edgeless-loom-block')) {
+    customElements.define(
+      'affine-embed-edgeless-loom-block',
+      EmbedEdgelessLoomBlockComponent
+    );
+  }
+  if (!customElements.get('affine-embed-loom-block')) {
+    customElements.define('affine-embed-loom-block', EmbedLoomBlockComponent);
+  }
 
-  customElements.define(
-    'affine-embed-edgeless-iframe-block',
-    EmbedEdgelessIframeBlockComponent
-  );
-  customElements.define('affine-embed-iframe-block', EmbedIframeBlockComponent);
-  customElements.define(
-    'embed-iframe-link-input-popup',
-    EmbedIframeLinkInputPopup
-  );
-  customElements.define('embed-iframe-loading-card', EmbedIframeLoadingCard);
-  customElements.define('embed-iframe-error-card', EmbedIframeErrorCard);
-  customElements.define('embed-iframe-idle-card', EmbedIframeIdleCard);
-  customElements.define(
-    'embed-iframe-link-edit-popup',
-    EmbedIframeLinkEditPopup
-  );
+  if (!customElements.get('affine-embed-edgeless-iframe-block')) {
+    customElements.define(
+      'affine-embed-edgeless-iframe-block',
+      EmbedEdgelessIframeBlockComponent
+    );
+  }
+  if (!customElements.get('affine-embed-iframe-block')) {
+    customElements.define('affine-embed-iframe-block', EmbedIframeBlockComponent);
+  }
+  if (!customElements.get('embed-iframe-link-input-popup')) {
+    customElements.define(
+      'embed-iframe-link-input-popup',
+      EmbedIframeLinkInputPopup
+    );
+  }
+  if (!customElements.get('embed-iframe-loading-card')) {
+    customElements.define('embed-iframe-loading-card', EmbedIframeLoadingCard);
+  }
+  if (!customElements.get('embed-iframe-error-card')) {
+    customElements.define('embed-iframe-error-card', EmbedIframeErrorCard);
+  }
+  if (!customElements.get('embed-iframe-idle-card')) {
+    customElements.define('embed-iframe-idle-card', EmbedIframeIdleCard);
+  }
+  if (!customElements.get('embed-iframe-link-edit-popup')) {
+    customElements.define(
+      'embed-iframe-link-edit-popup',
+      EmbedIframeLinkEditPopup
+    );
+  }
 }
 
 declare global {

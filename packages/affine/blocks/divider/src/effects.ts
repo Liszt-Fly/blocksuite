@@ -1,5 +1,7 @@
 import { DividerBlockComponent } from './divider-block';
 
 export function effects() {
-  customElements.define('affine-divider', DividerBlockComponent);
+  if (!customElements.get('affine-divider')) {
+    customElements.define('affine-divider', DividerBlockComponent);
+  }
 }
