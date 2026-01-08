@@ -296,9 +296,9 @@ export class LinkPopup extends WithDisposable(ShadowlessElement) {
         <div class="overlay-mask"></div>
         <div class="popover-container">
           ${choose(this.type, [
-            ['create', this._createTemplate],
-            ['edit', this._editTemplate],
-          ])}
+      ['create', this._createTemplate],
+      ['edit', this._editTemplate],
+    ])}
         </div>
         <div class="mock-selection-container"></div>
       </div>

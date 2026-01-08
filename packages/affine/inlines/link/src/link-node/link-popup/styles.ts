@@ -125,6 +125,15 @@ export const linkPopupStyle = css`
     z-index: var(--affine-z-index-popover);
   }
 
+  .overlay-mask {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    cursor: default;
+  }
+
   .mock-selection-container {
     pointer-events: none;
   }

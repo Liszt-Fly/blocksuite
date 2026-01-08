@@ -18,6 +18,8 @@ import { LifeCycleWatcher, type UIEventHandler } from '@blocksuite/std';
 export class ReadOnlyClipboard extends LifeCycleWatcher {
   static override key = 'affine-readonly-clipboard';
 
+  protected _eventUnsubscribers: Array<() => void> = [];
+
   protected readonly _copySelectedInPage = (onCopy?: () => void) => {
     return this.std.command
       .chain()
@@ -29,21 +31,41 @@ export class ReadOnlyClipboard extends LifeCycleWatcher {
 
   protected _disposables = new DisposableGroup();
 
+  protected _resetRuntime = () => {
+    this._eventUnsubscribers.forEach(off => {
+      try {
+        off();
+      } catch {
+        // ignore
+      }
+    });
+    this._eventUnsubscribers = [];
+
+    try {
+      this._disposables.dispose();
+    } catch {
+      // ignore
+    }
+    this._disposables = new DisposableGroup();
+  };
+
   protected _initAdapters = () => {
     const copy = copyMiddleware(this.std);
+    const title = titleMiddleware(this.std.store.workspace.meta.docMetas);
+    const imageProxy = defaultImageProxyMiddleware;
     this.std.clipboard.use(copy);
     this.std.clipboard.use(
-      titleMiddleware(this.std.store.workspace.meta.docMetas)
+      title
     );
-    this.std.clipboard.use(defaultImageProxyMiddleware);
+    this.std.clipboard.use(imageProxy);
 
     this._disposables.add({
       dispose: () => {
         this.std.clipboard.unuse(copy);
         this.std.clipboard.unuse(
-          titleMiddleware(this.std.store.workspace.meta.docMetas)
+          title
         );
-        this.std.clipboard.unuse(defaultImageProxyMiddleware);
+        this.std.clipboard.unuse(imageProxy);
       },
     });
   };
@@ -62,10 +84,25 @@ export class ReadOnlyClipboard extends LifeCycleWatcher {
       );
       return;
     }
-    if (this._disposables.disposed) {
-      this._disposables = new DisposableGroup();
-    }
-    this.std.event.add('copy', this.onPageCopy);
+    this._resetRuntime();
+    this._eventUnsubscribers.push(this.std.event.add('copy', this.onPageCopy));
     this._initAdapters();
+  }
+
+  override unmounted(): void {
+    this._eventUnsubscribers.forEach(off => {
+      try {
+        off();
+      } catch {
+        // ignore
+      }
+    });
+    this._eventUnsubscribers = [];
+
+    try {
+      this._disposables.dispose();
+    } catch {
+      // ignore
+    }
   }
 }
