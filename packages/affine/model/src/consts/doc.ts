@@ -44,6 +44,8 @@ export const ReferenceParamsSchema = z
     databaseRowId: z.string().optional(),
     xywh: SerializedXYWHSchema.optional(),
     commentId: z.string().optional(),
+    // 原子类型，用于标识链接的原子类型（NOTE=1, PDF_FILE=3, AUDIO_FILE=4 等）
+    atomType: z.number().optional(),
   })
   .partial();
 
