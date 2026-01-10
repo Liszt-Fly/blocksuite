@@ -108,6 +108,8 @@ const builtinToolbarConfig = {
         if (!block) return;
 
         ctx.store.deleteBlock(block.model);
+        // Clear selection after deleting block to prevent toolbar positioning issues
+        ctx.selection.clear(['block']);
       },
     },
   ],

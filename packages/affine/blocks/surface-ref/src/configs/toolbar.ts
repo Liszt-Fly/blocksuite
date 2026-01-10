@@ -93,6 +93,8 @@ export const surfaceRefToolbarModuleConfig: ToolbarModuleConfig = {
         if (!surfaceRefBlock) return;
 
         ctx.store.deleteBlock(surfaceRefBlock.model);
+        // Clear selection after deleting block to prevent toolbar positioning issues
+        ctx.selection.clear(['block']);
       },
     },
   ],
