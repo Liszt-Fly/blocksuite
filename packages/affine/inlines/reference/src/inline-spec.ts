@@ -25,6 +25,9 @@ export const ReferenceInlineSpecExtension =
     if (config.hidePopup !== undefined) {
       configProvider.setHidePopup(config.hidePopup);
     }
+    if (config.checkAtomExists !== undefined) {
+      configProvider.setCheckAtomExists(config.checkAtomExists);
+    }
     return {
       name: 'reference',
       schema: z.object({
