@@ -1,118 +1,128 @@
-import { fontSMStyle, panelBaseStyle } from '@blocksuite/affine-shared/styles';
 import { css } from 'lit';
 
 const editLinkStyle = css`
   .affine-link-edit-popover {
-    display: grid;
-    grid-template-columns: auto auto;
-    grid-template-rows: repeat(2, 1fr);
-    grid-template-areas:
-      'text-area .'
-      'link-area btn';
-    justify-items: center;
-    align-items: center;
-    width: 320px;
-    gap: 8px 12px;
-    padding: 8px;
-    box-sizing: content-box;
-  }
-
-  ${fontSMStyle('.affine-link-edit-popover label')}
-  .affine-link-edit-popover label {
-    box-sizing: border-box;
-    color: var(--affine-icon-color);
-    font-weight: 400;
-  }
-
-  ${fontSMStyle('.affine-link-edit-popover input')}
-  .affine-link-edit-popover input {
-    color: inherit;
-    padding: 0;
-    border: none;
-    background: transparent;
-    color: var(--affine-text-primary-color);
-  }
-  .affine-link-edit-popover input::placeholder {
-    color: var(--affine-placeholder-color);
-  }
-  input:focus {
-    outline: none;
-  }
-  .affine-link-edit-popover input:focus ~ label,
-  .affine-link-edit-popover input:active ~ label {
-    color: var(--affine-primary-color);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 12px;
+    min-width: 320px;
   }
 
   .affine-edit-area {
-    width: 280px;
-    padding: 4px 10px;
-    display: grid;
+    display: flex;
+    flex-direction: column;
     gap: 8px;
-    grid-template-columns: 26px auto;
-    grid-template-rows: repeat(1, 1fr);
-    grid-template-areas: 'label input';
-    user-select: none;
-    box-sizing: border-box;
-
-    border: 1px solid var(--affine-border-color);
-    box-sizing: border-box;
-
-    outline: none;
-    border-radius: 4px;
-    background: transparent;
+    position: relative;
+    transition: transform 0.2s ease;
   }
+
   .affine-edit-area:focus-within {
-    border-color: var(--affine-blue-700);
-    box-shadow: var(--affine-active-shadow);
-  }
-
-  .affine-edit-area.text {
-    grid-area: text-area;
-  }
-
-  .affine-edit-area.link {
-    grid-area: link-area;
+    transform: translateX(2px);
   }
 
   .affine-edit-label {
-    grid-area: label;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--affine-text-secondary-color, #8e8e93);
+    margin-left: 4px;
+    user-select: none;
   }
 
   .affine-edit-input {
-    grid-area: input;
+    width: 100%;
+    padding: 10px 14px;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.5;
+    font-family: var(--chronnote-ui-font, 'Inter', -apple-system, BlinkMacSystemFont, sans-serif);
+    color: var(--affine-text-primary-color, #1d1d1f);
+    
+    background: var(--affine-background-secondary-color, rgba(0, 0, 0, 0.03));
+    border: 1px solid transparent;
+    border-radius: 10px;
+    outline: none;
+    
+    transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
   }
 
-  .affine-confirm-button {
-    grid-area: btn;
-    user-select: none;
+  .affine-edit-input::placeholder {
+    color: var(--affine-text-disable-color, rgba(60, 60, 67, 0.3));
+    font-weight: 400;
+  }
+
+  .affine-edit-input:hover {
+    background: var(--affine-background-secondary-color, rgba(0, 0, 0, 0.05));
+  }
+
+  .affine-edit-input:focus {
+    background: var(--affine-background-primary-color, #fff);
+    border-color: var(--affine-primary-color, #007aff);
+    box-shadow: 0 4px 12px rgba(0, 122, 255, 0.15);
+    transform: scale(1.01);
   }
 `;
 
 export const linkPopupStyle = css`
   :host {
     box-sizing: border-box;
+    font-family: var(--chronnote-ui-font, 'Inter', system-ui, -apple-system, sans-serif);
+    --popover-bg: var(--affine-background-primary-color, rgba(255, 255, 255, 0.85));
+    --popover-border: rgba(255, 255, 255, 0.4);
+    --popover-shadow: 
+      0 6px 20px -6px rgba(0, 0, 0, 0.15),
+      0 4px 12px -4px rgba(0, 0, 0, 0.08),
+      0 0 0 1px rgba(255, 255, 255, 0.5) inset;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :host {
+      --popover-bg: rgba(30, 30, 30, 0.85);
+      --popover-border: rgba(255, 255, 255, 0.1);
+      --popover-shadow: 
+        0 8px 24px -6px rgba(0, 0, 0, 0.4),
+        0 0 0 1px rgba(255, 255, 255, 0.08) inset;
+    }
+  }
+
+  * {
+    box-sizing: border-box;
   }
 
   .mock-selection {
     position: absolute;
-    background-color: rgba(35, 131, 226, 0.28);
+    background-color: var(--affine-primary-color, #007aff);
+    opacity: 0.2;
+    border-radius: 3px;
+    pointer-events: none;
   }
 
-  ${panelBaseStyle('.popover-container')}
   .popover-container {
-    z-index: var(--affine-z-index-popover);
-    animation: affine-popover-fade-in 0.2s ease;
+    z-index: var(--affine-z-index-popover, 100);
     position: absolute;
+    
+    background: var(--popover-bg);
+    backdrop-filter: blur(24px) saturate(180%);
+    -webkit-backdrop-filter: blur(24px) saturate(180%);
+    
+    border-radius: 16px;
+    box-shadow: var(--popover-shadow);
+    
+    animation: link-popup-enter 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    transform-origin: center bottom;
+    will-change: transform, opacity;
   }
 
-  @keyframes affine-popover-fade-in {
-    from {
+  @keyframes link-popup-enter {
+    0% {
       opacity: 0;
-      transform: translateY(-3px);
+      transform: translateY(8px) scale(0.96);
     }
-    to {
+    100% {
       opacity: 1;
-      transform: translateY(0);
+      transform: translateY(0) scale(1);
     }
   }
 
@@ -122,7 +132,12 @@ export const linkPopupStyle = css`
     left: 0;
     width: 100vw;
     height: 100vh;
-    z-index: var(--affine-z-index-popover);
+    z-index: var(--affine-z-index-popover, 100);
+    pointer-events: none; /* Let clicks pass through, container handles pointer events */
+  }
+  
+  .popover-container {
+    pointer-events: auto;
   }
 
   .overlay-mask {
@@ -131,40 +146,99 @@ export const linkPopupStyle = css`
     left: 0;
     width: 100%;
     height: 100%;
-    cursor: default;
+    pointer-events: auto; /* Catch clicks outside */
   }
 
   .mock-selection-container {
     pointer-events: none;
   }
 
+  /* Create mode - Floating Capsule Design */
   .affine-link-popover.create {
     display: flex;
-    gap: 12px;
-    padding: 8px;
-
-    color: var(--affine-text-primary-color);
+    align-items: center;
+    gap: 8px;
+    padding: 6px 6px 6px 12px;
+    height: 48px;
   }
 
   .affine-link-popover-input {
+    flex: 1;
     min-width: 280px;
-    height: 30px;
-    box-sizing: border-box;
-    padding: 4px 10px;
-    background: var(--affine-white-10);
-    border-radius: 4px;
-    border-width: 1px;
-    border-style: solid;
-    border-color: var(--affine-border-color);
-    color: var(--affine-text-primary-color);
+    padding: 0;
+    border: none;
+    background: transparent;
+    
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 1.2;
+    color: var(--affine-text-primary-color, #1d1d1f);
+    font-family: inherit;
+    
+    outline: none;
   }
-  ${fontSMStyle('.affine-link-popover-input')}
+
   .affine-link-popover-input::placeholder {
-    color: var(--affine-placeholder-color);
+    color: var(--affine-text-disable-color, rgba(60, 60, 67, 0.3));
+    font-weight: 400;
   }
-  .affine-link-popover-input:focus {
-    border-color: var(--affine-blue-700);
-    box-shadow: var(--affine-active-shadow);
+
+  /* Confirm button - Modern Floating Action Button style */
+  .affine-confirm-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    width: 36px;
+    height: 36px;
+    border-radius: 12px;
+    border: none;
+    
+    background: transparent;
+    color: var(--affine-primary-color, #007aff);
+    
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.2, 0.8, 0.2, 1);
+    
+    position: relative;
+    overflow: hidden;
+  }
+
+  .affine-confirm-button svg {
+    width: 20px;
+    height: 20px;
+    z-index: 2;
+    transition: transform 0.2s ease;
+  }
+  
+  /* Hover effect with subtle background */
+  .affine-confirm-button:hover:not([disabled]) {
+    background: var(--affine-background-secondary-color, rgba(0, 0, 0, 0.05));
+    transform: scale(1.05);
+  }
+  
+  .affine-confirm-button:active:not([disabled]) {
+    transform: scale(0.95);
+  }
+
+  .affine-confirm-button[disabled] {
+    opacity: 0.3;
+    pointer-events: none;
+    filter: grayscale(1);
+  }
+  
+  /* When typed in (Logic should be: if input has value, this button becomes prominent) */
+  /* Since we don't have a direct 'has-value' class here easily without JS, rely on :not([disabled]) */
+  
+  .affine-confirm-button:not([disabled]) {
+    background: var(--affine-primary-color, #007aff);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(0, 122, 255, 0.3);
+  }
+  
+  .affine-confirm-button:not([disabled]):hover {
+    background: var(--affine-primary-color, #0062cc); /* slightly darker */
+    box-shadow: 0 6px 16px rgba(0, 122, 255, 0.4);
   }
 
   ${editLinkStyle}
