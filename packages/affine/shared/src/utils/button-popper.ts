@@ -12,11 +12,49 @@ import {
 
 export function listenClickAway(
   element: HTMLElement,
-  onClickAway: () => void
+  onClickAway: () => void,
+  popperElement?: HTMLElement,
+  hostElement?: HTMLElement  // 新增：宿主元素，用于检查是否仍然有效
 ): Disposable {
+  let disposed = false;
+
   const callback = (event: MouseEvent) => {
-    const inside = event.composedPath().includes(element);
-    if (!inside) {
+    // 如果已被清理，直接返回
+    if (disposed) {
+      document.removeEventListener('click', callback);
+      return;
+    }
+    
+    // 如果宿主元素存在但不在 DOM 中，说明这是一个过时的监听器
+    if (hostElement && !hostElement.isConnected) {
+      disposed = true;
+      document.removeEventListener('click', callback);
+      return;
+    }
+    
+    // 如果元素已不在 DOM 中，自动清理监听器
+    if (!element.isConnected) {
+      disposed = true;
+      document.removeEventListener('click', callback);
+      return;
+    }
+    
+    // 如果 popperElement 存在但不在 DOM 中，说明这是一个过时的监听器
+    if (popperElement && !popperElement.isConnected) {
+      disposed = true;
+      document.removeEventListener('click', callback);
+      return;
+    }
+
+    const path = event.composedPath();
+    
+    // 检查点击是否在宿主元素内部（包括 shadow DOM）
+    const insideHost = hostElement ? path.includes(hostElement) : false;
+    const insideReference = path.includes(element);
+    const insidePopper = popperElement ? path.includes(popperElement) : false;
+    
+    // 点击在 host、reference 或 popper 内部时不触发 clickAway
+    if (!insideHost && !insideReference && !insidePopper) {
       onClickAway();
     }
   };
@@ -25,6 +63,7 @@ export function listenClickAway(
 
   return {
     dispose: () => {
+      disposed = true;
       document.removeEventListener('click', callback);
     },
   };
@@ -37,6 +76,7 @@ const ATTR_SHOW = 'data-show';
 export type ButtonPopperOptions = {
   reference: HTMLElement;
   popperElement: HTMLElement;
+  hostElement?: HTMLElement;  // 新增：宿主元素
   stateUpdated?: (state: { display: Display }) => void;
   mainAxis?: number;
   crossAxis?: number;
@@ -62,6 +102,7 @@ export function createButtonPopper(options: ButtonPopperOptions) {
   const {
     reference,
     popperElement,
+    hostElement,
     stateUpdated = () => {},
     mainAxis,
     crossAxis,
@@ -144,7 +185,7 @@ export function createButtonPopper(options: ButtonPopperOptions) {
     }
   };
 
-  const clickAway = listenClickAway(reference, () => hide());
+  const clickAway = listenClickAway(reference, () => hide(), popperElement, hostElement);
 
   return {
     get state() {

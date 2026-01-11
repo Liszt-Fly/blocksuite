@@ -32,6 +32,8 @@ import { choose } from 'lit/directives/choose.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
 import { styleMap } from 'lit/directives/style-map.js';
 
+import { ATOM_TYPES, getAtomTypeIcon } from './atom-utils.js';
+
 import type { ReferenceNodeConfigProvider } from './reference-config';
 import { RefNodeSlotsProvider } from './reference-node-slots';
 import type { DocLinkClickedEvent } from './types';
@@ -96,8 +98,36 @@ export class AffineReference extends WithDisposable(ShadowlessElement) {
   @state()
   accessor refMeta: DocMeta | undefined = undefined;
 
+  // Track if atom exists (for atoms with atomType in params)
+  // undefined = not checked yet, true = exists, false = deleted
+  @state()
+  accessor atomExists: boolean | undefined = undefined;
+
+  /**
+   * Get the atom type from reference params.
+   * Defaults to NOTE type (1) if not specified for backward compatibility.
+   * 
+   * @returns The atom type number
+   */
+  get _atomType(): number {
+    return this.delta.attributes?.reference?.params?.atomType ?? ATOM_TYPES.NOTE;
+  }
+
+  /**
+   * Get the icon for the reference based on atom type.
+   * For LinkedPage type with atomType, uses getAtomTypeIcon.
+   * Otherwise falls back to DocDisplayMetaProvider.
+   */
   get _icon() {
     const { pageId, params, title } = this.referenceInfo;
+    const reference = this.delta.attributes?.reference;
+    
+    // If atomType is specified in params, use atom type icon
+    if (reference?.type === 'LinkedPage' && params?.atomType !== undefined) {
+      return getAtomTypeIcon(params.atomType);
+    }
+    
+    // Fall back to default DocDisplayMetaProvider icon
     return this.std
       .get(DocDisplayMetaProvider)
       .icon(pageId, { params, title, referenced: true }).value;
@@ -146,6 +176,41 @@ export class AffineReference extends WithDisposable(ShadowlessElement) {
   get selfInlineRange() {
     const selfInlineRange = this.inlineEditor?.getInlineRangeFromElement(this);
     return selfInlineRange;
+  }
+
+  /**
+   * Check if the referenced atom exists using the configured checkAtomExists function.
+   * Only applies to references with atomType in params.
+   */
+  private async _checkAtomExists() {
+    const reference = this.delta.attributes?.reference;
+    const hasAtomType = reference?.params?.atomType !== undefined;
+    
+    if (!hasAtomType) {
+      // Not an atom reference, skip check
+      return;
+    }
+
+    const checkFn = this.config.checkAtomExists;
+    if (!checkFn) {
+      // No check function configured, assume exists
+      this.atomExists = true;
+      return;
+    }
+
+    const atomId = reference?.pageId;
+    if (!atomId) {
+      this.atomExists = false;
+      return;
+    }
+
+    try {
+      this.atomExists = await checkFn(atomId);
+    } catch (error) {
+      console.warn('[AffineReference] Failed to check atom existence:', error);
+      // On error, assume exists to avoid false positives
+      this.atomExists = true;
+    }
   }
 
   readonly open = (event?: Partial<DocLinkClickedEvent>) => {
@@ -228,6 +293,9 @@ export class AffineReference extends WithDisposable(ShadowlessElement) {
         );
       })
       .catch(console.error);
+
+    // Check if atom exists (for atoms with atomType in params)
+    this._checkAtomExists().catch(console.error);
   }
 
   // reference to block/element
@@ -237,14 +305,20 @@ export class AffineReference extends WithDisposable(ShadowlessElement) {
 
   override render() {
     const refMeta = this.refMeta;
-    const isDeleted = !refMeta;
-
     const attributes = this.delta.attributes;
     const reference = attributes?.reference;
     const type = reference?.type;
     if (!attributes || !type) {
       return nothing;
     }
+
+    // For atoms with atomType in params, they exist in Go API, not in BlockSuite docMetas.
+    // Use atomExists state which is checked asynchronously via checkAtomExists config.
+    // For regular docs (no atomType), use refMeta to determine deleted state.
+    const hasAtomType = reference?.params?.atomType !== undefined;
+    const isDeleted = hasAtomType 
+      ? (this.atomExists === false) // Only show deleted if explicitly checked and not found
+      : !refMeta;
 
     const title = this._title;
     const icon = choose(type, [

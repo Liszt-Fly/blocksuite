@@ -59,12 +59,34 @@ export class AssetsManager {
   }
 
   async readFromBlob(blobId: string) {
-    if (this._assetsMap.has(blobId)) return;
-    const blob = await this._blob.get(blobId);
-    if (!blob) {
-      console.error(`Blob ${blobId} not found in blob manager`);
+    console.log('[AssetsManager.readFromBlob] 尝试读取 blob', {
+      blobId,
+      alreadyInAssetsMap: this._assetsMap.has(blobId),
+    });
+
+    if (this._assetsMap.has(blobId)) {
+      console.log('[AssetsManager.readFromBlob] blob 已在 assetsMap 中，跳过读取');
       return;
     }
+
+    console.log('[AssetsManager.readFromBlob] 从 blob storage 读取...');
+    const blob = await this._blob.get(blobId);
+
+    if (!blob) {
+      console.error(`[AssetsManager.readFromBlob] Blob ${blobId} not found in blob manager`, {
+        blobId,
+        blobCRUD: this._blob,
+      });
+      return;
+    }
+
+    console.log('[AssetsManager.readFromBlob] 成功读取 blob', {
+      blobId,
+      blobSize: blob.size,
+      blobType: blob.type,
+      isFile: blob instanceof File,
+    });
+
     if (blob instanceof File) {
       let file = blob;
       if (this._names.has(blob.name)) {
@@ -92,14 +114,31 @@ export class AssetsManager {
   }
 
   async writeToBlob(blobId: string) {
+    console.log('[AssetsManager.writeToBlob] 开始写入 blob', {
+      blobId,
+      assetsMapSize: this._assetsMap.size,
+      assetsMapKeys: Array.from(this._assetsMap.keys()),
+      hasBlobInMap: this._assetsMap.has(blobId),
+    });
+
     const blob = this._assetsMap.get(blobId);
     if (!blob) {
+      console.error('[AssetsManager.writeToBlob] blob 不在 assetsMap 中', { blobId });
       throw new BlockSuiteError(
         ErrorCode.TransformerError,
         `Blob ${blobId} not found in assets manager`
       );
     }
 
+    console.log('[AssetsManager.writeToBlob] 找到 blob，准备调用 _blob.set', {
+      blobId,
+      blobSize: blob.size,
+      blobType: blob.type,
+      blobCRUD: this._blob,
+    });
+
     await this._blob.set(blobId, blob);
+
+    console.log('[AssetsManager.writeToBlob] blob 写入完成', { blobId });
   }
 }

@@ -1,6 +1,7 @@
 export * from './adapters';
 export * from './commands';
 export * from './edgeless-clipboard-config';
+export * from './effects';
 export * from './image-block';
 export * from './image-edgeless-block';
 export * from './image-service';

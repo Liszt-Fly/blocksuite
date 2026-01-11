@@ -3,7 +3,9 @@
   "description": "Inline reference for BlockSuite.",
   "type": "module",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "sideEffects": false,
   "keywords": [],
@@ -31,6 +33,10 @@
     "rxjs": "^7.8.1",
     "yjs": "^13.6.21",
     "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "fast-check": "^3.23.2",
+    "vitest": "^3.1.2"
   },
   "exports": {
     ".": "./src/index.ts",

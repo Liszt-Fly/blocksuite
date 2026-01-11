@@ -29,15 +29,43 @@ export class EditorMenuButton extends WithDisposable(LitElement) {
   `;
 
   private _popper: ReturnType<typeof createButtonPopper> | null = null;
+  private _triggerClickHandler: ((e: MouseEvent) => void) | null = null;
+
+  private _bindTriggerClick() {
+    if (!this._trigger || this._triggerClickHandler) return;
+    
+    this._triggerClickHandler = (e: MouseEvent) => {
+      e.stopPropagation();
+      this._popper?.toggle();
+    };
+    
+    this._trigger.addEventListener('click', this._triggerClickHandler);
+  }
+  
+  private _unbindTriggerClick() {
+    if (this._trigger && this._triggerClickHandler) {
+      this._trigger.removeEventListener('click', this._triggerClickHandler);
+    }
+    this._triggerClickHandler = null;
+  }
 
   private _updatePopper() {
     this._popper?.dispose();
+    
+    // 确保 trigger 和 content 元素存在
+    if (!this._trigger || !this._content) {
+      return;
+    }
+    
     this._popper = createButtonPopper({
       reference: this._trigger,
       popperElement: this._content,
+      hostElement: this,  // 传递宿主元素，用于检查监听器是否仍然有效
       stateUpdated: ({ display }) => {
         const opened = display === 'show';
-        this._trigger.showTooltip = !opened;
+        if (this._trigger) {
+          this._trigger.showTooltip = !opened;
+        }
         this.dispatchEvent(
           new CustomEvent('toggle', {
             detail: opened,
@@ -59,6 +87,18 @@ export class EditorMenuButton extends WithDisposable(LitElement) {
     });
   }
 
+  override connectedCallback() {
+    super.connectedCallback();
+    // 当组件重新连接到 DOM 时，确保 popper 状态正确
+    // 这处理了组件被复用但 popper 状态过时的情况
+    if (this.hasUpdated && !this._popper) {
+      this.updateComplete.then(() => {
+        this._updatePopper();
+        this._bindTriggerClick();
+      });
+    }
+  }
+
   override willUpdate(changedProperties: PropertyValues) {
     if (changedProperties.has('contentPadding')) {
       this.style.setProperty('--content-padding', this.contentPadding ?? '');
@@ -77,10 +117,22 @@ export class EditorMenuButton extends WithDisposable(LitElement) {
         this._popper?.hide();
       }
     });
-    this._disposables.addFromEvent(this._trigger, 'click', (_: MouseEvent) => {
-      this._popper?.toggle();
+    
+    // 绑定点击事件
+    this._bindTriggerClick();
+    
+    this._disposables.add(() => {
+      this._popper?.dispose();
+      this._unbindTriggerClick();
     });
-    this._disposables.add(() => this._popper?.dispose());
+  }
+
+  override disconnectedCallback() {
+    super.disconnectedCallback();
+    // 确保 popper 及其事件监听器被正确清理，避免文档切换后监听器泄漏
+    this._unbindTriggerClick();
+    this._popper?.dispose();
+    this._popper = null;
   }
 
   hide() {

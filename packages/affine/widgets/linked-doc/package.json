@@ -3,7 +3,9 @@
   "description": "Affine linked doc widget.",
   "type": "module",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "sideEffects": false,
   "keywords": [],
@@ -30,6 +32,10 @@
     "lodash-es": "^4.17.21",
     "rxjs": "^7.8.1",
     "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "fast-check": "^3.23.2",
+    "vitest": "^3.1.2"
   },
   "exports": {
     ".": "./src/index.ts",

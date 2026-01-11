@@ -1,4 +1,5 @@
 export * from './ai.js';
+export * from './atom-types.js';
 export * from './file-icons.js';
 export * from './file-icons-rc';
 export * from './import-export.js';

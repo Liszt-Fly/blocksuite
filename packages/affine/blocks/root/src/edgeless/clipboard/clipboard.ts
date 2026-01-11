@@ -42,7 +42,6 @@ import {
   matchModels,
   referenceToNode,
 } from '@blocksuite/affine-shared/utils';
-import { DisposableGroup } from '@blocksuite/global/disposable';
 import { BlockSuiteError, ErrorCode } from '@blocksuite/global/exceptions';
 import {
   Bound,
@@ -90,22 +89,28 @@ export class EdgelessClipboardController extends PageClipboard {
   static override key = 'affine-edgeless-clipboard';
 
   private readonly _initEdgelessClipboard = () => {
-    this.std.event.add('copy', ctx => {
-      const { surfaceSelections, selectedIds } = this.selectionManager;
+    this._eventUnsubscribers.push(
+      this.std.event.add('copy', ctx => {
+        const { surfaceSelections, selectedIds } = this.selectionManager;
 
-      if (selectedIds.length === 0) return false;
+        if (selectedIds.length === 0) return false;
 
-      this._onCopy(ctx, surfaceSelections).catch(console.error);
-      return;
-    });
+        this._onCopy(ctx, surfaceSelections).catch(console.error);
+        return;
+      })
+    );
 
-    this.std.event.add('paste', ctx => {
-      this._onPaste(ctx).catch(console.error);
-    });
+    this._eventUnsubscribers.push(
+      this.std.event.add('paste', ctx => {
+        this._onPaste(ctx).catch(console.error);
+      })
+    );
 
-    this.std.event.add('cut', ctx => {
-      this._onCut(ctx).catch(console.error);
-    });
+    this._eventUnsubscribers.push(
+      this.std.event.add('cut', ctx => {
+        this._onCut(ctx).catch(console.error);
+      })
+    );
   };
 
   private readonly _onCopy = async (
@@ -681,9 +686,7 @@ export class EdgelessClipboardController extends PageClipboard {
       );
       return;
     }
-    if (this._disposables.disposed) {
-      this._disposables = new DisposableGroup();
-    }
+    this._resetRuntime();
     this._init();
     this._initEdgelessClipboard();
   }

@@ -6,7 +6,7 @@ import {
 } from '@blocksuite/affine-components/icons';
 import { toast } from '@blocksuite/affine-components/toast';
 import { StoreExtensionManagerIdentifier } from '@blocksuite/affine-ext-loader';
-import { insertLinkedNode } from '@blocksuite/affine-inline-reference';
+import { insertLinkedNode, insertAtomNode } from '@blocksuite/affine-inline-reference';
 import {
   DocModeProvider,
   TelemetryProvider,
@@ -28,6 +28,18 @@ import type { TemplateResult } from 'lit';
 
 import { showImportModal } from './import-doc/index.js';
 import type { LinkedDocViewExtensionOptions } from './view';
+import {
+  searchAtoms,
+  getAtomTypeIcon,
+  getAtomTypeDisplayName,
+  defaultAtomMenuConfig,
+  type Atom,
+  type AtomFetcher,
+  type AtomMenuConfig,
+} from './atom-menu.js';
+
+// Re-export atom-menu types for external use
+export type { Atom, AtomFetcher, AtomMenuConfig };
 
 export type LinkedWidgetConfig = Required<
   Omit<LinkedDocViewExtensionOptions, 'autoFocusedItemKey'>
@@ -218,9 +230,124 @@ export function getMenus(
   ]);
 }
 
+/**
+ * Create menu groups from atom search results
+ * 
+ * @param groupedAtoms - Map of atom type to array of atoms
+ * @param abort - Function to close the menu
+ * @param inlineEditor - The inline editor instance
+ * @param editorHost - The editor host instance
+ * @param config - Menu configuration
+ * @returns Array of LinkedMenuGroup
+ */
+export function createAtomMenuGroups(
+  groupedAtoms: Map<number, Atom[]>,
+  abort: () => void,
+  inlineEditor: AffineInlineEditor,
+  editorHost: EditorHost,
+  config: AtomMenuConfig = defaultAtomMenuConfig
+): LinkedMenuGroup[] {
+  const groups: LinkedMenuGroup[] = [];
+
+  for (const [atomType, atoms] of groupedAtoms) {
+    const displayAtoms = atoms.slice(0, config.maxDisplayPerType);
+    const overflowCount = atoms.length - config.maxDisplayPerType;
+
+    groups.push({
+      name: getAtomTypeDisplayName(atomType),
+      items: displayAtoms.map(atom => ({
+        key: atom.id,
+        name: atom.name || 'Untitled',
+        icon: getAtomTypeIcon(atomType),
+        action: () => {
+          abort();
+          insertAtomNode({
+            inlineEditor,
+            atomId: atom.id,
+            atomType: atom.type,
+            title: atom.name,
+          });
+          editorHost.std
+            .getOptional(TelemetryProvider)
+            ?.track('LinkedDocCreated', {
+              control: 'linked atom',
+              module: 'inline @',
+              type: getAtomTypeDisplayName(atomType),
+              other: 'existing atom',
+            });
+        },
+      })),
+      maxDisplay: config.maxDisplayPerType,
+      overflowText: overflowCount > 0 ? `还有 ${overflowCount} 个` : undefined,
+    });
+  }
+
+  return groups;
+}
+
+/**
+ * Get menus with atom support
+ * 
+ * This function fetches atoms from the provided fetcher and creates menu groups.
+ * If the fetcher fails or returns empty results, it falls back to the default doc menu.
+ * 
+ * @param query - Search query string
+ * @param abort - Function to close the menu
+ * @param editorHost - The editor host instance
+ * @param inlineEditor - The inline editor instance
+ * @param atomFetcher - Optional function to fetch atoms from the backend
+ * @param config - Optional menu configuration
+ * @returns Promise of LinkedMenuGroup array
+ */
+export async function getMenusWithAtoms(
+  query: string,
+  abort: () => void,
+  editorHost: EditorHost,
+  inlineEditor: AffineInlineEditor,
+  atomFetcher?: AtomFetcher,
+  config: AtomMenuConfig = defaultAtomMenuConfig
+): Promise<LinkedMenuGroup[]> {
+  const groups: LinkedMenuGroup[] = [];
+
+  // Try to fetch atoms if fetcher is provided
+  if (atomFetcher) {
+    try {
+      const groupedAtoms = await searchAtoms(query, atomFetcher, config);
+      
+      if (groupedAtoms.size > 0) {
+        // Add atom menu groups
+        groups.push(
+          ...createAtomMenuGroups(groupedAtoms, abort, inlineEditor, editorHost, config)
+        );
+      } else {
+        // Fallback to doc menu if no atoms found
+        groups.push(createLinkedDocMenuGroup(query, abort, editorHost, inlineEditor));
+      }
+    } catch (error) {
+      console.error('[linked-doc] Failed to fetch atoms, falling back to doc menu:', error);
+      // Fallback to doc menu on error
+      groups.push(createLinkedDocMenuGroup(query, abort, editorHost, inlineEditor));
+    }
+  } else {
+    // No fetcher provided, use default doc menu
+    groups.push(createLinkedDocMenuGroup(query, abort, editorHost, inlineEditor));
+  }
+
+  // Always add new doc menu
+  groups.push(createNewDocMenuGroup(query, abort, editorHost, inlineEditor));
+
+  return groups;
+}
+
 export const LinkedWidgetUtils = {
   createNewDocMenuGroup,
+  createAtomMenuGroups,
   insertLinkedNode,
+  insertAtomNode,
+  getMenusWithAtoms,
+  searchAtoms,
+  getAtomTypeIcon,
+  getAtomTypeDisplayName,
 };
 
 export const AFFINE_LINKED_DOC_WIDGET = 'affine-linked-doc-widget';

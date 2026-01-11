@@ -1,4 +1,4 @@
-import type { EditorIconButton } from '@blocksuite/affine-components/toolbar';
+
 import type { AffineInlineEditor } from '@blocksuite/affine-shared/types';
 import {
   isValidUrl,
@@ -122,14 +122,13 @@ export class LinkPopup extends WithDisposable(ShadowlessElement) {
 
   private _confirmBtnTemplate() {
     return html`
-      <editor-icon-button
+      <button
         class="affine-confirm-button"
-        .iconSize="${'24px'}"
-        .disabled=${true}
+        ?disabled=${!this.linkInput?.value}
         @click=${this._onConfirm}
       >
         ${DoneIcon()}
-      </editor-icon-button>
+      </button>
     `;
   }
 
@@ -185,14 +184,12 @@ export class LinkPopup extends WithDisposable(ShadowlessElement) {
   }
 
   private _updateConfirmBtn() {
-    if (!this.confirmButton) {
+    if (!this.confirmButton || !this.linkInput) {
       return;
     }
-    const link = this.linkInput?.value.trim();
+    const link = this.linkInput.value.trim();
     const disabled = !(link && isValidUrl(link));
     this.confirmButton.disabled = disabled;
-    this.confirmButton.active = !disabled;
-    this.confirmButton.requestUpdate();
   }
 
   private updateMockSelection(rects: DOMRect[]) {
@@ -296,9 +293,9 @@ export class LinkPopup extends WithDisposable(ShadowlessElement) {
         <div class="overlay-mask"></div>
         <div class="popover-container">
           ${choose(this.type, [
-            ['create', this._createTemplate],
-            ['edit', this._editTemplate],
-          ])}
+      ['create', this._createTemplate],
+      ['edit', this._editTemplate],
+    ])}
         </div>
         <div class="mock-selection-container"></div>
       </div>
@@ -309,7 +306,7 @@ export class LinkPopup extends WithDisposable(ShadowlessElement) {
   accessor abortController!: AbortController;
 
   @query('.affine-confirm-button')
-  accessor confirmButton: EditorIconButton | null = null;
+  accessor confirmButton: HTMLButtonElement | null = null;
 
   @property({ attribute: false })
   accessor inlineEditor!: AffineInlineEditor;

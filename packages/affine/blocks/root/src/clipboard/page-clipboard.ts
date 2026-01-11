@@ -15,7 +15,6 @@ import {
   getTextSelectionCommand,
   retainFirstModelCommand,
 } from '@blocksuite/affine-shared/commands';
-import { DisposableGroup } from '@blocksuite/global/disposable';
 import type { UIEventHandler } from '@blocksuite/std';
 import type { BlockSnapshot, Store } from '@blocksuite/store';
 
@@ -165,12 +164,12 @@ export class PageClipboard extends ReadOnlyClipboard {
       );
       return;
     }
-    if (this._disposables.disposed) {
-      this._disposables = new DisposableGroup();
-    }
-    this.std.event.add('copy', this.onPageCopy);
-    this.std.event.add('paste', this.onPagePaste);
-    this.std.event.add('cut', this.onPageCut);
+    this._resetRuntime();
+    this._eventUnsubscribers.push(this.std.event.add('copy', this.onPageCopy));
+    this._eventUnsubscribers.push(
+      this.std.event.add('paste', this.onPagePaste)
+    );
+    this._eventUnsubscribers.push(this.std.event.add('cut', this.onPageCut));
     this._init();
   }
 }
