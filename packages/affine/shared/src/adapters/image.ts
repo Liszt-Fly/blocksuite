@@ -94,15 +94,7 @@ export class ImageAdapter extends BaseAdapter<Image> {
     pageId,
     workspaceId,
   }: ImageToSliceSnapshotPayload): Promise<SliceSnapshot | null> {
-    console.log('[ImageAdapter.toSliceSnapshot] 开始处理图片粘贴', {
-      filesCount: files.length,
-      pageId,
-      workspaceId,
-      hasAssets: !!assets,
-    });
-
     if (files.length === 0) {
-      console.log('[ImageAdapter.toSliceSnapshot] 没有图片文件，返回 null');
       return null;
     }
 
@@ -113,22 +105,9 @@ export class ImageAdapter extends BaseAdapter<Image> {
       const id = nanoid();
       const { size } = blob;
 
-      console.log('[ImageAdapter.toSliceSnapshot] 处理图片', {
-        blockId: id,
-        blobSize: size,
-        blobType: blob.type,
-        uploadingAssetsMapSize: assets?.uploadingAssetsMap.size,
-      });
-
       assets?.uploadingAssetsMap.set(id, {
         blob,
         mapInto: sourceId => ({ sourceId }),
-      });
-
-      console.log('[ImageAdapter.toSliceSnapshot] 已添加到 uploadingAssetsMap', {
-        blockId: id,
-        uploadingAssetsMapSize: assets?.uploadingAssetsMap.size,
-        uploadingAssetsMapKeys: assets ? Array.from(assets.uploadingAssetsMap.keys()) : [],
       });
 
       content.push({
@@ -139,11 +118,6 @@ export class ImageAdapter extends BaseAdapter<Image> {
         children: [],
       });
     }
-
-    console.log('[ImageAdapter.toSliceSnapshot] 完成，返回 snapshot', {
-      contentLength: content.length,
-      blockIds: content.map(c => c.id),
-    });
 
     return {
       type: 'slice',

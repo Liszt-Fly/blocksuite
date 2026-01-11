@@ -33,20 +33,20 @@ export class BlobEngine {
   }
 
   async get(key: string) {
-    console.log('[BlobEngine.get] 尝试获取 blob', {
+    console.debug('[BlobEngine.get] 尝试获取 blob', {
       key,
       sourcesCount: this.sources.length,
       sourceNames: this.sources.map(s => s.name),
     });
 
     for (const source of this.sources) {
-      console.log('[BlobEngine.get] 尝试从 source 获取', {
+      console.debug('[BlobEngine.get] 尝试从 source 获取', {
         key,
         sourceName: source.name,
       });
       const data = await source.get(key);
       if (data) {
-        console.log('[BlobEngine.get] 成功从 source 获取 blob', {
+        console.debug('[BlobEngine.get] 成功从 source 获取 blob', {
           key,
           sourceName: source.name,
           blobSize: data.size,
@@ -54,13 +54,13 @@ export class BlobEngine {
         });
         return data;
       }
-      console.log('[BlobEngine.get] source 中未找到 blob', {
+      console.debug('[BlobEngine.get] source 中未找到 blob', {
         key,
         sourceName: source.name,
       });
     }
 
-    console.log('[BlobEngine.get] 所有 source 都未找到 blob', { key });
+    console.debug('[BlobEngine.get] 所有 source 都未找到 blob', { key });
     return null;
   }
 
@@ -82,7 +82,7 @@ export class BlobEngine {
   async set(key: string, value: Blob): Promise<string>;
 
   async set(valueOrKey: string | Blob, _value?: Blob) {
-    console.log('[BlobEngine.set] 开始设置 blob', {
+    console.debug('[BlobEngine.set] 开始设置 blob', {
       isKeyProvided: typeof valueOrKey === 'string',
       key: typeof valueOrKey === 'string' ? valueOrKey : '(will compute sha)',
       valueSize: typeof valueOrKey === 'string' ? _value?.size : valueOrKey.size,
@@ -104,7 +104,7 @@ export class BlobEngine {
       throw new Error('value is empty');
     }
 
-    console.log('[BlobEngine.set] 准备写入 main source', {
+    console.debug('[BlobEngine.set] 准备写入 main source', {
       key,
       valueSize: value.size,
       valueType: value.type,
@@ -114,7 +114,7 @@ export class BlobEngine {
     // await upload to the main peer
     await this.main.set(key, value);
 
-    console.log('[BlobEngine.set] main source 写入完成', { key });
+    console.debug('[BlobEngine.set] main source 写入完成', { key });
 
     // uploads to other peers in the background
     Promise.allSettled(
