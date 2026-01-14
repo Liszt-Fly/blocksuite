@@ -64,6 +64,7 @@ export const BookmarkBlockSchema = defineBlockSchema({
     role: 'content',
     parent: [
       'affine:note',
+      'chron:change',
       'affine:surface',
       'affine:edgeless-text',
       'affine:paragraph',

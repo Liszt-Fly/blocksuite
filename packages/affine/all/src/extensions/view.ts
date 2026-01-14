@@ -1,6 +1,7 @@
 import { AttachmentViewExtension } from '@blocksuite/affine-block-attachment/view';
 import { BookmarkViewExtension } from '@blocksuite/affine-block-bookmark/view';
 import { CalloutViewExtension } from '@blocksuite/affine-block-callout/view';
+import { ChronDiffViewExtension } from '@blocksuite/affine-block-chron-diff/view';
 import { CodeBlockViewExtension } from '@blocksuite/affine-block-code/view';
 import { DataViewViewExtension } from '@blocksuite/affine-block-data-view/view';
 import { DatabaseViewExtension } from '@blocksuite/affine-block-database/view';
@@ -77,6 +78,7 @@ export function getInternalViewExtensions() {
     AttachmentViewExtension,
     BookmarkViewExtension,
     CalloutViewExtension,
+    ChronDiffViewExtension,
     CodeBlockViewExtension,
     DataViewViewExtension,
     DatabaseViewExtension,

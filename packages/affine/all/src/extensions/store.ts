@@ -1,6 +1,7 @@
 import { AttachmentStoreExtension } from '@blocksuite/affine-block-attachment/store';
 import { BookmarkStoreExtension } from '@blocksuite/affine-block-bookmark/store';
 import { CalloutStoreExtension } from '@blocksuite/affine-block-callout/store';
+import { ChronDiffStoreExtension } from '@blocksuite/affine-block-chron-diff/store';
 import { CodeStoreExtension } from '@blocksuite/affine-block-code/store';
 import { DataViewStoreExtension } from '@blocksuite/affine-block-data-view/store';
 import { DatabaseStoreExtension } from '@blocksuite/affine-block-database/store';
@@ -38,6 +39,7 @@ export function getInternalStoreExtensions() {
     AttachmentStoreExtension,
     BookmarkStoreExtension,
     CalloutStoreExtension,
+    ChronDiffStoreExtension,
     CodeStoreExtension,
     DataViewStoreExtension,
     DatabaseStoreExtension,

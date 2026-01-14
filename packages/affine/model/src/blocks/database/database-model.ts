@@ -33,8 +33,9 @@ export const DatabaseBlockSchema = defineBlockSchema({
   metadata: {
     role: 'hub',
     version: 3,
-    parent: ['affine:note'],
-    children: ['affine:paragraph', 'affine:list'],
+    parent: ['affine:note', 'chron:change'],
+    // Allow track-changes wrapper blocks inside database content.
+    children: ['affine:paragraph', 'affine:list', 'chron:change'],
   },
   toModel: () => new DatabaseBlockModel(),
 });

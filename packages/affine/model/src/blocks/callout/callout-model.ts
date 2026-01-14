@@ -27,13 +27,15 @@ export const CalloutBlockSchema = defineBlockSchema({
     role: 'hub',
     parent: [
       'affine:note',
+      'chron:change',
       'affine:database',
       'affine:paragraph',
       'affine:list',
       'affine:edgeless-text',
       'affine:transcription',
     ],
-    children: ['affine:paragraph', 'affine:list'],
+    // Allow track-changes wrapper blocks inside callout content.
+    children: ['affine:paragraph', 'affine:list', 'chron:change'],
   },
   toModel: () => new CalloutBlockModel(),
 });

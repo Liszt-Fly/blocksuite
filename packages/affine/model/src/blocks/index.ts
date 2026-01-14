@@ -1,6 +1,7 @@
 export * from './attachment/index.js';
 export * from './bookmark/index.js';
 export * from './callout/index.js';
+export * from './chron-diff/index.js';
 export * from './code/index.js';
 export * from './database/index.js';
 export * from './divider/index.js';

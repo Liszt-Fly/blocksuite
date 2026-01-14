@@ -71,6 +71,8 @@ export const EdgelessTextBlockSchema = defineBlockSchema({
       'affine:attachment',
       'affine:embed-!(synced-doc)',
       'affine:latex',
+      // Allow track-changes wrapper blocks inside edgeless text.
+      'chron:change',
     ],
   },
   toModel: () => new EdgelessTextBlockModel(),
