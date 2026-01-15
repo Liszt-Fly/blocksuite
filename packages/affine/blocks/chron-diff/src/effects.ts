@@ -1,5 +1,6 @@
 import { ChronHiddenBlockComponent } from './chron-hidden-block'
 import { ChronChangeBlockComponent } from './chron-change-block'
+import { CHRON_DIFF_NAVIGATOR_WIDGET, ChronDiffNavigatorWidget } from './chron-diff-navigator-widget'
 
 class ChronChangelogBlockComponent extends ChronHiddenBlockComponent {}
 class ChronLegacyAffineDiffBlockComponent extends ChronHiddenBlockComponent {}
@@ -12,6 +13,9 @@ export function effects() {
   }
   if (!customElements.get('chron-change-block')) {
     customElements.define('chron-change-block', ChronChangeBlockComponent)
+  }
+  if (!customElements.get(CHRON_DIFF_NAVIGATOR_WIDGET)) {
+    customElements.define(CHRON_DIFF_NAVIGATOR_WIDGET, ChronDiffNavigatorWidget)
   }
   // Legacy safety net: some docs may contain unknown 'affine:diff' blocks.
   if (!customElements.get('chron-legacy-affine-diff-block')) {

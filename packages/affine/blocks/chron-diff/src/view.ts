@@ -2,6 +2,7 @@ import { ViewExtensionProvider, type ViewExtensionContext } from '@blocksuite/af
 
 import { ChronDiffBlockSpec } from './chron-spec'
 import { effects } from './effects'
+import { chronDiffNavigatorWidget } from './chron-diff-navigator-widget'
 
 export class ChronDiffViewExtension extends ViewExtensionProvider {
   override name = 'chron-diff'
@@ -14,6 +15,6 @@ export class ChronDiffViewExtension extends ViewExtensionProvider {
   override setup(context: ViewExtensionContext) {
     super.setup(context)
     context.register(ChronDiffBlockSpec)
+    context.register(chronDiffNavigatorWidget)
   }
 }
-

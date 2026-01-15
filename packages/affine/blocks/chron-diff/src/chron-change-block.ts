@@ -143,6 +143,23 @@ export class ChronChangeBlockComponent extends BlockComponent<ChronChangeBlockMo
     :host-context([data-theme='dark']) .chron-change__pane.after {
       background: rgba(46, 160, 67, 0.12);
     }
+
+    /* Used by the global diff navigator to mark the current change. */
+    :host([data-chron-diff-active='true']) .chron-change__pane.before,
+    :host([data-chron-diff-active='true']) .chron-change__pane.after,
+    :host([data-chron-diff-active='true']) .chron-change__body {
+      outline: 2px solid rgba(46, 160, 67, 0.45);
+      outline-offset: -2px;
+    }
+    :host-context([data-theme='dark']):host([data-chron-diff-active='true'])
+      .chron-change__pane.before,
+    :host-context([data-theme='dark']):host([data-chron-diff-active='true'])
+      .chron-change__pane.after,
+    :host-context([data-theme='dark']):host([data-chron-diff-active='true'])
+      .chron-change__body {
+      outline: 2px solid rgba(255, 255, 255, 0.22);
+      outline-offset: -2px;
+    }
   `;
 
   private _op(): ChronChangeOp {
