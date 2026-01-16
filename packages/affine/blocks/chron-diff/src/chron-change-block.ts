@@ -68,8 +68,8 @@ export class ChronChangeBlockComponent extends BlockComponent<ChronChangeBlockMo
       padding: 0;
       border-radius: 8px;
       box-sizing: border-box;
-      border: none;
-      background: rgba(0, 0, 0, 0.06);
+      border: 1px solid rgba(0, 0, 0, 0.12);
+      background: #f2f3f5;
       font-size: 12px;
       line-height: 1;
       user-select: none;
@@ -80,33 +80,34 @@ export class ChronChangeBlockComponent extends BlockComponent<ChronChangeBlockMo
     }
 
     button.chron-change__btn:hover {
-      background: rgba(0, 0, 0, 0.10);
+      background: #e8eaed;
     }
 
     :host-context([data-theme='dark']) button.chron-change__btn {
-      background: rgba(255, 255, 255, 0.10);
+      background: #2a2a2a;
+      border: 1px solid rgba(255, 255, 255, 0.14);
       color: rgba(255, 255, 255, 0.92);
     }
     :host-context([data-theme='dark']) button.chron-change__btn:hover {
-      background: rgba(255, 255, 255, 0.16);
+      background: #343434;
     }
 
     button.chron-change__btn.keep {
-      border: none;
-      background: rgba(46, 160, 67, 0.86);
+      border: 1px solid rgba(0, 0, 0, 0.12);
+      background: #2ea043;
       color: rgba(255, 255, 255, 0.96);
     }
     button.chron-change__btn.keep:hover {
-      background: rgba(46, 160, 67, 0.94);
+      background: #249a3a;
     }
 
     :host-context([data-theme='dark']) button.chron-change__btn.keep {
-      border: none;
-      background: rgba(46, 160, 67, 0.72);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      background: #238636;
       color: rgba(255, 255, 255, 0.96);
     }
     :host-context([data-theme='dark']) button.chron-change__btn.keep:hover {
-      background: rgba(46, 160, 67, 0.82);
+      background: #2ea043;
     }
 
     .chron-change__body {
