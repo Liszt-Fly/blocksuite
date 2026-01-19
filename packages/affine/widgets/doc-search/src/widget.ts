@@ -17,7 +17,7 @@ type DocSearchMatch = {
 export class AffineDocSearchWidget extends WidgetComponent<RootBlockModel> {
   static override styles = css`
     :host {
-      position: absolute;
+      position: fixed;
       top: 12px;
       right: 12px;
       z-index: var(--affine-z-index-popover);
@@ -222,27 +222,6 @@ export class AffineDocSearchWidget extends WidgetComponent<RootBlockModel> {
     this.runSearch();
   }
 
-  private _stopPropagation(event: Event) {
-    event.stopPropagation();
-    if ('stopImmediatePropagation' in event) {
-      (event as Event & { stopImmediatePropagation: () => void })
-        .stopImmediatePropagation();
-    }
-  }
-
-  private _preventFocusLoss(event: Event) {
-    event.preventDefault();
-    this._stopPropagation(event);
-  }
-
-  private _refocusInput() {
-    if (!this._open$.value) return;
-    queueMicrotask(() => {
-      if (!this._open$.value) return;
-      this._input?.focus({ preventScroll: true });
-    });
-  }
-
   private _resetActiveIndex() {
     this._activeIndex$.value = 0;
   }
@@ -333,18 +312,19 @@ export class AffineDocSearchWidget extends WidgetComponent<RootBlockModel> {
     if (!this._open$.value) return nothing;
     const total = this._matches$.value.length;
     const index = total ? this._activeIndex$.value + 1 : 0;
-    return html`<div class="header" @pointerdown=${this._preventFocusLoss} @mousedown=${this._preventFocusLoss}>
+    return html`<div class="header">
       <input
         type="text"
         .value=${this._query$.value}
         placeholder="搜索"
         ${RANGE_SYNC_EXCLUDE_ATTR}="true"
-        @pointerdown=${this._preventFocusLoss}
-        @mousedown=${this._preventFocusLoss}
-        @click=${this._stopPropagation}
-        @keydown=${this._stopPropagation}
-        @focus=${this._stopPropagation}
-        @focusout=${this._refocusInput}
+        @keydown=${(event: KeyboardEvent) => {
+          if (event.key === 'Escape') {
+            event.preventDefault();
+            event.stopPropagation();
+            this.close();
+          }
+        }}
         @input=${(event: InputEvent) => {
           const target = event.target as HTMLInputElement;
           this._updateQuery(target.value);
@@ -393,5 +373,6 @@ export class AffineDocSearchWidget extends WidgetComponent<RootBlockModel> {
     >
       ${this._renderHeader()} ${this._renderResults()}
     </div>`;
+
   }
 }
