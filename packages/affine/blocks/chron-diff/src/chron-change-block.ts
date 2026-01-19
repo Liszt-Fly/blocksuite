@@ -145,19 +145,13 @@ export class ChronChangeBlockComponent extends BlockComponent<ChronChangeBlockMo
       background: rgba(46, 160, 67, 0.12);
     }
 
-    /* Used by the global diff navigator to mark the current change. */
-    :host([data-chron-diff-active='true']) .chron-change__pane.before,
-    :host([data-chron-diff-active='true']) .chron-change__pane.after,
-    :host([data-chron-diff-active='true']) .chron-change__body {
+    /* Used by the global diff navigator to mark the current change.
+     * Apply outline to the wrapper only (avoid a horizontal line between before/after panes). */
+    :host([data-chron-diff-active='true']) .chron-change {
       outline: 2px solid rgba(46, 160, 67, 0.45);
       outline-offset: -2px;
     }
-    :host-context([data-theme='dark']):host([data-chron-diff-active='true'])
-      .chron-change__pane.before,
-    :host-context([data-theme='dark']):host([data-chron-diff-active='true'])
-      .chron-change__pane.after,
-    :host-context([data-theme='dark']):host([data-chron-diff-active='true'])
-      .chron-change__body {
+    :host-context([data-theme='dark']):host([data-chron-diff-active='true']) .chron-change {
       outline: 2px solid rgba(255, 255, 255, 0.22);
       outline-offset: -2px;
     }
