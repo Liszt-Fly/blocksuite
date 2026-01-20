@@ -1,12 +1,10 @@
 import type { RootBlockModel } from '@blocksuite/affine-model';
 import type { BlockModel } from '@blocksuite/store';
-import { Text } from '@blocksuite/store';
 import { WidgetComponent } from '@blocksuite/std';
 import { RANGE_SYNC_EXCLUDE_ATTR } from '@blocksuite/std/inline';
-import { computed, signal } from '@preact/signals-core';
+import { signal } from '@preact/signals-core';
 import { css, html, nothing } from 'lit';
 import { query } from 'lit/decorators.js';
-import { repeat } from 'lit/directives/repeat.js';
 
 type DocSearchMatch = {
   blockId: string;
@@ -98,53 +96,12 @@ export class AffineDocSearchWidget extends WidgetComponent<RootBlockModel> {
       background: color-mix(in srgb, var(--affine-hover-color), #000000 10%);
     }
 
-    .results {
-      width: 280px;
-      max-height: 240px;
-      overflow: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-      padding: 6px;
-      border-radius: 12px;
-      background: var(--affine-background-overlay-panel-color);
-      border: 1px solid var(--affine-border-color);
-      box-shadow: var(--affine-menu-shadow);
-    }
 
-    .result {
-      text-align: left;
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-      padding: 6px 8px;
-      border-radius: 8px;
-      border: none;
-      background: transparent;
-      color: var(--affine-text-primary-color);
-      cursor: pointer;
-    }
-
-    .result:hover {
-      background: var(--affine-hover-color);
-    }
-
-    .result.active {
-      background: color-mix(in srgb, var(--affine-hover-color), #000000 12%);
-    }
-
-    .result .type {
-      font-size: var(--affine-font-xs);
-      color: var(--affine-text-secondary-color);
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-    }
-
-    .result .text {
-      font-size: var(--affine-font-sm);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+    mark.affine-doc-search-highlight {
+      background: var(--affine-text-highlight-bg, rgba(255, 214, 51, 0.4));
+      color: inherit;
+      border-radius: 2px;
+      padding: 0 1px;
     }
   `;
 
@@ -152,13 +109,11 @@ export class AffineDocSearchWidget extends WidgetComponent<RootBlockModel> {
 
   private readonly _matches$ = signal<DocSearchMatch[]>([]);
 
-  private readonly _activeIndex$ = signal(0);
+  private readonly _currentIndex$ = signal(0);
 
   private readonly _caseSensitive$ = signal(false);
 
   private readonly _open$ = signal(false);
-
-  private readonly _hasResults$ = computed(() => this._matches$.value.length > 0);
 
   @query('input')
   accessor _input!: HTMLInputElement;
@@ -173,19 +128,19 @@ export class AffineDocSearchWidget extends WidgetComponent<RootBlockModel> {
         this.open();
         return true;
       },
-      Enter: () => {
-        if (!this._open$.value) return false;
-        this.gotoNext();
-        return true;
-      },
-      'Shift-Enter': () => {
-        if (!this._open$.value) return false;
-        this.gotoPrev();
-        return true;
-      },
       Escape: () => {
         if (!this._open$.value) return false;
         this.close();
+        return true;
+      },
+      'Mod-g': () => {
+        if (!this._open$.value) return false;
+        this.nextMatch();
+        return true;
+      },
+      'Mod-Shift-g': () => {
+        if (!this._open$.value) return false;
+        this.prevMatch();
         return true;
       },
     });
@@ -211,7 +166,6 @@ export class AffineDocSearchWidget extends WidgetComponent<RootBlockModel> {
     this.requestUpdate();
   }
 
-
   toggleCaseSensitive() {
     this._caseSensitive$.value = !this._caseSensitive$.value;
     this.runSearch();
@@ -222,13 +176,41 @@ export class AffineDocSearchWidget extends WidgetComponent<RootBlockModel> {
     this.runSearch();
   }
 
-  private _resetActiveIndex() {
-    this._activeIndex$.value = 0;
+
+  private _getTextNodes(root: HTMLElement): Text[] {
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
+      acceptNode: node => {
+        if (!node.nodeValue) return NodeFilter.FILTER_REJECT;
+        const parent = node.parentElement;
+        if (!parent) return NodeFilter.FILTER_REJECT;
+        if (parent.closest('mark.affine-doc-search-highlight')) {
+          return NodeFilter.FILTER_REJECT;
+        }
+        return NodeFilter.FILTER_ACCEPT;
+      },
+    });
+
+    const nodes: Text[] = [];
+    let current = walker.nextNode();
+    while (current) {
+      nodes.push(current as Text);
+      current = walker.nextNode();
+    }
+    return nodes;
+  }
+
+  private _clearDomHighlight(root: HTMLElement) {
+    const marks = root.querySelectorAll('mark.affine-doc-search-highlight');
+    marks.forEach(mark => {
+      const parent = mark.parentNode;
+      if (!parent) return;
+      parent.replaceChild(document.createTextNode(mark.textContent ?? ''), mark);
+      parent.normalize();
+    });
   }
 
   private _setMatches(matches: DocSearchMatch[]) {
     this._matches$.value = matches;
-    this._resetActiveIndex();
   }
 
   private _normalize(text: string) {
@@ -248,8 +230,11 @@ export class AffineDocSearchWidget extends WidgetComponent<RootBlockModel> {
     const stack: BlockModel[] = [root];
     while (stack.length) {
       const current = stack.pop()!;
-      if (current.text instanceof Text) {
-        const text = current.text.toString().trim().replace(/\s+/g, ' ');
+      // Use duck typing to check for text property instead of instanceof
+      // This avoids issues with multiple Text class instances in monorepo
+      const textProp = current.text;
+      if (textProp && typeof textProp.toString === 'function') {
+        const text = textProp.toString().replace(/\s+/g, ' ').trim();
         if (text) {
           const normalizedText = this._normalize(text);
           if (normalizedText.includes(normalizedQuery)) {
@@ -275,43 +260,79 @@ export class AffineDocSearchWidget extends WidgetComponent<RootBlockModel> {
     this.clearHighlight();
     const matches = this._collectMatches();
     this._setMatches(matches);
+    this._currentIndex$.value = 0;
     if (matches.length) {
-      this.gotoMatch(0);
+      this.highlightMatch(matches[0]);
+    }
+    this.requestUpdate();
+  }
+
+  nextMatch() {
+    const matches = this._matches$.value;
+    if (matches.length === 0) return;
+    this.clearHighlight();
+    this._currentIndex$.value = (this._currentIndex$.value + 1) % matches.length;
+    this.highlightMatch(matches[this._currentIndex$.value]);
+    this.requestUpdate();
+  }
+
+  prevMatch() {
+    const matches = this._matches$.value;
+    if (matches.length === 0) return;
+    this.clearHighlight();
+    this._currentIndex$.value = (this._currentIndex$.value - 1 + matches.length) % matches.length;
+    this.highlightMatch(matches[this._currentIndex$.value]);
+    this.requestUpdate();
+  }
+
+
+  private highlightMatch(match: DocSearchMatch) {
+    const block = this.std.view.getBlock(match.blockId);
+    if (!block) return;
+
+    block.scrollIntoView({ behavior: 'instant', block: 'center' });
+
+    this._clearDomHighlight(block);
+
+    const query = this._query$.value.trim();
+    if (!query) return;
+
+    const normalizedQuery = this._normalize(query);
+    const textNodes = this._getTextNodes(block);
+    for (const node of textNodes) {
+      const nodeText = node.nodeValue ?? '';
+      const normalizedText = this._normalize(nodeText);
+      const matchIndex = normalizedText.indexOf(normalizedQuery);
+      if (matchIndex === -1) continue;
+
+      const range = document.createRange();
+      range.setStart(node, matchIndex);
+      range.setEnd(node, matchIndex + normalizedQuery.length);
+
+      const mark = document.createElement('mark');
+      mark.className = 'affine-doc-search-highlight';
+      range.surroundContents(mark);
+      return;
     }
   }
 
-  gotoMatch(index: number) {
+  private clearHighlight() {
     const matches = this._matches$.value;
     if (!matches.length) return;
-    const nextIndex = ((index % matches.length) + matches.length) % matches.length;
-    this._activeIndex$.value = nextIndex;
-    const active = matches[nextIndex];
-    this.highlightMatch(active.blockId);
-  }
-
-  gotoNext() {
-    if (!this._hasResults$.value) return;
-    this.gotoMatch(this._activeIndex$.value + 1);
-  }
-
-  gotoPrev() {
-    if (!this._hasResults$.value) return;
-    this.gotoMatch(this._activeIndex$.value - 1);
-  }
-
-  private highlightMatch(blockId: string) {
-    const block = this.std.view.getBlock(blockId);
-    block?.scrollIntoView({ behavior: 'instant', block: 'center' });
-  }
-
-  private clearHighlight() {
-    this.std.selection.setGroup('note', []);
+    const currentMatch = matches[this._currentIndex$.value];
+    if (!currentMatch) return;
+    const block = this.std.view.getBlock(currentMatch.blockId);
+    if (!block) return;
+    this._clearDomHighlight(block);
   }
 
   private _renderHeader() {
     if (!this._open$.value) return nothing;
-    const total = this._matches$.value.length;
-    const index = total ? this._activeIndex$.value + 1 : 0;
+    const matches = this._matches$.value;
+    const total = matches.length;
+    const current = total > 0 ? this._currentIndex$.value + 1 : 0;
+    const metaText = `${current}/${total}`;
+
     return html`<div class="header">
       <input
         type="text"
@@ -319,25 +340,37 @@ export class AffineDocSearchWidget extends WidgetComponent<RootBlockModel> {
         placeholder="搜索"
         ${RANGE_SYNC_EXCLUDE_ATTR}="true"
         @keydown=${(event: KeyboardEvent) => {
-          if (event.key === 'Escape') {
-            event.preventDefault();
-            event.stopPropagation();
-            this.close();
+        if (event.key === 'Escape') {
+          event.preventDefault();
+          event.stopPropagation();
+          this.close();
+        } else if (event.key === 'Enter') {
+          event.preventDefault();
+          if (event.shiftKey) {
+            this.prevMatch();
+          } else {
+            this.nextMatch();
           }
-        }}
+        }
+      }}
         @input=${(event: InputEvent) => {
-          const target = event.target as HTMLInputElement;
-          this._updateQuery(target.value);
-        }}
+        const target = event.target as HTMLInputElement;
+        this._updateQuery(target.value);
+      }}
       />
-      <div class="meta">${index}/${total}</div>
-      <button class="toggle" @click=${() => this.toggleCaseSensitive()}>
-        Aa
-      </button>
-      <button class="nav" @click=${() => this.gotoPrev()}>
+      <span class="meta">${metaText}</span>
+      <button
+        class="nav-btn"
+        title="上一个 (Shift+Enter)"
+        @click=${() => this.prevMatch()}
+      >
         ↑
       </button>
-      <button class="nav" @click=${() => this.gotoNext()}>
+      <button
+        class="nav-btn"
+        title="下一个 (Enter)"
+        @click=${() => this.nextMatch()}
+      >
         ↓
       </button>
       <button class="close" @click=${() => this.close()}>
@@ -347,23 +380,7 @@ export class AffineDocSearchWidget extends WidgetComponent<RootBlockModel> {
   }
 
   private _renderResults() {
-    if (!this._open$.value || !this._matches$.value.length) return nothing;
-    return html`<div class="results">
-      ${repeat(
-        this._matches$.value,
-        match => match.blockId,
-        (match, index) => {
-          const active = index === this._activeIndex$.value;
-          return html`<button
-            class=${active ? 'result active' : 'result'}
-            @click=${() => this.gotoMatch(index)}
-          >
-            <span class="type">${match.blockType}</span>
-            <span class="text">${match.text}</span>
-          </button>`;
-        }
-      )}
-    </div>`;
+    return nothing;
   }
 
   override render() {
