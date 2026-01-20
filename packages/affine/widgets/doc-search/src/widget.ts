@@ -6,6 +6,8 @@ import { signal } from '@preact/signals-core';
 import { css, html, nothing } from 'lit';
 import { query } from 'lit/decorators.js';
 
+
+
 type DocSearchMatch = {
   blockId: string;
   blockType: string;
@@ -95,15 +97,13 @@ export class AffineDocSearchWidget extends WidgetComponent<RootBlockModel> {
     .header button:active {
       background: color-mix(in srgb, var(--affine-hover-color), #000000 10%);
     }
-
-
-    mark.affine-doc-search-highlight {
-      background: var(--affine-text-highlight-bg, rgba(255, 214, 51, 0.4));
-      color: inherit;
-      border-radius: 2px;
-      padding: 0 1px;
-    }
   `;
+
+  // CSS Highlight API 的高亮名称
+  private static readonly HIGHLIGHT_NAME = 'affine-doc-search';
+
+  // 存储当前的 Highlight 对象
+  private _highlight: Highlight | null = null;
 
   private readonly _query$ = signal('');
 
@@ -122,6 +122,9 @@ export class AffineDocSearchWidget extends WidgetComponent<RootBlockModel> {
     super.connectedCallback();
 
     this.setAttribute(RANGE_SYNC_EXCLUDE_ATTR, 'true');
+
+    // 注册 CSS Highlight API 的样式
+    this._registerHighlightStyle();
 
     this.bindHotKey({
       'Mod-f': () => {
@@ -148,7 +151,29 @@ export class AffineDocSearchWidget extends WidgetComponent<RootBlockModel> {
 
   override disconnectedCallback() {
     this.clearHighlight();
+    this._unregisterHighlightStyle();
     super.disconnectedCallback();
+  }
+
+  private _registerHighlightStyle() {
+    // 动态添加 ::highlight 伪元素样式
+    const styleId = 'affine-doc-search-highlight-style';
+    if (document.getElementById(styleId)) return;
+
+    const style = document.createElement('style');
+    style.id = styleId;
+    style.textContent = `
+      ::highlight(${AffineDocSearchWidget.HIGHLIGHT_NAME}) {
+        background-color: rgba(255, 214, 51, 0.4);
+        color: inherit;
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  private _unregisterHighlightStyle() {
+    // 只有在没有其他实例时才移除样式
+    // 简单起见，这里不移除，让样式一直存在
   }
 
   open() {
@@ -183,9 +208,6 @@ export class AffineDocSearchWidget extends WidgetComponent<RootBlockModel> {
         if (!node.nodeValue) return NodeFilter.FILTER_REJECT;
         const parent = node.parentElement;
         if (!parent) return NodeFilter.FILTER_REJECT;
-        if (parent.closest('mark.affine-doc-search-highlight')) {
-          return NodeFilter.FILTER_REJECT;
-        }
         return NodeFilter.FILTER_ACCEPT;
       },
     });
@@ -197,16 +219,6 @@ export class AffineDocSearchWidget extends WidgetComponent<RootBlockModel> {
       current = walker.nextNode();
     }
     return nodes;
-  }
-
-  private _clearDomHighlight(root: HTMLElement) {
-    const marks = root.querySelectorAll('mark.affine-doc-search-highlight');
-    marks.forEach(mark => {
-      const parent = mark.parentNode;
-      if (!parent) return;
-      parent.replaceChild(document.createTextNode(mark.textContent ?? ''), mark);
-      parent.normalize();
-    });
   }
 
   private _setMatches(matches: DocSearchMatch[]) {
@@ -292,38 +304,53 @@ export class AffineDocSearchWidget extends WidgetComponent<RootBlockModel> {
 
     block.scrollIntoView({ behavior: 'instant', block: 'center' });
 
-    this._clearDomHighlight(block);
+    // 清除之前的高亮
+    this.clearHighlight();
 
     const query = this._query$.value.trim();
     if (!query) return;
 
+    // 检查浏览器是否支持 CSS Highlight API
+    if (!('Highlight' in window) || !CSS.highlights) {
+      console.warn('[DocSearch] CSS Highlight API not supported');
+      return;
+    }
+
     const normalizedQuery = this._normalize(query);
     const textNodes = this._getTextNodes(block);
+    const ranges: Range[] = [];
+
     for (const node of textNodes) {
       const nodeText = node.nodeValue ?? '';
       const normalizedText = this._normalize(nodeText);
-      const matchIndex = normalizedText.indexOf(normalizedQuery);
-      if (matchIndex === -1) continue;
+      let startIndex = 0;
 
-      const range = document.createRange();
-      range.setStart(node, matchIndex);
-      range.setEnd(node, matchIndex + normalizedQuery.length);
+      // 找到当前节点中所有匹配的位置
+      while (true) {
+        const matchIndex = normalizedText.indexOf(normalizedQuery, startIndex);
+        if (matchIndex === -1) break;
 
-      const mark = document.createElement('mark');
-      mark.className = 'affine-doc-search-highlight';
-      range.surroundContents(mark);
-      return;
+        const range = document.createRange();
+        range.setStart(node, matchIndex);
+        range.setEnd(node, matchIndex + query.length);
+        ranges.push(range);
+
+        startIndex = matchIndex + 1;
+      }
+    }
+
+    if (ranges.length > 0) {
+      // 使用 CSS Highlight API 创建高亮
+      this._highlight = new Highlight(...ranges);
+      CSS.highlights.set(AffineDocSearchWidget.HIGHLIGHT_NAME, this._highlight);
     }
   }
 
   private clearHighlight() {
-    const matches = this._matches$.value;
-    if (!matches.length) return;
-    const currentMatch = matches[this._currentIndex$.value];
-    if (!currentMatch) return;
-    const block = this.std.view.getBlock(currentMatch.blockId);
-    if (!block) return;
-    this._clearDomHighlight(block);
+    if (CSS.highlights) {
+      CSS.highlights.delete(AffineDocSearchWidget.HIGHLIGHT_NAME);
+    }
+    this._highlight = null;
   }
 
   private _renderHeader() {
