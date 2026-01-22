@@ -5,16 +5,20 @@ import type { DocSource } from '../source.js';
 
 type ChannelMessage =
   | {
-      type: 'init';
-    }
+    type: 'init';
+  }
   | {
-      type: 'update';
-      docId: string;
-      data: Uint8Array;
-    };
+    type: 'update';
+    docId: string;
+    data: Uint8Array;
+  };
 
 export class BroadcastChannelDocSource implements DocSource {
+  private _disposed = false;
+
   private readonly _onMessage = (event: MessageEvent<ChannelMessage>) => {
+    if (this._disposed) return;
+
     if (event.data.type === 'init') {
       for (const [docId, data] of this.docMap) {
         this.channel.postMessage({
@@ -49,7 +53,27 @@ export class BroadcastChannelDocSource implements DocSource {
     });
   }
 
+  get disposed(): boolean {
+    return this._disposed;
+  }
+
+  dispose(): void {
+    if (this._disposed) return;
+    this._disposed = true;
+
+    // 移除 message 事件监听器
+    this.channel.removeEventListener('message', this._onMessage);
+
+    // 清空文档缓存
+    this.docMap.clear();
+
+    // 关闭 BroadcastChannel
+    this.channel.close();
+  }
+
   pull(docId: string, state: Uint8Array) {
+    if (this._disposed) return null;
+
     const update = this.docMap.get(docId);
     if (!update) return null;
 
@@ -58,6 +82,8 @@ export class BroadcastChannelDocSource implements DocSource {
   }
 
   push(docId: string, data: Uint8Array) {
+    if (this._disposed) return;
+
     const update = this.docMap.get(docId);
     if (update) {
       this.docMap.set(docId, mergeUpdates([update, data]));
@@ -79,6 +105,10 @@ export class BroadcastChannelDocSource implements DocSource {
   }
 
   subscribe(cb: (docId: string, data: Uint8Array) => void) {
+    if (this._disposed) {
+      return () => { };
+    }
+
     const abortController = new AbortController();
     this.channel.addEventListener(
       'message',
