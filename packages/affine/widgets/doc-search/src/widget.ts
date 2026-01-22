@@ -12,6 +12,9 @@ type DocSearchMatch = {
   blockId: string;
   blockType: string;
   text: string;
+  nodeIndex: number;
+  startOffset: number;
+  endOffset: number;
 };
 
 export class AffineDocSearchWidget extends WidgetComponent<RootBlockModel> {
@@ -202,12 +205,18 @@ export class AffineDocSearchWidget extends WidgetComponent<RootBlockModel> {
   }
 
 
-  private _getTextNodes(root: HTMLElement): Text[] {
+  private _getTextNodes(root: HTMLElement, blockId?: string): Text[] {
     const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
       acceptNode: node => {
         if (!node.nodeValue) return NodeFilter.FILTER_REJECT;
         const parent = node.parentElement;
         if (!parent) return NodeFilter.FILTER_REJECT;
+        if (blockId) {
+          const owner = parent.closest('[data-block-id]');
+          if (!owner || owner.getAttribute('data-block-id') !== blockId) {
+            return NodeFilter.FILTER_REJECT;
+          }
+        }
         return NodeFilter.FILTER_ACCEPT;
       },
     });
@@ -244,19 +253,28 @@ export class AffineDocSearchWidget extends WidgetComponent<RootBlockModel> {
       const current = stack.pop()!;
       // Use duck typing to check for text property instead of instanceof
       // This avoids issues with multiple Text class instances in monorepo
-      const textProp = current.text;
-      if (textProp && typeof textProp.toString === 'function') {
-        const text = textProp.toString().replace(/\s+/g, ' ').trim();
-        if (text) {
-          const normalizedText = this._normalize(text);
-          if (normalizedText.includes(normalizedQuery)) {
+      const block = this.std.view.getBlock(current.id);
+      if (block) {
+        const textNodes = this._getTextNodes(block, current.id);
+        textNodes.forEach((node, nodeIndex) => {
+          const nodeText = node.nodeValue ?? '';
+          if (!nodeText) return;
+          const normalizedText = this._normalize(nodeText);
+          let startIndex = 0;
+          while (true) {
+            const matchIndex = normalizedText.indexOf(normalizedQuery, startIndex);
+            if (matchIndex === -1) break;
             matches.push({
               blockId: current.id,
               blockType: current.flavour,
-              text,
+              text: nodeText,
+              nodeIndex,
+              startOffset: matchIndex,
+              endOffset: matchIndex + normalizedQuery.length,
             });
+            startIndex = matchIndex + 1;
           }
-        }
+        });
       }
 
       const children = current.children;
@@ -317,33 +335,17 @@ export class AffineDocSearchWidget extends WidgetComponent<RootBlockModel> {
     }
 
     const normalizedQuery = this._normalize(query);
-    const textNodes = this._getTextNodes(block);
-    const ranges: Range[] = [];
+    const textNodes = this._getTextNodes(block, match.blockId);
+    const targetNode = textNodes[match.nodeIndex];
+    if (!targetNode) return;
 
-    for (const node of textNodes) {
-      const nodeText = node.nodeValue ?? '';
-      const normalizedText = this._normalize(nodeText);
-      let startIndex = 0;
+    const range = document.createRange();
+    range.setStart(targetNode, match.startOffset);
+    range.setEnd(targetNode, match.endOffset);
 
-      // 找到当前节点中所有匹配的位置
-      while (true) {
-        const matchIndex = normalizedText.indexOf(normalizedQuery, startIndex);
-        if (matchIndex === -1) break;
-
-        const range = document.createRange();
-        range.setStart(node, matchIndex);
-        range.setEnd(node, matchIndex + query.length);
-        ranges.push(range);
-
-        startIndex = matchIndex + 1;
-      }
-    }
-
-    if (ranges.length > 0) {
-      // 使用 CSS Highlight API 创建高亮
-      this._highlight = new Highlight(...ranges);
-      CSS.highlights.set(AffineDocSearchWidget.HIGHLIGHT_NAME, this._highlight);
-    }
+    // 使用 CSS Highlight API 创建高亮
+    this._highlight = new Highlight(range);
+    CSS.highlights.set(AffineDocSearchWidget.HIGHLIGHT_NAME, this._highlight);
   }
 
   private clearHighlight() {
