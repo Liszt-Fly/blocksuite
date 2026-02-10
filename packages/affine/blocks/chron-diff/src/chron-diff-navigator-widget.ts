@@ -218,12 +218,37 @@ export class ChronDiffNavigatorWidget extends WidgetComponent {
 
   private _activeId: string | null = null;
 
+  private _refreshFrame: number | null = null;
+
+  private _scheduleRefresh() {
+    if (this._refreshFrame !== null) return;
+    this._refreshFrame = requestAnimationFrame(() => {
+      this._refreshFrame = null;
+      if (!this.isConnected) return;
+      this._refresh();
+    });
+  }
+
   override connectedCallback() {
     super.connectedCallback();
 
-    const update = () => this._refresh();
-    this._disposables.add(this.store.slots.blockUpdated.subscribe(update));
-    update();
+    this._disposables.add(
+      this.store.slots.blockUpdated.subscribe(payload => {
+        if (payload.flavour !== 'chron:change') return;
+        this._scheduleRefresh();
+      })
+    );
+
+    this._refresh();
+  }
+
+  override disconnectedCallback() {
+    super.disconnectedCallback();
+
+    if (this._refreshFrame !== null) {
+      cancelAnimationFrame(this._refreshFrame);
+      this._refreshFrame = null;
+    }
   }
 
   private _refresh() {
@@ -356,4 +381,3 @@ declare global {
     [CHRON_DIFF_NAVIGATOR_WIDGET]: ChronDiffNavigatorWidget;
   }
 }
-
