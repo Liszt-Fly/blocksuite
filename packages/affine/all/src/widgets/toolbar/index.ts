@@ -1,1 +1,1 @@
-export * from '@blocksuite/affine-widget-toolbar';
+export * from '../../../../widgets/chron-toolbar/src/index';

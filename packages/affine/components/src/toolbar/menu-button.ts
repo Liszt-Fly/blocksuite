@@ -1,7 +1,4 @@
-import {
-  panelBaseStyle,
-  scrollbarStyle,
-} from '@blocksuite/affine-shared/styles';
+import { scrollbarStyle } from '@blocksuite/affine-shared/styles';
 import {
   type ButtonPopperOptions,
   createButtonPopper,
@@ -171,49 +168,62 @@ export class EditorMenuButton extends WithDisposable(LitElement) {
 export class EditorMenuContent extends LitElement {
   static override styles = css`
     :host {
-      padding: 12px 0;
       display: none;
       outline: none;
+      z-index: 50;
     }
 
     :host([data-show]) {
-      display: flex;
-      justify-content: center;
+      display: block;
+      transform-origin: top center;
+      animation: dropdown-menu-in 120ms ease-out;
     }
 
-    ${panelBaseStyle('.content-wrapper')}
+    @keyframes dropdown-menu-in {
+      from {
+        opacity: 0;
+        transform: scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
     ${scrollbarStyle('.content-wrapper')}
     .content-wrapper {
+      width: max-content;
+      min-width: 0;
+      scrollbar-gutter: auto;
       overscroll-behavior: contain;
+      overflow: hidden;
       overflow-y: auto;
-      padding: var(--content-padding, 0 6px);
+      padding: var(--content-padding, 4px);
+      border-radius: 6px;
+      border: 0.5px solid var(--affine-border-color);
+      background: var(--affine-background-overlay-panel-color);
+      color: var(--affine-text-primary-color);
+      box-shadow: var(--affine-overlay-shadow);
+      font-size: 12px;
     }
 
     ::slotted(:not(.custom)) {
       display: flex;
       align-items: center;
-      align-self: stretch;
-      gap: 8px;
-      min-height: 36px;
-    }
-
-    ::slotted([data-size]) {
-      min-width: 146px;
-    }
-
-    ::slotted([data-size='small']) {
-      min-width: 164px;
-    }
-
-    ::slotted([data-size='large']) {
-      min-width: 176px;
+      min-height: fit-content;
     }
 
     ::slotted([data-orientation='vertical']) {
       flex-direction: column;
       align-items: stretch;
+      width: 100%;
       gap: unset;
       min-height: fit-content;
+    }
+
+    ::slotted(editor-toolbar-separator[data-orientation='horizontal']) {
+      align-self: stretch;
+      width: 100%;
     }
   `;
 
@@ -225,12 +235,14 @@ export class EditorMenuContent extends LitElement {
 export class EditorMenuAction extends LitElement {
   static override styles = css`
     :host {
+      position: relative;
       display: flex;
       width: 100%;
       align-items: center;
+      justify-content: flex-start;
       white-space: nowrap;
       box-sizing: border-box;
-      padding: 4px 8px;
+      padding: 6px 8px;
       border-radius: 4px;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -238,12 +250,19 @@ export class EditorMenuAction extends LitElement {
       gap: 8px;
       color: var(--affine-text-primary-color);
       font-weight: 400;
-      min-height: 30px; // 22 + 8
+      font-size: 12px;
+      line-height: 16px;
+      min-height: 28px;
+      user-select: none;
+      outline: none;
+      transition: background-color 120ms ease, color 120ms ease;
     }
 
     :host(:hover),
+    :host(:focus-visible),
     :host([data-selected]) {
-      background-color: var(--affine-hover-color);
+      background-color: var(--affine-background-tertiary-color);
+      color: var(--affine-text-primary-color);
     }
 
     :host([data-selected]) {
@@ -251,7 +270,11 @@ export class EditorMenuAction extends LitElement {
     }
 
     :host(:hover.delete),
-    :host(:hover.delete) ::slotted(svg) {
+    :host(:focus-visible.delete),
+    :host(:hover.delete) ::slotted(svg),
+    :host(:hover.delete) ::slotted(iconify-icon),
+    :host(:focus-visible.delete) ::slotted(svg),
+    :host(:focus-visible.delete) ::slotted(iconify-icon) {
       background-color: var(--affine-background-error-color);
       color: var(--affine-error-color);
     }
@@ -263,8 +286,15 @@ export class EditorMenuAction extends LitElement {
     }
 
     ::slotted(svg) {
-      color: var(--affine-icon-color);
-      font-size: 20px;
+      color: currentColor;
+      font-size: var(--editor-menu-action-icon-size, 16px);
+    }
+
+    ::slotted(iconify-icon) {
+      color: currentColor;
+      font-size: var(--editor-menu-action-icon-size, 16px);
+      width: 1em;
+      height: 1em;
     }
 
     ::slotted(.label) {

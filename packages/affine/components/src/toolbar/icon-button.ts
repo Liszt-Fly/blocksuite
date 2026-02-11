@@ -53,6 +53,14 @@ export class EditorIconButton extends LitElement {
       font-size: var(--icon-size, 20px);
     }
 
+    ::slotted(iconify-icon) {
+      flex-shrink: 0;
+      font-size: var(--icon-size, 20px);
+      width: 1em;
+      height: 1em;
+      color: inherit;
+    }
+
     ::slotted(.label) {
       flex: 1;
       padding: 0 4px;

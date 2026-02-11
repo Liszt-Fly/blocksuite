@@ -89,6 +89,7 @@ export const defaultSlashMenuConfig: SlashMenuConfig = {
       {
         name: tt('slash.moveUp', 'Move Up'),
         description: tt('slash.moveUp.desc', 'Shift this line up.'),
+        shortcut: ['Mod-Alt-ArrowUp', 'Mod-Shift-ArrowUp'],
         icon: ArrowUpBigIcon(),
         tooltip: tips['Move Up'],
         group: `8_${groupActions}@0`,
@@ -111,6 +112,7 @@ export const defaultSlashMenuConfig: SlashMenuConfig = {
       {
         name: tt('slash.moveDown', 'Move Down'),
         description: tt('slash.moveDown.desc', 'Shift this line down.'),
+        shortcut: ['Mod-Alt-ArrowDown', 'Mod-Shift-ArrowDown'],
         icon: ArrowDownBigIcon(),
         tooltip: tips['Move Down'],
         group: `8_${groupActions}@1`,

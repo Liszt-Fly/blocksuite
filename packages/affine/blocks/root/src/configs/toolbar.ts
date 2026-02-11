@@ -22,9 +22,8 @@ import {
   getTextSelectionCommand,
 } from '@blocksuite/affine-shared/commands';
 import type {
-  ToolbarAction,
-  ToolbarActionGenerator,
   ToolbarActionGroup,
+  ToolbarContext,
   ToolbarModuleConfig,
 } from '@blocksuite/affine-shared/services';
 import {
@@ -32,10 +31,9 @@ import {
   blockCommentToolbarButton,
 } from '@blocksuite/affine-shared/services';
 // Database/Linked Doc actions disabled
-import { type BlockComponent, BlockSelection } from '@blocksuite/std';
+import { BlockSelection } from '@blocksuite/std';
 import { html } from 'lit';
 import { t } from '@blocksuite/affine-shared/utils';
-import { repeat } from 'lit/directives/repeat.js';
 
 /*
  * Temporarily disabled by request: hide the "Turn into" conversions menu in the bubble toolbar.
@@ -108,6 +106,23 @@ import { repeat } from 'lit/directives/repeat.js';
   },
 } as const satisfies ToolbarActionGenerator; */
 
+const bubbleIcon = (icon: string) => html`
+  <iconify-icon
+    icon=${icon}
+    width="16"
+    height="16"
+  ></iconify-icon>
+`;
+
+const inlineTextIconMap: Record<string, string> = {
+  bold: 'lucide:bold',
+  italic: 'lucide:italic',
+  underline: 'lucide:underline',
+  strike: 'lucide:strikethrough',
+  link: 'lucide:link',
+  code: 'lucide:code-2',
+};
+
 const inlineTextActionGroup = {
   id: 'b.inline-text',
   when: ({ chain }) => isFormatSupported(chain).run()[0],
@@ -124,12 +139,15 @@ const inlineTextActionGroup = {
           code: 'f',
         };
         const withOrder = (k: string) => `${orderMap[k] ?? 'z'}.${k}`;
+        const bubbleActionIcon = inlineTextIconMap[id]
+          ? bubbleIcon(inlineTextIconMap[id])
+          : icon;
         return {
           id: withOrder(id),
-          icon,
+          icon: bubbleActionIcon,
           tooltip: name,
-          run: ({ host }) => action(host),
-          active: ({ host }) => activeWhen(host),
+          run: (context: ToolbarContext) => action(context.host),
+          active: (context: ToolbarContext) => activeWhen(context.host),
         } as const;
       }
     ),
@@ -296,6 +314,7 @@ export const builtinToolbarConfig = {
     {
       id: 'g.comment',
       ...blockCommentToolbarButton,
+      icon: bubbleIcon('lucide:message-square'),
     },
     {
       placement: ActionPlacement.More,
@@ -304,7 +323,7 @@ export const builtinToolbarConfig = {
         {
           id: 'copy',
           label: t('common.copy', 'Copy'),
-          icon: html`<ph-copy size="16" weight="bold"></ph-copy>`,
+          icon: bubbleIcon('lucide:copy'),
           run({ chain, host }) {
             const [ok] = chain
               .pipe(getSelectedModelsCommand)
@@ -320,7 +339,7 @@ export const builtinToolbarConfig = {
         {
           id: 'duplicate',
           label: t('file.duplicate', 'Duplicate'),
-          icon: html`<ph-files size="16" weight="bold"></ph-files>`,
+          icon: bubbleIcon('lucide:copy-plus'),
           run({ chain, store, selection }) {
             store.captureSync();
 
@@ -365,7 +384,7 @@ export const builtinToolbarConfig = {
         {
           id: 'delete',
           label: t('common.delete', 'Delete'),
-          icon: html`<ph-trash size="16" weight="bold"></ph-trash>`,
+          icon: bubbleIcon('lucide:trash-2'),
           variant: 'destructive',
           run({ chain }) {
             // removes text

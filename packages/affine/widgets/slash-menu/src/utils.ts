@@ -1,3 +1,5 @@
+import { IS_MAC } from '@blocksuite/global/env';
+
 import type {
   SlashMenuActionItem,
   SlashMenuConfig,
@@ -83,6 +85,77 @@ export function mergeSlashMenuConfigs(
         .map(({ disableWhen }) => disableWhen?.(ctx) ?? false)
         .some(Boolean),
   };
+}
+
+const arrowKeyMap: Record<string, string> = {
+  ArrowUp: '↑',
+  ArrowDown: '↓',
+  ArrowLeft: '←',
+  ArrowRight: '→',
+};
+
+function formatShortcutModifier(key: string) {
+  switch (key.toLowerCase()) {
+    case 'mod':
+      return IS_MAC ? '⌘' : 'Ctrl';
+    case 'cmd':
+    case 'meta':
+      return IS_MAC ? '⌘' : 'Meta';
+    case 'ctrl':
+    case 'control':
+      return IS_MAC ? '⌃' : 'Ctrl';
+    case 'alt':
+    case 'option':
+      return IS_MAC ? '⌥' : 'Alt';
+    case 'shift':
+      return IS_MAC ? '⇧' : 'Shift';
+    default:
+      return key;
+  }
+}
+
+function formatShortcutKey(key: string) {
+  if (arrowKeyMap[key]) {
+    return arrowKeyMap[key];
+  }
+
+  if (key.length === 1) {
+    return key.toUpperCase();
+  }
+
+  return key;
+}
+
+function formatSingleShortcut(shortcut: string) {
+  const keys = shortcut.split('-').filter(Boolean);
+
+  if (keys.length === 0) {
+    return shortcut;
+  }
+
+  const actionKey = formatShortcutKey(keys[keys.length - 1]);
+  const modifierKeys = keys.slice(0, -1).map(formatShortcutModifier);
+
+  if (IS_MAC) {
+    return `${modifierKeys.join('')}${actionKey}`;
+  }
+
+  if (modifierKeys.length === 0) {
+    return actionKey;
+  }
+
+  return `${modifierKeys.join('+')}+${actionKey}`;
+}
+
+export function formatMenuShortcutDisplay(
+  shortcut?: string | string[]
+): string | undefined {
+  if (!shortcut) {
+    return undefined;
+  }
+
+  const shortcuts = Array.isArray(shortcut) ? shortcut : [shortcut];
+  return shortcuts.map(formatSingleShortcut).join(' / ');
 }
 
 export function formatDate(date: Date) {

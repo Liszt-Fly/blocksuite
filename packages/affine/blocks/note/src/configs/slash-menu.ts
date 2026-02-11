@@ -141,6 +141,7 @@ function createConversionItem(
     name,
     group,
     description,
+    shortcut: config.hotkey ?? undefined,
     icon,
     // tooltip 保持使用原始英文 key
     tooltip: tooltips[originalName],

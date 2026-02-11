@@ -15,6 +15,7 @@ export type SlashMenuTooltip = {
 type SlashMenuItemBase = {
   name: string;
   description?: string;
+  shortcut?: string | string[];
   icon?: TemplateResult;
   /**
    * This field defines sorting and grouping of menu items like VSCode.

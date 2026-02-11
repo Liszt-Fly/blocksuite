@@ -41,6 +41,7 @@ import type {
   SlashMenuSubMenu,
 } from './types.js';
 import {
+  formatMenuShortcutDisplay,
   isActionItem,
   isSubMenuItem,
   parseGroup,
@@ -406,7 +407,8 @@ export class InnerSlashMenu extends WithDisposable(LitElement) {
   };
 
   private readonly _renderActionItem = (item: SlashMenuActionItem) => {
-    const { name, icon, description, tooltip } = item;
+    const { name, icon, description, shortcut, tooltip } = item;
+    const subText = formatMenuShortcutDisplay(shortcut) ?? description;
 
     const hover = item === this._activeItem;
 
@@ -415,7 +417,7 @@ export class InnerSlashMenu extends WithDisposable(LitElement) {
       width="100%"
       height="44px"
       text=${name}
-      subText=${ifDefined(description)}
+      subText=${ifDefined(subText)}
       data-testid="${name}"
       hover=${hover}
       @mousemove=${() => {
@@ -461,7 +463,8 @@ export class InnerSlashMenu extends WithDisposable(LitElement) {
   };
 
   private readonly _renderSubMenuItem = (item: SlashMenuSubMenu) => {
-    const { name, icon, description } = item;
+    const { name, icon, description, shortcut } = item;
+    const subText = formatMenuShortcutDisplay(shortcut) ?? description;
 
     const hover = item === this._activeItem;
 
@@ -470,7 +473,7 @@ export class InnerSlashMenu extends WithDisposable(LitElement) {
       width="100%"
       height="44px"
       text=${name}
-      subText=${ifDefined(description)}
+      subText=${ifDefined(subText)}
       data-testid="${name}"
       hover=${hover}
       @mousemove=${() => {

@@ -14,6 +14,7 @@ import { effects as componentEmbedCardModalEffects } from '@blocksuite/affine-co
 import { FilterableListComponent } from '@blocksuite/affine-components/filterable-list';
 import { effects as componentHighlightDropdownMenuEffects } from '@blocksuite/affine-components/highlight-dropdown-menu';
 import { IconButton } from '@blocksuite/affine-components/icon-button';
+import { effects as componentKbdEffects } from '@blocksuite/affine-components/kbd';
 import { effects as componentLinkPreviewEffects } from '@blocksuite/affine-components/link-preview';
 import { effects as componentLinkedDocTitleEffects } from '@blocksuite/affine-components/linked-doc-title';
 import { effects as componentOpenDocDropdownMenuEffects } from '@blocksuite/affine-components/open-doc-dropdown-menu';
@@ -51,6 +52,7 @@ export function effects() {
   componentCardStyleDropdownMenuEffects();
   componentCitationEffects();
   componentHighlightDropdownMenuEffects();
+  componentKbdEffects();
   componentViewDropdownMenuEffects();
   componentTooltipContentWithShortcutEffects();
   componentSizeDropdownMenuEffects();
