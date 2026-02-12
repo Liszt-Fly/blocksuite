@@ -94,7 +94,7 @@ export class AffineToolbarWidget extends WidgetComponent {
       border: unset;
       justify-content: flex-end;
       box-sizing: border-box;
-      gap: 4px;
+      gap: 0;
 
       .inner-button,
       editor-icon-button,
@@ -105,7 +105,7 @@ export class AffineToolbarWidget extends WidgetComponent {
         border-radius: 4px;
       }
       editor-menu-button > div {
-        gap: 4px;
+        gap: 0;
       }
     }
 

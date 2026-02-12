@@ -3,7 +3,10 @@ import { css, unsafeCSS } from 'lit';
 
 export const fontBaseStyle = (container: string) => css`
   ${unsafeCSS(container)} {
-    font-family: ${unsafeCSS(baseTheme.fontSansFamily)};
+    font-family: var(
+      --chronnote-ui-font,
+      ${unsafeCSS(baseTheme.fontSansFamily)}
+    );
     font-feature-settings:
       'clig' off,
       'liga' off;
