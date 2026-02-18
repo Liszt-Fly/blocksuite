@@ -151,9 +151,13 @@ export class ParagraphBlockComponent extends CaptionedBlockComponent<ParagraphBl
           this._displayPlaceholder.value = false;
           return;
         }
+        const forceDisplayWhenEmpty =
+          getComputedStyle(this)
+            .getPropertyValue('--chron-force-paragraph-placeholder-visible')
+            .trim() === '1';
         const textSelection = this.host.selection.find(TextSelection);
         const isCollapsed = textSelection?.isCollapsed() ?? false;
-        if (!this.focused$.value || !isCollapsed) {
+        if (!forceDisplayWhenEmpty && (!this.focused$.value || !isCollapsed)) {
           this._displayPlaceholder.value = false;
           return;
         }
@@ -167,7 +171,9 @@ export class ParagraphBlockComponent extends CaptionedBlockComponent<ParagraphBl
               this._displayPlaceholder.value = false;
               return;
             }
-            this._displayPlaceholder.value = true;
+            this._displayPlaceholder.value = forceDisplayWhenEmpty
+              ? true
+              : this.focused$.value && isCollapsed;
             return;
           })
           .catch(console.error);

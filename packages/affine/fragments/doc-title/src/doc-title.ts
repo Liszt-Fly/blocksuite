@@ -21,6 +21,7 @@ export class DocTitle extends WithDisposable(ShadowlessElement) {
   static override styles = css`
     .doc-title-container {
       box-sizing: border-box;
+      position: relative;
       font-family: var(--affine-font-family);
       font-size: var(--affine-font-base);
       line-height: var(--affine-line-height);
@@ -56,7 +57,7 @@ export class DocTitle extends WithDisposable(ShadowlessElement) {
     }
 
     .doc-title-container-empty::before {
-      content: 'Title';
+      content: attr(data-placeholder);
       color: var(--affine-placeholder-color);
       position: absolute;
       opacity: 0.5;
@@ -204,6 +205,8 @@ export class DocTitle extends WithDisposable(ShadowlessElement) {
 
   override render() {
     const isEmpty = !this._rootModel?.props.title.length && !this._isComposing;
+    const placeholder =
+      this.placeholder?.trim() || this.getAttribute('data-placeholder')?.trim() || 'Title';
 
     return html`
       <div
@@ -211,6 +214,7 @@ export class DocTitle extends WithDisposable(ShadowlessElement) {
           ? 'doc-title-container-empty'
           : ''}"
         data-block-is-title="true"
+        data-placeholder=${placeholder}
       >
         <rich-text
           .yText=${this._rootModel?.props.title.yText}
@@ -235,6 +239,9 @@ export class DocTitle extends WithDisposable(ShadowlessElement) {
 
   @property({ attribute: false })
   accessor doc!: Store;
+
+  @property()
+  accessor placeholder = 'Title';
 
   @property({ attribute: false })
   accessor wrapText = true;
