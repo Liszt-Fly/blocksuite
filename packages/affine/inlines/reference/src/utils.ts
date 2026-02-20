@@ -1,5 +1,6 @@
 import { REFERENCE_NODE } from '@blocksuite/affine-shared/consts';
 import type { AffineInlineEditor } from '@blocksuite/affine-shared/types';
+import type { ReferenceParams } from '@blocksuite/affine-model';
 
 /**
  * Atom type constants for reference
@@ -15,27 +16,35 @@ export const ATOM_TYPE_NOTE = 1;
  * @param atomId - The ID of the atom to link
  * @param atomType - The type of the atom (defaults to NOTE for backward compatibility)
  * @param title - Optional custom title for the reference
+ * @param referenceParams - Optional reference params such as blockIds/mode
  */
 export function insertAtomNode({
   inlineEditor,
   atomId,
   atomType = ATOM_TYPE_NOTE,
   title,
+  referenceParams,
 }: {
   inlineEditor: AffineInlineEditor;
   atomId: string;
   atomType?: number;
   title?: string;
+  referenceParams?: ReferenceParams;
 }) {
   if (!inlineEditor) return;
   const inlineRange = inlineEditor.getInlineRange();
   if (!inlineRange) return;
 
+  const params: ReferenceParams = {
+    ...(referenceParams ?? {}),
+    atomType: referenceParams?.atomType ?? atomType,
+  };
+
   inlineEditor.insertText(inlineRange, REFERENCE_NODE, {
     reference: {
       type: 'LinkedPage',
       pageId: atomId,
-      params: { atomType },
+      params,
       ...(title && { title }),
     },
   });

@@ -16,7 +16,7 @@ import {
   referenceToNode,
 } from '@blocksuite/affine-shared/utils';
 import { WithDisposable } from '@blocksuite/global/lit';
-import { LinkedPageIcon } from '@blocksuite/icons/lit';
+import { BlockLinkIcon, LinkedPageIcon } from '@blocksuite/icons/lit';
 import type { BlockComponent, BlockStdScope } from '@blocksuite/std';
 import { BLOCK_ID_ATTR, ShadowlessElement } from '@blocksuite/std';
 import {
@@ -121,6 +121,20 @@ export class AffineReference extends WithDisposable(ShadowlessElement) {
   get _icon() {
     const { pageId, params, title } = this.referenceInfo;
     const reference = this.delta.attributes?.reference;
+
+    // Block-level reference: prefer block link icon.
+    if (
+      reference?.type === 'LinkedPage' &&
+      Array.isArray(params?.blockIds) &&
+      params.blockIds.length > 0
+    ) {
+      return BlockLinkIcon({
+        width: '1.25em',
+        height: '1.25em',
+        style:
+          'user-select:none;flex-shrink:0;vertical-align:middle;font-size:inherit;margin-bottom:0.1em;',
+      });
+    }
     
     // If atomType is specified in params, use atom type icon
     if (reference?.type === 'LinkedPage' && params?.atomType !== undefined) {

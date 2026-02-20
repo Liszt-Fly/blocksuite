@@ -234,6 +234,34 @@ describe('insertAtomNode', () => {
   });
 
   /**
+   * Custom reference params should be preserved (e.g. block anchor links)
+   */
+  it('preserves custom reference params when provided', () => {
+    const mockEditor = createMockInlineEditor();
+
+    insertAtomNode({
+      inlineEditor: mockEditor as unknown as Parameters<
+        typeof insertAtomNode
+      >[0]['inlineEditor'],
+      atomId: 'doc-1',
+      atomType: 10,
+      referenceParams: {
+        mode: 'page',
+        blockIds: ['block-1'],
+      },
+    });
+
+    expect(mockEditor.insertTextCalls.length).toBe(1);
+    const call = mockEditor.insertTextCalls[0];
+    const reference = call.attributes.reference as Record<string, unknown>;
+    const params = reference.params as Record<string, unknown>;
+
+    expect(params.mode).toBe('page');
+    expect(params.blockIds).toEqual(['block-1']);
+    expect(params.atomType).toBe(10);
+  });
+
+  /**
    * No operation when inlineEditor is null
    */
   it('does nothing when inlineEditor is null', () => {
