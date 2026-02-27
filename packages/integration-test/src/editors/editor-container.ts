@@ -177,12 +177,16 @@ export class TestAffineEditorContainer extends SignalWatcher(
 
   override render() {
     const mode = this._mode.value;
+    const rootModel = this.doc.root as BlockModel | null;
+    if (!rootModel) {
+      return html``;
+    }
     const themeService = this.std.get(ThemeProvider);
     const appTheme = themeService.app$.value;
     const edgelessTheme = themeService.edgeless$.value;
 
     return html`${keyed(
-      this.rootModel.id + mode,
+      rootModel.id + mode,
       html`
         <div
           data-theme=${mode === 'page' ? appTheme : edgelessTheme}
